@@ -281,15 +281,23 @@ void BigTreasureShadowMgr::updateHandShadow(JointShadowParm& parm)
 
 		parm.mShadowScale = 3.0f * mObj->mShadowScale;
 
-		pos4 += xVec * 50.0f;
-		pos4 += yVec * -7.5f;
+		Vector3f pos4X = xVec;
+		pos4X.scale(50.0f);
+		Vector3f pos4Y = yVec;
+		pos4Y.scale(-7.5f);
+		pos4 += pos4X;
+		pos4 += pos4Y;
 
 		mHandTubeNodes[i][2]->makeShadowSRT(parm, pos3, pos4);
 
 		parm.mShadowScale = 2.0f * mObj->mShadowScale;
 
-		pos5 += xVec * 35.0f;
-		pos5 += yVec * 5.0f;
+		Vector3f pos5X = xVec;
+		pos5X.scale(35.0f);
+		Vector3f pos5Y = yVec;
+		pos5Y.scale(5.0f);
+		pos5 += pos5X;
+		pos5 += pos5Y;
 
 		mHandTubeNodes[i][3]->makeShadowSRT(parm, pos3, pos5);
 
@@ -298,226 +306,6 @@ void BigTreasureShadowMgr::updateHandShadow(JointShadowParm& parm)
 		mHandSphereNodes[i][0]->makeShadowSRT(parm, pos2);
 		mHandSphereNodes[i][1]->makeShadowSRT(parm, pos3);
 	}
-	/*
-	stwu     r1, -0x140(r1)
-	mflr     r0
-	stw      r0, 0x144(r1)
-	stfd     f31, 0x130(r1)
-	psq_st   f31, 312(r1), 0, qr0
-	stfd     f30, 0x120(r1)
-	psq_st   f30, 296(r1), 0, qr0
-	stfd     f29, 0x110(r1)
-	psq_st   f29, 280(r1), 0, qr0
-	stfd     f28, 0x100(r1)
-	psq_st   f28, 264(r1), 0, qr0
-	stfd     f27, 0xf0(r1)
-	psq_st   f27, 248(r1), 0, qr0
-	stfd     f26, 0xe0(r1)
-	psq_st   f26, 232(r1), 0, qr0
-	stfd     f25, 0xd0(r1)
-	psq_st   f25, 216(r1), 0, qr0
-	stfd     f24, 0xc0(r1)
-	psq_st   f24, 200(r1), 0, qr0
-	stfd     f23, 0xb0(r1)
-	psq_st   f23, 184(r1), 0, qr0
-	stfd     f22, 0xa0(r1)
-	psq_st   f22, 168(r1), 0, qr0
-	stfd     f21, 0x90(r1)
-	psq_st   f21, 152(r1), 0, qr0
-	stfd     f20, 0x80(r1)
-	psq_st   f20, 136(r1), 0, qr0
-	stfd     f19, 0x70(r1)
-	psq_st   f19, 120(r1), 0, qr0
-	stfd     f18, 0x60(r1)
-	psq_st   f18, 104(r1), 0, qr0
-	stmw     r26, 0x48(r1)
-	lfs      f1, lbl_8051CBC8@sda21(r2)
-	mr       r26, r3
-	mr       r27, r4
-	lfs      f0, lbl_8051CBEC@sda21(r2)
-	stfs     f1, 0x18(r4)
-	mr       r31, r26
-	lfs      f25, lbl_8051CC08@sda21(r2)
-	mr       r30, r26
-	stfs     f1, 0x1c(r4)
-	mr       r29, r26
-	lfs      f26, lbl_8051CBC4@sda21(r2)
-	li       r28, 0
-	stfs     f0, 0x24(r4)
-	lfs      f27, lbl_8051CC0C@sda21(r2)
-	lfs      f28, lbl_8051CC10@sda21(r2)
-	lfs      f29, lbl_8051CC14@sda21(r2)
-	lfs      f30, lbl_8051CC18@sda21(r2)
-	lfs      f31, lbl_8051CBD4@sda21(r2)
-	lfs      f18, lbl_8051CBD8@sda21(r2)
-
-lbl_802DB384:
-	lwz      r3, 0x3c(r26)
-	mr       r4, r27
-	addi     r5, r1, 0x38
-	addi     r6, r1, 0x2c
-	lfs      f0, 0x2d8(r3)
-	fmuls    f0, f25, f0
-	stfs     f0, 0x20(r27)
-	lwz      r3, 0x14(r31)
-	lfs      f2, 0x2c(r3)
-	lfs      f1, 0x1c(r3)
-	lfs      f0, 0xc(r3)
-	stfs     f0, 0x38(r1)
-	stfs     f1, 0x3c(r1)
-	stfs     f2, 0x40(r1)
-	lwz      r3, 0x18(r31)
-	lfs      f2, 0x2c(r3)
-	lfs      f1, 0x1c(r3)
-	lfs      f0, 0xc(r3)
-	stfs     f0, 0x2c(r1)
-	stfs     f1, 0x30(r1)
-	stfs     f2, 0x34(r1)
-	lwz      r3, 0x1c(r31)
-	lfs      f2, 0x2c(r3)
-	lfs      f1, 0x1c(r3)
-	lfs      f0, 0xc(r3)
-	stfs     f0, 0x20(r1)
-	stfs     f1, 0x24(r1)
-	stfs     f2, 0x28(r1)
-	stfs     f0, 0x14(r1)
-	stfs     f1, 0x18(r1)
-	stfs     f2, 0x1c(r1)
-	stfs     f0, 8(r1)
-	stfs     f1, 0xc(r1)
-	stfs     f2, 0x10(r1)
-	lwz      r3, 0x110(r30)
-	bl
-"makeShadowSRT__Q24Game17TubeShadowPosNodeFRQ24Game15JointShadowParmR10Vector3<f>R10Vector3<f>"
-	lwz      r3, 0x114(r30)
-	mr       r4, r27
-	addi     r5, r1, 0x2c
-	addi     r6, r1, 0x20
-	bl
-"makeShadowSRT__Q24Game17TubeShadowPosNodeFRQ24Game15JointShadowParmR10Vector3<f>R10Vector3<f>"
-	lwz      r3, 0x3c(r26)
-	mr       r4, r27
-	lwz      r7, 0x1c(r31)
-	addi     r5, r1, 0x20
-	lfs      f0, 0x2d8(r3)
-	addi     r6, r1, 0x14
-	lfs      f24, 0(r7)
-	fmuls    f0, f26, f0
-	lfs      f23, 0x10(r7)
-	lfs      f22, 0x20(r7)
-	fmuls    f2, f24, f27
-	lfs      f21, 4(r7)
-	fmuls    f3, f23, f27
-	lfs      f20, 0x14(r7)
-	fmuls    f6, f22, f27
-	lfs      f19, 0x24(r7)
-	fmuls    f7, f21, f28
-	fmuls    f8, f20, f28
-	stfs     f0, 0x20(r27)
-	fmuls    f9, f19, f28
-	lfs      f0, 0x14(r1)
-	lfs      f1, 0x18(r1)
-	fadds    f5, f0, f2
-	lfs      f0, 0x1c(r1)
-	fadds    f4, f1, f3
-	fadds    f3, f0, f6
-	fadds    f2, f5, f7
-	stfs     f5, 0x14(r1)
-	fadds    f1, f4, f8
-	stfs     f4, 0x18(r1)
-	fadds    f0, f3, f9
-	stfs     f3, 0x1c(r1)
-	stfs     f2, 0x14(r1)
-	stfs     f1, 0x18(r1)
-	stfs     f0, 0x1c(r1)
-	lwz      r3, 0x118(r30)
-	bl
-"makeShadowSRT__Q24Game17TubeShadowPosNodeFRQ24Game15JointShadowParmR10Vector3<f>R10Vector3<f>"
-	lwz      r3, 0x3c(r26)
-	fmuls    f2, f24, f30
-	fmuls    f3, f23, f30
-	mr       r4, r27
-	lfs      f0, 0x2d8(r3)
-	fmuls    f6, f22, f30
-	fmuls    f7, f21, f31
-	fmuls    f0, f29, f0
-	fmuls    f8, f20, f31
-	addi     r5, r1, 0x20
-	fmuls    f9, f19, f31
-	addi     r6, r1, 8
-	stfs     f0, 0x20(r27)
-	lfs      f0, 8(r1)
-	lfs      f1, 0xc(r1)
-	fadds    f5, f0, f2
-	lfs      f0, 0x10(r1)
-	fadds    f4, f1, f3
-	fadds    f3, f0, f6
-	fadds    f2, f5, f7
-	stfs     f5, 8(r1)
-	fadds    f1, f4, f8
-	stfs     f4, 0xc(r1)
-	fadds    f0, f3, f9
-	stfs     f3, 0x10(r1)
-	stfs     f2, 8(r1)
-	stfs     f1, 0xc(r1)
-	stfs     f0, 0x10(r1)
-	lwz      r3, 0x11c(r30)
-	bl
-"makeShadowSRT__Q24Game17TubeShadowPosNodeFRQ24Game15JointShadowParmR10Vector3<f>R10Vector3<f>"
-	lwz      r3, 0x3c(r26)
-	mr       r4, r27
-	addi     r5, r1, 0x2c
-	lfs      f0, 0x2d8(r3)
-	fmuls    f0, f18, f0
-	stfs     f0, 0x20(r27)
-	lwz      r3, 0x130(r29)
-	bl
-"makeShadowSRT__Q24Game16SphereShadowNodeFRQ24Game15JointShadowParmR10Vector3<f>"
-	lwz      r3, 0x134(r29)
-	mr       r4, r27
-	addi     r5, r1, 0x20
-	bl
-"makeShadowSRT__Q24Game16SphereShadowNodeFRQ24Game15JointShadowParmR10Vector3<f>"
-	addi     r28, r28, 1
-	addi     r30, r30, 0x10
-	cmpwi    r28, 2
-	addi     r29, r29, 8
-	addi     r31, r31, 0xc
-	blt      lbl_802DB384
-	psq_l    f31, 312(r1), 0, qr0
-	lfd      f31, 0x130(r1)
-	psq_l    f30, 296(r1), 0, qr0
-	lfd      f30, 0x120(r1)
-	psq_l    f29, 280(r1), 0, qr0
-	lfd      f29, 0x110(r1)
-	psq_l    f28, 264(r1), 0, qr0
-	lfd      f28, 0x100(r1)
-	psq_l    f27, 248(r1), 0, qr0
-	lfd      f27, 0xf0(r1)
-	psq_l    f26, 232(r1), 0, qr0
-	lfd      f26, 0xe0(r1)
-	psq_l    f25, 216(r1), 0, qr0
-	lfd      f25, 0xd0(r1)
-	psq_l    f24, 200(r1), 0, qr0
-	lfd      f24, 0xc0(r1)
-	psq_l    f23, 184(r1), 0, qr0
-	lfd      f23, 0xb0(r1)
-	psq_l    f22, 168(r1), 0, qr0
-	lfd      f22, 0xa0(r1)
-	psq_l    f21, 152(r1), 0, qr0
-	lfd      f21, 0x90(r1)
-	psq_l    f20, 136(r1), 0, qr0
-	lfd      f20, 0x80(r1)
-	psq_l    f19, 120(r1), 0, qr0
-	lfd      f19, 0x70(r1)
-	psq_l    f18, 104(r1), 0, qr0
-	lfd      f18, 0x60(r1)
-	lmw      r26, 0x48(r1)
-	lwz      r0, 0x144(r1)
-	mtlr     r0
-	addi     r1, r1, 0x140
-	blr
-	*/
 }
 
 /**
@@ -544,44 +332,66 @@ void BigTreasureShadowMgr::updateAntennaShadow(JointShadowParm& parm)
 
 		parm.mShadowScale = 4.0f * mObj->mShadowScale;
 
+		Vector3f xOffset1 = xVec1;
+		xOffset1.scale(55.0f);
+		Vector3f yOffset1 = yVec1;
+		yOffset1.scale(0.0f);
 		Vector3f pos3 = pos2;
-		pos3 += xVec1 * 55.0f;
-		pos3 += yVec1 * 0.0f;
+		pos3 += xOffset1;
+		pos3 += yOffset1;
 
 		mAntennaTubeNodes[i][1]->makeShadowSRT(parm, pos2, pos3);
 
 		parm.mShadowScale = 5.0f * mObj->mShadowScale;
 
+		Vector3f xOffset2a = xVec1;
+		xOffset2a.scale(55.0f);
+		Vector3f xOffset2b = xVec1;
+		xOffset2b.scale(50.0f);
+		Vector3f yOffset2a = yVec1;
+		yOffset2a.scale(-35.0f);
+		Vector3f yOffset2b = yVec1;
+		yOffset2b.scale(0.0f);
 		Vector3f pos4 = pos2;
 		Vector3f pos5 = pos2;
-
-		pos4 += xVec1 * 55.0f;
-		pos5 += xVec1 * 50.0f;
-
-		pos4 += yVec1 * -35.0f;
-		pos5 += yVec1 * 0.0f;
+		pos4 += xOffset2a;
+		pos5 += xOffset2b;
+		pos4 += yOffset2a;
+		pos5 += yOffset2b;
 
 		mAntennaTubeNodes[i][2]->makeShadowSRT(parm, pos4, pos5);
 
+		Vector3f xOffset3a = xVec1;
+		xOffset3a.scale(37.5f);
+		Vector3f xOffset3b = xVec1;
+		xOffset3b.scale(40.0f);
+		Vector3f yOffset3a = yVec1;
+		yOffset3a.scale(-30.0f);
+		Vector3f yOffset3b = yVec1;
+		yOffset3b.scale(0.0f);
 		Vector3f pos6 = pos2;
 		Vector3f pos7 = pos2;
-
-		pos6 += xVec1 * 37.5f;
-		pos7 += xVec1 * 40.0f;
-
-		pos6 += yVec1 * -30.0f;
-		pos7 += yVec1 * 0.0f;
+		pos6 += xOffset3a;
+		pos7 += xOffset3b;
+		pos6 += yOffset3a;
+		pos7 += yOffset3b;
 
 		mAntennaTubeNodes[i][3]->makeShadowSRT(parm, pos6, pos7);
 
+		Vector3f xOffset4a = xVec1;
+		xOffset4a.scale(20.0f);
+		Vector3f xOffset4b = xVec1;
+		xOffset4b.scale(35.0f);
+		Vector3f yOffset4a = yVec1;
+		yOffset4a.scale(-20.0f);
+		Vector3f yOffset4b = yVec1;
+		yOffset4b.scale(0.0f);
 		Vector3f pos8 = pos2;
 		Vector3f pos9 = pos2;
-
-		pos8 += xVec1 * 20.0f;
-		pos9 += xVec1 * 35.0f;
-
-		pos8 += yVec1 * -20.0f;
-		pos9 += yVec1 * 0.0f;
+		pos8 += xOffset4a;
+		pos9 += xOffset4b;
+		pos8 += yOffset4a;
+		pos9 += yOffset4b;
 
 		mAntennaTubeNodes[i][4]->makeShadowSRT(parm, pos8, pos9);
 

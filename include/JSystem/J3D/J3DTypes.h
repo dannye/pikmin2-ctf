@@ -21,8 +21,8 @@ enum J3DModelLoaderFlagTypes {
 	J3DMLF_MtxMayaCalc      = 0x00000002,
 	J3DMLF_MtxBasicCalc     = 0x00000004,
 	J3DMLF_04               = 0x00000008,
-	J3DMLF_MtxTypeMask
-	= J3DMLF_MtxSoftImageCalc | J3DMLF_MtxMayaCalc | J3DMLF_MtxBasicCalc | J3DMLF_04, // 0 - 2 (0 = Basic, 1 = SoftImage, 2 = Maya)
+	J3DMLF_MtxTypeMask      = J3DMLF_MtxSoftImageCalc | J3DMLF_MtxMayaCalc | J3DMLF_MtxBasicCalc
+	    | J3DMLF_04, // 0 - 2 (0 = Basic, 1 = SoftImage, 2 = Maya)
 
 	J3DMLF_UseImmediateMtx          = 0x00000010,
 	J3DMLF_UsePostTexMtx            = 0x00000020,
@@ -481,7 +481,11 @@ struct J3DIndTevStageInfo {
 	u8 _0B;        // _0B, padding?
 };
 
-extern const J3DIndTevStageInfo j3dDefaultIndTevStageInfo;
+// NB: this *should* be const, since it's in rodata in J3DTevs
+// but making it const screws up the J3DIndTevStage ctor in a way I cannot fix
+// so we're making it non-const here and forcing it into rodata in J3DTevs lol
+// if someone can find a better solution I'd be pleased to hear it -HP
+extern J3DIndTevStageInfo j3dDefaultIndTevStageInfo;
 
 struct J3DIndTevStage {
 	J3DIndTevStage()
@@ -704,12 +708,12 @@ struct J3DTevStage {
 		setTevAlphaOp(info.mAlphaOp, info.mAlphaBias, info.mAlphaScale, info.mAlphaClamp, info.mAlphaRegID);
 	}
 
-	void setTexSel(u32 newTexSel) { mTevSwapModeInfo = mTevSwapModeInfo & ~0x0C | newTexSel << 2; }
-	void setRasSel(u32 newRasSel) { mTevSwapModeInfo = mTevSwapModeInfo & ~0x03 | newRasSel; }
+	void setTexSel(u8 newTexSel) { mTevSwapModeInfo = mTevSwapModeInfo & ~0x0C | newTexSel << 2; }
+	void setRasSel(u8 newRasSel) { mTevSwapModeInfo = mTevSwapModeInfo & ~0x03 | newRasSel; }
 	void setTevSwapModeInfo(const J3DTevSwapModeInfo& info)
 	{
-		setTexSel(info.mTexSel);
-		setRasSel(info.mRasSel);
+		mTevSwapModeInfo = (mTevSwapModeInfo & ~0x0C) | (info.mTexSel << 2);
+		mTevSwapModeInfo = (mTevSwapModeInfo & ~0x03) | info.mRasSel;
 	}
 
 	void load(u32) const

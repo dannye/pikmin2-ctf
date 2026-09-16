@@ -27,10 +27,18 @@ void SMenuMap::doUserCallBackFunc(Resource::MgrCommand* command)
 	if (dispMember->isID(OWNER_OGA, MEMBER_START_MENU_ALL)) {
 		courseIndex = dispMember->mSMenuMap.mCourseIndex;
 	} else {
+#if defined(VERSION_JP)
+		JUT_PANICLINE(67, "DispMember ERR! (%s)\n", 0);
+#else
 		JUT_PANICLINE(70, "DispMember ERR! (%s)\n", 0);
+#endif
 	}
 
+#if defined(VERSION_JP)
+	char* filePath = "";
+#else
 	char* filePath;
+#endif
 
 	switch (courseIndex) {
 	case 0:
@@ -45,9 +53,11 @@ void SMenuMap::doUserCallBackFunc(Resource::MgrCommand* command)
 	case 3:
 		filePath = "/new_screen/cmn/res_map_image_last.szs";
 		break;
+#if !defined(VERSION_JP)
 	default:
 		filePath = "/new_screen/cmn/res_map_image_tutorial.szs";
 		break;
+#endif
 	}
 
 	sprintf(mName, "%s", filePath);
@@ -55,10 +65,18 @@ void SMenuMap::doUserCallBackFunc(Resource::MgrCommand* command)
 	LoadResource::Node* resourceNode = gLoadResourceMgr->mountArchive(loadArg);
 	if (resourceNode) {
 		if (!resourceNode->mArchive) {
+#if defined(VERSION_JP)
+			JUT_PANICLINE(92, "arc is NULL!!\n");
+#else
 			JUT_PANICLINE(97, "arc is NULL!!\n");
+#endif
 		}
 	} else {
+#if defined(VERSION_JP)
+		JUT_PANICLINE(97, "node is NULL!!\n");
+#else
 		JUT_PANICLINE(102, "node is NULL!!\n");
+#endif
 	}
 }
 

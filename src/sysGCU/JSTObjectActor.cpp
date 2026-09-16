@@ -28,16 +28,14 @@ ObjectActor::ObjectActor(char const* name, MoviePlayer* movie)
     , mTranslation(govNAN_)
     , mRotation(govNAN_)
     , mScaling(govNAN_)
+    , mShape(gu32NAN_)
+    , mAnimation(gu32NAN_)
     , mAnimFrame(gfNAN_)
     , mAnimFrameMax(gfNAN_)
+    , mModelFileId(gu32NAN_)
+    , mAnimationFileId(gu32NAN_)
 {
-
-	u32 invalid      = gu32NAN_.a;
-	mShape           = invalid;
-	mAnimation       = invalid;
-	mModelFileId     = invalid;
-	mAnimationFileId = invalid;
-	mArchive         = MoviePlayer::mArchive;
+	mArchive = MoviePlayer::mArchive;
 }
 
 /**
@@ -55,7 +53,7 @@ ObjectActor::~ObjectActor()
 void ObjectActor::reset()
 {
 	// this probably shouldnt be needed but it matches here (not in the ctor above)
-	u32 test = gu32NAN_.a;
+	u32 test = gu32NAN_;
 
 	mTranslation     = govNAN_;
 	mRotation        = govNAN_;
@@ -226,7 +224,7 @@ bool ObjectActor::setShape()
 	sys->startChangeCurrentHeap(moviePlayer->mMovieHeap);
 
 	int id = mShape;
-	if (id == gu32NAN_.a) {
+	if (id == gu32NAN_) {
 		sys->endChangeCurrentHeap();
 		return false;
 	}
@@ -277,7 +275,7 @@ bool ObjectActor::setAnim()
 	sys->startChangeCurrentHeap(moviePlayer->mMovieHeap);
 
 	int id = mAnimation;
-	if (id == gu32NAN_.a) {
+	if (id == gu32NAN_) {
 		sys->endChangeCurrentHeap();
 		return false;
 	}

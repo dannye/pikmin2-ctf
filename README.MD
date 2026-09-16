@@ -72,7 +72,16 @@ Building
   git clone https://github.com/dannye/pikmin2-ctf.git
   ```
 
-- Using [Dolphin Emulator](https://dolphin-emu.org/), extract your game's system data to `orig/GPVE01`. (Or `orig/GPVE01_D17` for demo)
+- Using [Dolphin Emulator](https://dolphin-emu.org/), extract your game's system data to the corresponding directory:
+
+  | Release | Directory | Configure option |
+  | --- | --- | --- |
+  | US | `orig/GPVE01` | Default |
+  | US demo 17 | `orig/GPVE01_D17` | `--version GPVE01_D17` |
+  | US demo 18 | `orig/GPVE01_D18` | `--version GPVE01_D18` |
+  | Japan | `orig/GPVJ01` | `--version GPVJ01` |
+  | Europe / PAL | `orig/GPVP01` | `--version GPVP01` |
+
   - Right-click the game in Dolphin's game list and select `Properties`.
   - Go to the `Filesystem` tab and right-click `Disc` -> `Extract System Data`.
 ![Dolphin filesystem extract](assets/dolphin-extract.png)

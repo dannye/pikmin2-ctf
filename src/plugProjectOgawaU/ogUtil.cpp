@@ -28,37 +28,42 @@ void drawObjName(Graphics&, char*)
  * @note Size: 0x84
  * Tells the game which resource folder path to use, based on system language.
  */
-void getLanguageDir(char*& path)
+void getLanguageDir(char* path)
 {
-	// UNUSED FUNCTION
+	char* langDir = nullptr;
 	if (LOCALIZED) {
+#if defined(VERSION_PAL)
+		switch (sys->getLanguage()) {
+#else
 		switch (sys->mRegion) {
+#endif
 		case System::LANG_English:
-			path = "eng/";
+			langDir = "eng/";
 			break;
 		case System::LANG_French:
-			path = "fra/";
+			langDir = "fra/";
 			break;
 		case System::LANG_German:
-			path = "ger/";
+			langDir = "ger/";
 			break;
 		case System::LANG_Italian:
-			path = "ita/";
+			langDir = "ita/";
 			break;
 		case System::LANG_Japanese:
-			path = "jpn/";
+			langDir = "jpn/";
 			break;
 		case System::LANG_Spanish:
-			path = "spa/";
+			langDir = "spa/";
 			break;
 		case System::LANG_Unused:
 		default:
-			path = "";
+			langDir = "";
 			break;
 		}
 	} else {
-		path = "";
+		langDir = "";
 	}
+	sprintf(path, "%s", langDir);
 }
 
 /**
@@ -67,7 +72,6 @@ void getLanguageDir(char*& path)
  */
 void makeLanguageResName(char* languageResName, char const* path)
 {
-	char* langDir = nullptr;
 	char langDirBuffer[16];
 
 	if (*path == '/') {
@@ -75,8 +79,7 @@ void makeLanguageResName(char* languageResName, char const* path)
 		return;
 	}
 
-	getLanguageDir(langDir);
-	sprintf(langDirBuffer, "%s", langDir);
+	getLanguageDir(langDirBuffer);
 	sprintf(languageResName, "/new_screen/%s%s", langDirBuffer, path);
 }
 } // namespace newScreen

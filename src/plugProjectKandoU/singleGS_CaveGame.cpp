@@ -1,4 +1,5 @@
 #include "Game/Entities/BlackMan.h"
+#include "Game/gameConfig.h"
 #include "Game/GameSystem.h"
 #include "Game/Entities/ItemBigFountain.h"
 #include "Game/Entities/ItemHole.h"
@@ -53,12 +54,8 @@ void CaveState::init(SingleGameSection* game, StateArg* arg)
 	gameSystem->mIsInCave                                                 = true;
 	game->setFixNearFar(true, 1.0f, 12800.0f);
 
-	// I assume this is meant to check if the 'active' navi is dead and if so, swap to the other navi
-	// THIS CANNOT BE WHAT THE DEVS WROTE
-	int naviID     = playData->mCaveSaveData.mActiveNaviID;
-	u8* deadNaviID = &playData->mDeadNaviID;
-	int shiftedID  = naviID >> 3;
-	if (1 << (naviID - (shiftedID << 3)) & *(deadNaviID - shiftedID)) {
+	int naviID = playData->mCaveSaveData.mActiveNaviID;
+	if (playData->mDeadNaviID.isBitSet(naviID)) {
 		naviID = 1 - naviID;
 	}
 
@@ -246,7 +243,11 @@ void CaveState::check_SMenu(SingleGameSection* game)
 		MoviePlayArg arg("s12_cv_giveup", nullptr, game->mMovieFinishCallback, 0);
 		arg.mDelegateStart = game->mMovieStartCallback;
 		Onyon* onyon       = ItemOnyon::mgr->mPod;
+#if defined(VERSION_JP)
+		JUT_ASSERTLINE(789, onyon, "no pod demo 12");
+#else
 		JUT_ASSERTLINE(792, onyon, "no pod demo 12");
+#endif
 		arg.mOrigin = onyon->getPosition();
 		arg.mAngle  = onyon->getFaceDir();
 		moviePlayer->play(arg);
@@ -284,7 +285,11 @@ void CaveState::check_SMenu(SingleGameSection* game)
 	case Screen::Game2DMgr::CHECK2D_SMenu_Opened:
 		break;
 	default:
+#if defined(VERSION_JP)
+		JUT_PANICLINE(851, "Illegal return value %d.", Screen::gGame2DMgr->check_SMenu());
+#else
 		JUT_PANICLINE(854, "Illegal return value %d.", Screen::gGame2DMgr->check_SMenu());
+#endif
 	}
 }
 
@@ -632,6 +637,12 @@ void CaveState::onMovieDone(Game::SingleGameSection* game, Game::MovieConfig* co
 				gameSystem->mSection->setPlayerMode(NAVIID_Olimar);
 			}
 		} else {
+#if defined(VERSION_JP)
+			if (gGameConfig.mParms.mE3version.mData) {
+				sys->forceFinishSection();
+				return;
+			}
+#endif
 			Piki* pikilist[MAX_PIKI_COUNT];
 			int pikis = 0;
 			Iterator<Piki> it(pikiMgr);
@@ -660,6 +671,12 @@ void CaveState::onMovieDone(Game::SingleGameSection* game, Game::MovieConfig* co
 	} else if (config->is("s05_pikminzero")) {
 		gameSystem->resetFlag(GAMESYS_IsGameWorldActive);
 		Screen::gGame2DMgr->close_GameOver();
+#if defined(VERSION_JP)
+		if (gGameConfig.mParms.mE3version.mData) {
+			sys->forceFinishSection();
+			return;
+		}
+#endif
 		CaveResultArg statearg;
 		statearg.mGameState = MapEnter_CaveExtinction;
 		transit(game, SGS_CaveResult, &statearg);

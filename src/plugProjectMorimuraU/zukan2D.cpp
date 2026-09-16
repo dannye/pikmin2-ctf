@@ -12,6 +12,8 @@
 
 static const int unusedArray[] = { 0, 0, 0 };
 
+#include "nans.h"
+
 namespace Morimura {
 s16 TZukanBase::mRequestTimerMax    = 10;
 bool TZukanBase::mIconMove          = true;
@@ -29,12 +31,63 @@ bool TZukanBase::mAllNewSupply;
 bool TZukanBase::mZukanShortenTest;
 bool TZukanBase::mZukanCategoryTest;
 f32 TZukanBase::mRandShowRate;
-JKRHeap* TZukanBase::mDebugHeapParent;
-JKRExpHeap* TZukanBase::mDebugHeap;
 
 // these represent the highest index (index that the hoard shows you in-game) of each set's treasures
 // for example the first set is ids 1 through 7
 int TItemZukan::mCategoryArray[TREASUREHOARD_CATEGORY_NUM] = {
+#if defined(VERSION_JP)
+	// treasure id of final category member
+	7,   // Succulent Series
+	16,  // Nature's Candy Series
+	22,  // Xenoflora Series
+	27,  // Gourmet Series
+	42,  // Sweet Tooth Series
+	50,  // Paleontology Series
+	56,  // Ancient Secrets Series
+	62,  // Cook's Arsenal Series
+	70,  // Tortured Artist Series
+	77,  // Modern Amenities Series
+	84,  // Frigid Series
+	92,  // Hyper-technology Series
+	101, // Industrial Set
+	107, // Husband's Tears Series
+	118, // Space Love Series
+	124, // Crystallized Emotion Series
+	144, // Dream Series
+	154, // Blast from the Past Series
+	160, // Mystical Energy Series
+	166, // Massive Receptacle Series
+	180, // Mystery Disc Series
+	183, // Odd Logo Series
+	196, // Explorer's Friend Series
+	201, // Titan Dweevil Series
+#elif defined(VERSION_PAL)
+	// treasure id of final category member
+	7,   // Succulent Series
+	16,  // Nature's Candy Series
+	22,  // Xenoflora Series
+	27,  // Gourmet Series
+	42,  // Sweet Tooth Series
+	51,  // Paleontology Series
+	57,  // Ancient Secrets Series
+	63,  // Cook's Arsenal Series
+	71,  // Tortured Artist Series
+	78,  // Modern Amenities Series
+	85,  // Frigid Series
+	93,  // Hyper-technology Series
+	102, // Industrial Set
+	108, // Husband's Tears Series
+	119, // Space Love Series
+	125, // Crystallized Emotion Series
+	144, // Dream Series
+	154, // Blast from the Past Series
+	158, // Mystical Energy Series
+	172, // Massive Receptacle Series
+	176, // Ancient Ad Series
+	183, // Odd Logo Series
+	196, // Explorer's Friend Series
+	201, // Titan Dweevil Series
+#else
 	// treasure id of final category member
 	7,   // Succulent Series
 	16,  // Nature's Candy Series
@@ -61,6 +114,7 @@ int TItemZukan::mCategoryArray[TREASUREHOARD_CATEGORY_NUM] = {
 	183, // Odd Logo Series
 	196, // Explorer's Friend Series
 	201, // Titan Dweevil Series
+#endif
 };
 
 // this table connects piklopedia order to the actual game enemy id order
@@ -277,7 +331,11 @@ void TZukanBase::doCreate(JKRArchive* archive)
 	mIconScreen = new P2DScreen::Mgr_tuning;
 	mIconScreen->set("newicon.blo", 0x20000, mArchive);
 	mPaneNew1 = static_cast<J2DTextBoxEx*>(mIconScreen->search('Pnew'));
+#if defined(VERSION_JP)
+	P2ASSERTLINE(238, mPaneNew1);
+#else
 	P2ASSERTLINE(258, mPaneNew1);
+#endif
 	mPaneNew1->setOffset(-300.0f, 0.0f);
 
 	mColorAnm = new kh::Screen::khUtilColorAnm(nullptr, 'dummy', 3, 50);
@@ -293,23 +351,47 @@ void TZukanBase::doCreate(JKRArchive* archive)
 	mController = getGamePad();
 
 	mPaneSelectIcon = mListScreen->mScreenObj->search('Nselicon');
+#if defined(VERSION_JP)
+	P2ASSERTLINE(260, mPaneSelectIcon);
+#else
 	P2ASSERTLINE(280, mPaneSelectIcon);
+#endif
 	mPaneSelectIcon->hide();
 
 	mPaneCursorCorners[0] = mListScreen->mScreenObj->search('Psel_lu');
+#if defined(VERSION_JP)
+	P2ASSERTLINE(265, mPaneCursorCorners[0]);
+#else
 	P2ASSERTLINE(285, mPaneCursorCorners[0]);
+#endif
 	mPaneCursorCorners[1] = mListScreen->mScreenObj->search('Psel_ru');
+#if defined(VERSION_JP)
+	P2ASSERTLINE(268, mPaneCursorCorners[1]);
+#else
 	P2ASSERTLINE(288, mPaneCursorCorners[1]);
+#endif
 	mPaneCursorCorners[2] = mListScreen->mScreenObj->search('Psel_ll');
+#if defined(VERSION_JP)
+	P2ASSERTLINE(271, mPaneCursorCorners[2]);
+#else
 	P2ASSERTLINE(291, mPaneCursorCorners[2]);
+#endif
 	mPaneCursorCorners[3] = mListScreen->mScreenObj->search('Psel_rl');
+#if defined(VERSION_JP)
+	P2ASSERTLINE(274, mPaneCursorCorners[3]);
+#else
 	P2ASSERTLINE(294, mPaneCursorCorners[3]);
+#endif
 
 	mSelectIconPos.x = mPaneSelectIcon->mOffset.x;
 	mSelectIconPos.y = mPaneSelectIcon->mOffset.y;
 
 	J2DPane* list = mMainScreen->mScreenObj->search('Nlist');
+#if defined(VERSION_JP)
+	P2ASSERTLINE(282, list);
+#else
 	P2ASSERTLINE(302, list);
+#endif
 	mPanelListBounds.set(*list->getBounds());
 	mPanelListBounds.f.x += 5.0f;
 	mPanelListBounds.i.y -= 5.0f;
@@ -320,22 +402,38 @@ void TZukanBase::doCreate(JKRArchive* archive)
 	mPanelListBounds.f.y *= P2DScreen::Mgr_tuning::mstTuningScaleY;
 
 	mPaneBigWindow = mEffectScreen->mScreenObj->search('Nbigwin');
+#if defined(VERSION_JP)
+	P2ASSERTLINE(296, mPaneBigWindow);
+#else
 	P2ASSERTLINE(316, mPaneBigWindow);
+#endif
 	mPaneBigWindow->setInfluencedAlpha(false, false);
 	mPaneBigWindow->setBasePosition(J2DPOS_TopRight);
 	mPaneBigWindow->hide();
 
 	mPaneWindowBack = mEffectScreen->mScreenObj->search('Pwinback');
+#if defined(VERSION_JP)
+	P2ASSERTLINE(303, mPaneWindowBack);
+#else
 	P2ASSERTLINE(323, mPaneWindowBack);
+#endif
 	mPaneWindowBack_Child = mPaneWindowBack->getFirstChildPane();
+#if defined(VERSION_JP)
+	P2ASSERTLINE(307, mPaneWindowBack_Child);
+#else
 	P2ASSERTLINE(327, mPaneWindowBack_Child);
+#endif
 	mEffectScreen->mScreenObj->appendChild(mPaneWindowBack_Child);
 
 	mPaneModel = mEffectScreen->mScreenObj->search('Pmodel_s');
 	if (!mPaneModel) {
 		mPaneModel = mMainScreen->mScreenObj->search('Pmodel_s');
 	}
+#if defined(VERSION_JP)
+	P2ASSERTLINE(315, mPaneModel);
+#else
 	P2ASSERTLINE(335, mPaneModel);
+#endif
 	mPaneModel->setInfluencedAlpha(false, false);
 	mPaneModel->setBasePosition(J2DPOS_Center);
 
@@ -357,7 +455,11 @@ void TZukanBase::doCreate(JKRArchive* archive)
 	if (mEffectScreen->mScreenObj->search('Pmodel_l')) {
 		model2 = mEffectScreen->mScreenObj->search('Pmodel_l');
 	}
+#if defined(VERSION_JP)
+	P2ASSERTLINE(343, model2);
+#else
 	P2ASSERTLINE(363, model2);
+#endif
 
 	mPaneModelLPos = *model2->getBounds();
 
@@ -365,7 +467,11 @@ void TZukanBase::doCreate(JKRArchive* archive)
 	mPaneModelLOffs = model2->getTranslate();
 
 	P2DScreen::Mgr_tuning* screen = mListScreen->mScreenObj;
+#if defined(VERSION_JP)
+	P2ASSERTLINE(355, screen);
+#else
 	P2ASSERTLINE(375, screen);
+#endif
 	mRequestTimer = 0xffffffce;
 	indexPaneInit(screen);
 	J2DPane* idpane = mIndexPaneList[0]->mPane;
@@ -949,11 +1055,19 @@ void TZukanBase::indexPaneInit(J2DScreen* screen)
 	u64 tags[10] = { 'Tmenu00', 'Tmenu01', 'Tmenu02', 'Tmenu03', 'Tmenu04', 'Tmenu05', 'Tmenu07', 'Tmenu06', 'Tmenu08', 'Tmenu09' };
 
 	J2DPane* pane = screen->search(tags[mCurrMinActiveRow]);
+#if defined(VERSION_JP)
+	P2ASSERTLINE(1063, pane);
+#else
 	P2ASSERTLINE(1083, pane);
+#endif
 	mMinSelYOffset = pane->mOffset.y;
 
 	J2DPane* pane2 = screen->search(tags[mCurrMaxActiveRow]);
+#if defined(VERSION_JP)
+	P2ASSERTLINE(1066, pane2);
+#else
 	P2ASSERTLINE(1086, pane2);
+#endif
 	mMaxSelYOffset = pane2->mOffset.y;
 
 	// clang-format off
@@ -1031,7 +1145,11 @@ void TZukanBase::indexPaneInit(J2DScreen* screen)
 			    screen->search(panetags[i][2][j]), screen->search(panetags[i][3][j]));
 			if (mCanComplete) {
 				J2DPictureEx* pic = new J2DPictureEx('test', *screen->search(panetags[i][3][j])->getBounds(), "w08_48_gra.bti", 0x1100000);
+#if defined(VERSION_JP)
+				P2ASSERTLINE(1109, pic);
+#else
 				P2ASSERTLINE(1129, pic);
+#endif
 				mIndexPaneList[i]->mIconInfos[j]->mPic = pic;
 				screen->search(tags[i])->appendChild(pic);
 				screen->search(tags[i])->appendChild(screen->search(panetags[i][3][j]));
@@ -1079,23 +1197,43 @@ void TZukanBase::indexPaneInit(J2DScreen* screen)
 void TZukanBase::paneInit()
 {
 	mPaneEnemyName = static_cast<J2DTextBoxEx*>(mMainScreen->mScreenObj->search('Ttekinam'));
+#if defined(VERSION_JP)
+	P2ASSERTLINE(1176, mPaneEnemyName);
+#else
 	P2ASSERTLINE(1196, mPaneEnemyName);
+#endif
 
 	mPaneEnemyNameShadow = static_cast<J2DTextBoxEx*>(mMainScreen->mScreenObj->search('Ttekina1'));
 	mMessageCallback3    = new og::Screen::CallBack_Message;
 	mMainScreen->mScreenObj->addCallBack('Ttekinam', mMessageCallback3);
 
 	mYButtonPane = mMainScreen->mScreenObj->search('Nbtn0');
+#if defined(VERSION_JP)
+	P2ASSERTLINE(1184, mYButtonPane);
+#else
 	P2ASSERTLINE(1204, mYButtonPane);
+#endif
 
 	mXButtonPane = mMainScreen->mScreenObj->search('Nbtn2');
+#if defined(VERSION_JP)
+	P2ASSERTLINE(1188, mXButtonPane);
+#else
 	P2ASSERTLINE(1208, mXButtonPane);
+#endif
 
 	mAButtonPane = mMainScreen->mScreenObj->search('Nbtn3');
+#if defined(VERSION_JP)
+	P2ASSERTLINE(1191, mAButtonPane);
+#else
 	P2ASSERTLINE(1211, mAButtonPane);
+#endif
 
 	mPaneMessageDemo = mWindow->mScreenObj->search('mg_demo');
+#if defined(VERSION_JP)
+	P2ASSERTLINE(1195, mPaneMessageDemo);
+#else
 	P2ASSERTLINE(1215, mPaneMessageDemo);
+#endif
 
 	f32 offs                = 20.0f;
 	mSelectionYOffset       = mIndexPaneList[mCurrActiveRowSel]->mYOffset - 10.0f;
@@ -1596,7 +1734,11 @@ void TEnemyZukan::doCreate(JKRArchive* arc)
 		// Create debug heap and setup debug data
 		if (mDebugHeapParent) {
 			mDebugHeap = JKRExpHeap::create(0x100000, mDebugHeapParent, true);
+#if defined(VERSION_JP)
+			P2ASSERTLINE(1966, mDebugHeap);
+#else
 			P2ASSERTLINE(1986, mDebugHeap);
+#endif
 			mDispEnemy                = new (mDebugHeap, 0) DispMemberZukanEnemy;
 			mDispEnemy->mDebugExpHeap = mDebugHeap;
 			mIsSection                = true;
@@ -1615,7 +1757,11 @@ void TEnemyZukan::doCreate(JKRArchive* arc)
 			mDispEnemy->mDispWorldMapInfoWin0 = new og::Screen::DispMemberWorldMapInfoWin0;
 			getOwner()->setDispMember(mDispEnemy);
 		} else {
+#if defined(VERSION_JP)
+			JUT_PANICLINE(1992, "set DebugHeapParent. mail to morimun.\n");
+#else
 			JUT_PANICLINE(2012, "set DebugHeapParent. mail to morimun.\n");
+#endif
 		}
 	} else {
 		mDispEnemy->mDispWorldMapInfoWin0 = new og::Screen::DispMemberWorldMapInfoWin0;
@@ -1715,12 +1861,24 @@ void TEnemyZukan::doCreate(JKRArchive* arc)
 
 	mControlStickPic = og::Screen::setCallBack_3DStickSmall(mArchive, mMainScreen->mScreenObj, 'ota3dl');
 	mPane3DStick     = mMainScreen->mScreenObj->search('ota3dl');
+#if defined(VERSION_JP)
+	P2ASSERTLINE(2122, mPane3DStick);
+#else
 	P2ASSERTLINE(2142, mPane3DStick);
+#endif
+#if defined(VERSION_JP)
+	P2ASSERTLINE(2123, mControlStickPic);
+#else
 	P2ASSERTLINE(2143, mControlStickPic);
+#endif
 	mControlStickPic->mAnimGroup->setSpeed(0.0f);
 	mControlStickPic->mAnimGroup->start();
 	mStickAnim = new og::Screen::StickAnimMgr(mControlStickPic);
+#if defined(VERSION_JP)
+	P2ASSERTLINE(2128, mStickAnim);
+#else
 	P2ASSERTLINE(2148, mStickAnim);
+#endif
 
 	mBGScreen = new TScreenBase(arc, 0);
 	mBGScreen->create("new_seibutuzukan_bg.blo", 0x20000);
@@ -1791,13 +1949,25 @@ void TEnemyZukan::doCreate(JKRArchive* arc)
 	mWindow->addAnim("zukan_mess_window.bpk");
 	mStickPicMesg        = og::Screen::setCallBack_3DStickSmall(mArchive, mWindow->mScreenObj, 'ota3ds');
 	mPaneMesgWindowStick = mWindow->mScreenObj->search('ota3ds');
+#if defined(VERSION_JP)
+	P2ASSERTLINE(2245, mPaneMesgWindowStick);
+#else
 	P2ASSERTLINE(2265, mPaneMesgWindowStick);
+#endif
+#if defined(VERSION_JP)
+	P2ASSERTLINE(2246, mStickPicMesg);
+#else
 	P2ASSERTLINE(2266, mStickPicMesg);
+#endif
 	mStickPicMesg->mAnimGroup->setSpeed(1.0f);
 	mStickPicMesg->mAnimGroup->start();
 
 	mPaneMesgWindowStickCap = mWindow->mScreenObj->search('P3dcap');
+#if defined(VERSION_JP)
+	P2ASSERTLINE(2251, mPaneMesgWindowStickCap);
+#else
 	P2ASSERTLINE(2271, mPaneMesgWindowStickCap);
+#endif
 
 	mYajiScreen = new TScreenBase(arc, 0);
 	mYajiScreen->create("new_seibutuzukan_yajirushi.blo", 0x20000);
@@ -1925,7 +2095,11 @@ void TEnemyZukan::doCreate(JKRArchive* arc)
 						mRightOffset = 1;
 					} else {
 						mRightOffset = index - listIndex;
+#if defined(VERSION_JP)
+						P2ASSERTBOUNDSLINE(2411, 0, mRightOffset, 3);
+#else
 						P2ASSERTBOUNDSLINE(2431, 0, mRightOffset, 3);
+#endif
 					}
 					changePaneInfo();
 					break;
@@ -1966,7 +2140,11 @@ void TEnemyZukan::setDetail()
 {
 	int cindex = mIndexPaneList[mCurrActiveRowSel]->getIndex();
 	mInfoVal1  = getPrice(cindex);
+#if defined(VERSION_JP)
+	JUT_ASSERTLINE(2471, mInfoVal1 < 10000, "price (%d) = %d\n", cindex, mInfoVal1);
+#else
 	JUT_ASSERTLINE(2491, mInfoVal1 < 10000, "price (%d) = %d\n", cindex, mInfoVal1);
+#endif
 
 	mInfoVal2 = getKilledNum(cindex);
 	mInfoVal3 = getDefeatNum(cindex);
@@ -2101,14 +2279,22 @@ void TEnemyZukan::indexPaneInit(J2DScreen* screen)
 	mCurrMaxActiveRow = mNumActiveRows - 1;
 
 	u64 tags[14] = { 'Tmenu12', 'Tmenu13', 'Tmenu00', 'Tmenu01', 'Tmenu02', 'Tmenu03', 'Tmenu04',
-		             'Tmenu05', 'Tmenu07', 'Tmenu06', 'Tmenu08', 'Tmenu09', 'Tmenu10', 'Tmenu11' };
+	                 'Tmenu05', 'Tmenu07', 'Tmenu06', 'Tmenu08', 'Tmenu09', 'Tmenu10', 'Tmenu11' };
 
 	J2DPane* pane = screen->search(tags[mCurrMinActiveRow]);
+#if defined(VERSION_JP)
+	P2ASSERTLINE(2630, pane);
+#else
 	P2ASSERTLINE(2650, pane);
+#endif
 	mMinSelYOffset = pane->mOffset.y;
 
 	J2DPane* pane2 = screen->search(tags[mCurrMaxActiveRow]);
+#if defined(VERSION_JP)
+	P2ASSERTLINE(2633, pane2);
+#else
 	P2ASSERTLINE(2653, pane2);
+#endif
 	mMaxSelYOffset = pane2->mOffset.y;
 
 	// clang-format off
@@ -2211,7 +2397,11 @@ void TEnemyZukan::indexPaneInit(J2DScreen* screen)
 
 			if (mCanComplete) {
 				J2DPictureEx* pic = new J2DPictureEx('test', *screen->search(panetags[i][3][j])->getBounds(), "w08_48_gra.bti", 0x1100000);
+#if defined(VERSION_JP)
+				P2ASSERTLINE(2685, pic);
+#else
 				P2ASSERTLINE(2705, pic);
+#endif
 				mIndexPaneList[i]->mIconInfos[j]->mPic = pic;
 				screen->search(tags[i])->appendChild(pic);
 				screen->search(tags[i])->appendChild(screen->search(panetags[i][3][j]));
@@ -2307,7 +2497,11 @@ void TEnemyZukan::getUpdateIndex(int& id, bool flag)
 {
 	if (flag) {
 		if (mIsPreDebt && _243) {
+#if defined(VERSION_JP)
+			P2ASSERTLINE(2833, id >= 0);
+#else
 			P2ASSERTLINE(2853, id >= 0);
+#endif
 
 			if (mIsBigIconList[mViewablePanelIDList[id]]) {
 				// int test = mIndexPaneList[mCurrMinActiveRow]->mSizeType;
@@ -2359,7 +2553,11 @@ void TEnemyZukan::getUpdateIndex(int& id, bool flag)
 				if (flag3) {
 					mIndexPaneList[mCurrMinActiveRow]->mSizeType = TIndexPane::Size_Small2;
 				} else {
+#if defined(VERSION_JP)
+					JUT_PANICLINE(2901, nullptr);
+#else
 					JUT_PANICLINE(2921, nullptr);
+#endif
 				}
 				break;
 			case TIndexPane::Size_Small2:
@@ -2489,7 +2687,11 @@ void TEnemyZukan::getUpdateIndex(int& id, bool flag)
 			if (flag3) {
 				mIndexPaneList[mCurrMaxActiveRow]->mSizeType = TIndexPane::Size_Small2;
 			} else {
+#if defined(VERSION_JP)
+				JUT_PANICLINE(3048, nullptr);
+#else
 				JUT_PANICLINE(3068, nullptr);
+#endif
 			}
 			break;
 		case TIndexPane::Size_Small2:
@@ -2922,6 +3124,7 @@ bool TItemZukan::doUpdate()
 				mWindow->windowClose();
 			}
 
+#if !defined(VERSION_JP)
 			// scroll through message box with analog stick
 			f32 z = mController->mMStick.mYPos;
 			if (mController->mMStick.mYPos >= 0.5f || mController->mMStick.mYPos <= -0.5f) {
@@ -2940,6 +3143,7 @@ bool TItemZukan::doUpdate()
 				}
 				mWindow->moveIcon(z);
 			}
+#endif
 			break;
 		case ZUKANDEMO_AppearEffect:
 			if (mWindow->mState == TZukanWindow::STATE_Inactive) {
@@ -3265,7 +3469,13 @@ void TItemZukan::doCreate(JKRArchive* arc)
 	if (mIsSection) {
 		if (mDebugHeapParent) {
 			mDebugHeap = JKRExpHeap::create(0x100000, mDebugHeapParent, true);
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+			P2ASSERTLINE(4157, mDebugHeap);
+#elif defined(VERSION_JP)
+			P2ASSERTLINE(4116, mDebugHeap);
+#else
 			P2ASSERTLINE(4150, mDebugHeap);
+#endif
 			mDispItem                = new (mDebugHeap, 0) DispMemberZukanItem;
 			mDispItem->mDebugExpHeap = mDebugHeap;
 			mIsSection               = true;
@@ -3283,7 +3493,13 @@ void TItemZukan::doCreate(JKRArchive* arc)
 			mDispItem->mDispWorldMapInfoWin0 = new og::Screen::DispMemberWorldMapInfoWin0;
 			getOwner()->setDispMember(mDispItem);
 		} else {
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+			JUT_PANICLINE(4181, "set DebugHeapParent. mail to morimun.\n");
+#elif defined(VERSION_JP)
+			JUT_PANICLINE(4140, "set DebugHeapParent. mail to morimun.\n");
+#else
 			JUT_PANICLINE(4174, "set DebugHeapParent. mail to morimun.\n");
+#endif
 		}
 	} else {
 		mDispItem->mDispWorldMapInfoWin0 = new og::Screen::DispMemberWorldMapInfoWin0;
@@ -3354,8 +3570,16 @@ void TItemZukan::doCreate(JKRArchive* arc)
 	u64 ytags[3]     = { '0701_00', '0710_00', '0800_00' };
 	mOffsetMsg_YDesc = new TOffsetMsgSet(ytags, '0700_00', 3);
 
+#if defined(VERSION_JP)
+	u64 ctags[2]            = { '1401_00', '1410_00' };
+	mOffsetMsgCategoryNames = new TOffsetMsgSet(ctags, '1400_00', 2);
+#elif defined(VERSION_PAL)
+	u64 ctags[2]            = { '1461_00', '1470_00' };
+	mOffsetMsgCategoryNames = new TOffsetMsgSet(ctags, '1460_00', 2);
+#else
 	u64 ctags[2]            = { '1431_00', '1440_00' };
 	mOffsetMsgCategoryNames = new TOffsetMsgSet(ctags, '1430_00', 2);
+#endif
 
 	for (int i = 0; i < TREASUREHOARD_CATEGORY_NUM; i++) {
 		mCategoryIsComplete[i] = true;
@@ -3460,7 +3684,13 @@ void TItemZukan::doCreate(JKRArchive* arc)
 	mOrimaMesgIconColor2.a = 255;
 
 	mOrimaIconTexture = static_cast<ResTIMG*>(mArchive->getResource("timg/olimar_icon.bti"));
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+	P2ASSERTLINE(4370, mOrimaIconTexture);
+#elif defined(VERSION_JP)
+	P2ASSERTLINE(4319, mOrimaIconTexture);
+#else
 	P2ASSERTLINE(4363, mOrimaIconTexture);
+#endif
 
 	mListScreen = new TListScreen(arc, 0);
 	mListScreen->create("new_otakarazukan_list.blo", 0x20000);
@@ -3475,19 +3705,43 @@ void TItemZukan::doCreate(JKRArchive* arc)
 	mMainScreen->addAnim("new_otakarazukan_main.bpk");
 
 	mPaneMenu = mMainScreen->mScreenObj->search('Tlmenu1');
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+	P2ASSERTLINE(4403, mPaneMenu);
+#elif defined(VERSION_JP)
+	P2ASSERTLINE(4352, mPaneMenu);
+#else
 	P2ASSERTLINE(4396, mPaneMenu);
+#endif
 
 	mMessageItemName = new og::Screen::CallBack_Message;
 	mMainScreen->mScreenObj->addCallBack('Tlmenu1', mMessageItemName);
 
 	mControlStickPic = og::Screen::setCallBack_3DStickSmall(mArchive, mMainScreen->mScreenObj, 'ota3dl');
 	mPane3DStick     = mMainScreen->mScreenObj->search('ota3dl');
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+	P2ASSERTLINE(4414, mPane3DStick);
+#elif defined(VERSION_JP)
+	P2ASSERTLINE(4363, mPane3DStick);
+#else
 	P2ASSERTLINE(4407, mPane3DStick);
+#endif
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+	P2ASSERTLINE(4415, mControlStickPic);
+#elif defined(VERSION_JP)
+	P2ASSERTLINE(4364, mControlStickPic);
+#else
 	P2ASSERTLINE(4408, mControlStickPic);
+#endif
 	mControlStickPic->mAnimGroup->setSpeed(0.0f);
 	mControlStickPic->mAnimGroup->start();
 	mStickAnim = new og::Screen::StickAnimMgr(mControlStickPic);
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+	P2ASSERTLINE(4421, mStickAnim);
+#elif defined(VERSION_JP)
+	P2ASSERTLINE(4370, mStickAnim);
+#else
 	P2ASSERTLINE(4414, mStickAnim);
+#endif
 
 	mBGScreen = new TScreenBase(arc, 0);
 	mBGScreen->create("new_otakarazukan_bg.blo", 0x20000);
@@ -3502,13 +3756,31 @@ void TItemZukan::doCreate(JKRArchive* arc)
 	mWindow->addAnim("zukan_mess_window.bpk");
 	mStickPicMesg        = og::Screen::setCallBack_3DStickSmall(mArchive, mWindow->mScreenObj, 'ota3ds');
 	mPaneMesgWindowStick = mWindow->mScreenObj->search('ota3ds');
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+	P2ASSERTLINE(4443, mPaneMesgWindowStick);
+#elif defined(VERSION_JP)
+	P2ASSERTLINE(4392, mPaneMesgWindowStick);
+#else
 	P2ASSERTLINE(4436, mPaneMesgWindowStick);
+#endif
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+	P2ASSERTLINE(4444, mStickPicMesg);
+#elif defined(VERSION_JP)
+	P2ASSERTLINE(4393, mStickPicMesg);
+#else
 	P2ASSERTLINE(4437, mStickPicMesg);
+#endif
 	mStickPicMesg->mAnimGroup->setSpeed(1.0f);
 	mStickPicMesg->mAnimGroup->start();
 
 	mPaneMesgWindowStickCap = mWindow->mScreenObj->search('Pbtn_cup');
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+	P2ASSERTLINE(4449, mPaneMesgWindowStickCap);
+#elif defined(VERSION_JP)
+	P2ASSERTLINE(4398, mPaneMesgWindowStickCap);
+#else
 	P2ASSERTLINE(4442, mPaneMesgWindowStickCap);
+#endif
 
 	mYajiScreen = new TScreenBase(arc, 0);
 	mYajiScreen->create("new_otakarazukan_yajirusi.blo", 0x20000);
@@ -3583,7 +3855,13 @@ void TItemZukan::doCreate(JKRArchive* arc)
 			if (isNewSupply(i, false)) {
 				index = i;
 				if (mIsPreDebt) {
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+					P2ASSERTLINE(4540, mViewablePanelIDList);
+#elif defined(VERSION_JP)
+					P2ASSERTLINE(4489, mViewablePanelIDList);
+#else
 					P2ASSERTLINE(4533, mViewablePanelIDList);
+#endif
 					index = mViewablePanelIDList[i];
 				}
 				break;
@@ -3639,29 +3917,31 @@ void TItemZukan::doCreate(JKRArchive* arc)
  */
 void TItemZukan::doDemoDraw(Graphics& gfx)
 {
+	J2DPicture* pane1;
 	J2DPerspGraph* graf = gfx.getPerspGraph();
 
-	u8 alpha = mDemoStateButtonAlpha * 255.0f;
+	u8 savedAlpha = mDemoStateButtonAlpha * 255.0f;
 	gfx.mOrthoGraph.setPort();
 
-	J2DPane* pane1 = mMainScreen->mScreenObj->search('Pzbtn3');
-	pane1->setAlpha(alpha);
-	static_cast<J2DPicture*>(pane1)->draw(pane1->getGlbVtx(GLBVTX_BtmLeft).x, pane1->getGlbVtx(GLBVTX_BtmRight).y, pane1->getWidth(),
-	                                      pane1->getHeight(), false, false, false);
+	pane1 = static_cast<J2DPicture*>(mMainScreen->mScreenObj->search('Pzbtn3'));
+	pane1->setAlpha(savedAlpha);
+	pane1->draw(pane1->getGlbVtx(GLBVTX_BtmLeft).x, pane1->getGlbVtx(GLBVTX_BtmRight).y, pane1->getWidth(), pane1->getHeight(), false,
+	            false, false);
 	pane1->calcMtx();
 	pane1->setAlpha(255);
 
-	J2DPane* pane2;
-	pane2 = mMainScreen->mScreenObj->search('Pzbtn2');
-	pane2->setAlpha(alpha);
-	static_cast<J2DPicture*>(pane2)->draw(pane2->getGlbVtx(GLBVTX_BtmLeft).x, pane2->getGlbVtx(GLBVTX_BtmRight).y, pane2->getWidth(),
-	                                      pane2->getHeight(), false, false, false);
+	J2DPicture* pane2;
+	J2DPicture* pane3;
+	pane2 = static_cast<J2DPicture*>(mMainScreen->mScreenObj->search('Pzbtn2'));
+	pane2->setAlpha(savedAlpha);
+	pane2->draw(pane2->getGlbVtx(GLBVTX_BtmLeft).x, pane2->getGlbVtx(GLBVTX_BtmRight).y, pane2->getWidth(), pane2->getHeight(), false,
+	            false, false);
 	pane2->calcMtx();
 	pane2->setAlpha(255);
 
 	gfx.getPerspGraph()->setPort();
 
-	mPaneMenu->setAlpha(alpha);
+	mPaneMenu->setAlpha(savedAlpha);
 	mMessageItemName->draw(gfx, *graf);
 	mPaneMenu->setAlpha(255);
 	gfx.mOrthoGraph.setPort();
@@ -3672,32 +3952,30 @@ void TItemZukan::doDemoDraw(Graphics& gfx)
 		for (int j = 0; j < 3; j++) {
 			TIconInfo* icon = getIndexPane(i)->getIconInfo(j);
 			if (mSelection == icon->mCategoryID && icon->mPane->isVisible()) {
-				u8 alpha = mMessageBoxBGAlpha * mCategoryAlphaRate;
-				J2DPictureEx* pane2;
-				J2DPictureEx* pane3;
-				J2DPictureEx* pane1 = icon->mPic;
-				u8 oldalpha         = pane1->mAlpha;
+				u8 alpha   = mMessageBoxBGAlpha * mCategoryAlphaRate;
+				pane1      = icon->mPic;
+				savedAlpha = pane1->mAlpha;
 				pane1->setAlpha(alpha);
 				pane1->draw(pane1->getGlbVtx(GLBVTX_BtmLeft).x + 8.0f, pane1->getGlbVtx(GLBVTX_BtmLeft).y + 2.5f, pane1->getWidth(),
 				            pane1->getHeight(), false, false, false);
 				pane1->calcMtx();
-				pane1->setAlpha(oldalpha);
+				pane1->setAlpha(savedAlpha);
 
-				pane2    = static_cast<J2DPictureEx*>(getIndexPane(i)->getIconInfo(j)->mPane);
-				oldalpha = pane2->mAlpha;
+				pane2      = static_cast<J2DPictureEx*>(getIndexPane(i)->getIconInfo(j)->mPane);
+				savedAlpha = pane2->mAlpha;
 				pane2->setAlpha(mMessageBoxBGAlpha);
 				pane2->draw(pane2->getGlbVtx(GLBVTX_BtmLeft).x, pane2->getGlbVtx(GLBVTX_BtmLeft).y, pane2->getWidth(), pane2->getHeight(),
 				            false, false, false);
 				pane2->calcMtx();
-				pane2->setAlpha(oldalpha);
+				pane2->setAlpha(savedAlpha);
 
-				pane3    = static_cast<J2DPictureEx*>(getIndexPane(i)->getIconInfo(j)->mPane2);
-				oldalpha = pane3->mAlpha;
+				pane3      = static_cast<J2DPictureEx*>(getIndexPane(i)->getIconInfo(j)->mPane2);
+				savedAlpha = pane3->mAlpha;
 				pane3->setAlpha(mMessageBoxBGAlpha);
 				pane3->draw(pane3->getGlbVtx(GLBVTX_BtmLeft).x, pane3->getGlbVtx(GLBVTX_BtmLeft).y, pane3->getWidth(), pane3->getHeight(),
 				            false, false, false);
 				pane3->calcMtx();
-				pane3->setAlpha(oldalpha);
+				pane3->setAlpha(savedAlpha);
 			}
 		}
 	}
@@ -3735,521 +4013,6 @@ void TItemZukan::doDemoDraw(Graphics& gfx)
 	}
 
 	mWindow->draw(gfx, graf);
-	/*
-	stwu     r1, -0xe0(r1)
-	mflr     r0
-	stw      r0, 0xe4(r1)
-	stfd     f31, 0xd0(r1)
-	psq_st   f31, 216(r1), 0, qr0
-	stfd     f30, 0xc0(r1)
-	psq_st   f30, 200(r1), 0, qr0
-	stmw     r23, 0x9c(r1)
-	mr       r24, r3
-	mr       r25, r4
-	lfs      f1, lbl_8051EB70@sda21(r2)
-	addi     r3, r25, 0xbc
-	lfs      f0, 0x3b8(r24)
-	addi     r31, r25, 0x190
-	lwz      r12, 0xbc(r4)
-	fmuls    f0, f1, f0
-	lwz      r12, 0x14(r12)
-	fctiwz   f0, f0
-	stfd     f0, 0x88(r1)
-	lwz      r26, 0x8c(r1)
-	mtctr    r12
-	bctrl
-	lwz      r4, 0x7c(r24)
-	lis      r3, 0x62746E33@ha
-	addi     r6, r3, 0x62746E33@l
-	li       r5, 0x507a
-	lwz      r3, 8(r4)
-	lwz      r12, 0(r3)
-	lwz      r12, 0x3c(r12)
-	mtctr    r12
-	bctrl
-	lwz      r12, 0(r3)
-	mr       r23, r3
-	mr       r4, r26
-	lwz      r12, 0x24(r12)
-	mtctr    r12
-	bctrl
-	mr       r4, r23
-	addi     r3, r1, 0x70
-	li       r5, 1
-	bl       getGlbVtx__7J2DPaneCFUc
-	mr       r4, r23
-	addi     r3, r1, 0x7c
-	li       r5, 0
-	bl       getGlbVtx__7J2DPaneCFUc
-	mr       r3, r23
-	lfs      f3, 0x28(r23)
-	lwz      r12, 0(r23)
-	li       r4, 0
-	lfs      f2, 0x20(r23)
-	li       r5, 0
-	lfs      f1, 0x2c(r23)
-	li       r6, 0
-	lfs      f0, 0x24(r23)
-	fsubs    f3, f3, f2
-	lwz      r12, 0xec(r12)
-	fsubs    f4, f1, f0
-	lfs      f1, 0x7c(r1)
-	lfs      f2, 0x74(r1)
-	mtctr    r12
-	bctrl
-	mr       r3, r23
-	lwz      r12, 0(r23)
-	lwz      r12, 0x2c(r12)
-	mtctr    r12
-	bctrl
-	mr       r3, r23
-	li       r4, 0xff
-	lwz      r12, 0(r23)
-	lwz      r12, 0x24(r12)
-	mtctr    r12
-	bctrl
-	lwz      r4, 0x7c(r24)
-	lis      r3, 0x62746E32@ha
-	addi     r6, r3, 0x62746E32@l
-	li       r5, 0x507a
-	lwz      r3, 8(r4)
-	lwz      r12, 0(r3)
-	lwz      r12, 0x3c(r12)
-	mtctr    r12
-	bctrl
-	lwz      r12, 0(r3)
-	mr       r23, r3
-	mr       r4, r26
-	lwz      r12, 0x24(r12)
-	mtctr    r12
-	bctrl
-	mr       r4, r23
-	addi     r3, r1, 0x58
-	li       r5, 1
-	bl       getGlbVtx__7J2DPaneCFUc
-	mr       r4, r23
-	addi     r3, r1, 0x64
-	li       r5, 0
-	bl       getGlbVtx__7J2DPaneCFUc
-	mr       r3, r23
-	lfs      f3, 0x28(r23)
-	lwz      r12, 0(r23)
-	li       r4, 0
-	lfs      f2, 0x20(r23)
-	li       r5, 0
-	lfs      f1, 0x2c(r23)
-	li       r6, 0
-	lfs      f0, 0x24(r23)
-	fsubs    f3, f3, f2
-	lwz      r12, 0xec(r12)
-	fsubs    f4, f1, f0
-	lfs      f1, 0x64(r1)
-	lfs      f2, 0x5c(r1)
-	mtctr    r12
-	bctrl
-	mr       r3, r23
-	lwz      r12, 0(r23)
-	lwz      r12, 0x2c(r12)
-	mtctr    r12
-	bctrl
-	mr       r3, r23
-	li       r4, 0xff
-	lwz      r12, 0(r23)
-	lwz      r12, 0x24(r12)
-	mtctr    r12
-	bctrl
-	lwz      r12, 0(r31)
-	mr       r3, r31
-	lwz      r12, 0x14(r12)
-	mtctr    r12
-	bctrl
-	lwz      r3, 0xf4(r24)
-	mr       r4, r26
-	lwz      r12, 0(r3)
-	lwz      r12, 0x24(r12)
-	mtctr    r12
-	bctrl
-	lwz      r3, 0xd0(r24)
-	mr       r4, r25
-	mr       r5, r31
-	lwz      r12, 0(r3)
-	lwz      r12, 0x14(r12)
-	mtctr    r12
-	bctrl
-	lwz      r3, 0xf4(r24)
-	li       r4, 0xff
-	lwz      r12, 0(r3)
-	lwz      r12, 0x24(r12)
-	mtctr    r12
-	bctrl
-	addi     r3, r25, 0xbc
-	lwz      r12, 0xbc(r25)
-	lwz      r12, 0x14(r12)
-	mtctr    r12
-	bctrl
-	lfs      f31, 0x1a4(r24)
-	lfs      f0, 0x1ac(r24)
-	lfs      f30, 0x1a0(r24)
-	fsubs    f1, f0, f31
-	bl       __cvt_fp2unsigned
-	lfs      f0, 0x1a8(r24)
-	mr       r28, r3
-	fsubs    f1, f0, f30
-	bl       __cvt_fp2unsigned
-	fmr      f1, f31
-	mr       r27, r3
-	bl       __cvt_fp2unsigned
-	fmr      f1, f30
-	mr       r26, r3
-	bl       __cvt_fp2unsigned
-	mr       r4, r26
-	mr       r5, r27
-	mr       r6, r28
-	bl       GXSetScissor
-	li       r28, 0
-	li       r29, 0
-	b        lbl_8037AA68
-
-lbl_8037A7B4:
-	li       r27, 0
-	li       r30, 0
-
-lbl_8037A7BC:
-	lwz      r0, 0x88(r24)
-	lwz      r3, 0x23c(r24)
-	lwzx     r4, r29, r0
-	lwz      r4, 0x20(r4)
-	lwzx     r4, r4, r30
-	lwz      r0, 0(r4)
-	cmpw     r3, r0
-	bne      lbl_8037AA50
-	lwz      r3, 0x10(r4)
-	lbz      r0, 0xb0(r3)
-	cmplwi   r0, 0
-	beq      lbl_8037AA50
-	lbz      r3, 0x214(r24)
-	lis      r0, 0x4330
-	lwz      r23, 4(r4)
-	stw      r3, 0x8c(r1)
-	mr       r3, r23
-	lfd      f2, lbl_8051EB90@sda21(r2)
-	stw      r0, 0x88(r1)
-	lwz      r12, 0(r23)
-	lfd      f1, 0x88(r1)
-	lfs      f0, mCategoryAlphaRate__Q28Morimura10TZukanBase@sda21(r13)
-	fsubs    f1, f1, f2
-	lwz      r12, 0x24(r12)
-	lbz      r26, 0xb2(r23)
-	fmuls    f0, f1, f0
-	fctiwz   f0, f0
-	stfd     f0, 0x90(r1)
-	lwz      r4, 0x94(r1)
-	mtctr    r12
-	bctrl
-	mr       r4, r23
-	addi     r3, r1, 0x40
-	li       r5, 0
-	bl       getGlbVtx__7J2DPaneCFUc
-	lfs      f1, 0x44(r1)
-	mr       r4, r23
-	lfs      f0, lbl_8051EB48@sda21(r2)
-	addi     r3, r1, 0x4c
-	li       r5, 0
-	fadds    f31, f0, f1
-	bl       getGlbVtx__7J2DPaneCFUc
-	lfs      f1, 0x4c(r1)
-	fmr      f2, f31
-	lfs      f0, lbl_8051EBDC@sda21(r2)
-	mr       r3, r23
-	lwz      r12, 0(r23)
-	li       r4, 0
-	fadds    f1, f0, f1
-	lfs      f5, 0x28(r23)
-	li       r5, 0
-	lfs      f3, 0x20(r23)
-	li       r6, 0
-	lfs      f4, 0x2c(r23)
-	lfs      f0, 0x24(r23)
-	fsubs    f3, f5, f3
-	lwz      r12, 0xec(r12)
-	fsubs    f4, f4, f0
-	mtctr    r12
-	bctrl
-	mr       r3, r23
-	lwz      r12, 0(r23)
-	lwz      r12, 0x2c(r12)
-	mtctr    r12
-	bctrl
-	mr       r3, r23
-	mr       r4, r26
-	lwz      r12, 0(r23)
-	lwz      r12, 0x24(r12)
-	mtctr    r12
-	bctrl
-	lwz      r0, 0x88(r24)
-	lbz      r4, 0x214(r24)
-	lwzx     r3, r29, r0
-	lwz      r3, 0x20(r3)
-	lwzx     r3, r3, r30
-	lwz      r23, 0x10(r3)
-	mr       r3, r23
-	lbz      r26, 0xb2(r23)
-	lwz      r12, 0(r23)
-	lwz      r12, 0x24(r12)
-	mtctr    r12
-	bctrl
-	mr       r4, r23
-	addi     r3, r1, 0x28
-	li       r5, 0
-	bl       getGlbVtx__7J2DPaneCFUc
-	mr       r4, r23
-	addi     r3, r1, 0x34
-	li       r5, 0
-	bl       getGlbVtx__7J2DPaneCFUc
-	mr       r3, r23
-	lfs      f3, 0x28(r23)
-	lwz      r12, 0(r23)
-	li       r4, 0
-	lfs      f2, 0x20(r23)
-	li       r5, 0
-	lfs      f1, 0x2c(r23)
-	li       r6, 0
-	lfs      f0, 0x24(r23)
-	fsubs    f3, f3, f2
-	lwz      r12, 0xec(r12)
-	fsubs    f4, f1, f0
-	lfs      f1, 0x34(r1)
-	lfs      f2, 0x2c(r1)
-	mtctr    r12
-	bctrl
-	mr       r3, r23
-	lwz      r12, 0(r23)
-	lwz      r12, 0x2c(r12)
-	mtctr    r12
-	bctrl
-	mr       r3, r23
-	mr       r4, r26
-	lwz      r12, 0(r23)
-	lwz      r12, 0x24(r12)
-	mtctr    r12
-	bctrl
-	lwz      r0, 0x88(r24)
-	lbz      r4, 0x214(r24)
-	lwzx     r3, r29, r0
-	lwz      r3, 0x20(r3)
-	lwzx     r3, r3, r30
-	lwz      r23, 0xc(r3)
-	mr       r3, r23
-	lbz      r26, 0xb2(r23)
-	lwz      r12, 0(r23)
-	lwz      r12, 0x24(r12)
-	mtctr    r12
-	bctrl
-	mr       r4, r23
-	addi     r3, r1, 0x10
-	li       r5, 0
-	bl       getGlbVtx__7J2DPaneCFUc
-	mr       r4, r23
-	addi     r3, r1, 0x1c
-	li       r5, 0
-	bl       getGlbVtx__7J2DPaneCFUc
-	mr       r3, r23
-	lfs      f3, 0x28(r23)
-	lwz      r12, 0(r23)
-	li       r4, 0
-	lfs      f2, 0x20(r23)
-	li       r5, 0
-	lfs      f1, 0x2c(r23)
-	li       r6, 0
-	lfs      f0, 0x24(r23)
-	fsubs    f3, f3, f2
-	lwz      r12, 0xec(r12)
-	fsubs    f4, f1, f0
-	lfs      f1, 0x1c(r1)
-	lfs      f2, 0x14(r1)
-	mtctr    r12
-	bctrl
-	mr       r3, r23
-	lwz      r12, 0(r23)
-	lwz      r12, 0x2c(r12)
-	mtctr    r12
-	bctrl
-	mr       r3, r23
-	mr       r4, r26
-	lwz      r12, 0(r23)
-	lwz      r12, 0x24(r12)
-	mtctr    r12
-	bctrl
-
-lbl_8037AA50:
-	addi     r27, r27, 1
-	addi     r30, r30, 4
-	cmpwi    r27, 3
-	blt      lbl_8037A7BC
-	addi     r29, r29, 4
-	addi     r28, r28, 1
-
-lbl_8037AA68:
-	lha      r0, 0x8e(r24)
-	cmpw     r28, r0
-	blt      lbl_8037A7B4
-	addi     r3, r25, 0x190
-	lwz      r12, 0x190(r25)
-	lwz      r12, 0x14(r12)
-	mtctr    r12
-	bctrl
-	lwz      r0, 0x3ac(r24)
-	cmpwi    r0, 3
-	bne      lbl_8037AC74
-	lfs      f30, 0x1a4(r24)
-	lfs      f0, 0x1ac(r24)
-	lfs      f31, 0x1a0(r24)
-	fsubs    f1, f0, f30
-	bl       __cvt_fp2unsigned
-	lfs      f0, 0x1a8(r24)
-	mr       r28, r3
-	fsubs    f1, f0, f31
-	bl       __cvt_fp2unsigned
-	fmr      f1, f30
-	mr       r27, r3
-	bl       __cvt_fp2unsigned
-	fmr      f1, f31
-	mr       r26, r3
-	bl       __cvt_fp2unsigned
-	mr       r4, r26
-	mr       r5, r27
-	mr       r6, r28
-	bl       GXSetScissor
-	lis      r4, 0x315F3030@ha
-	lwz      r3, 0xf0(r24)
-	addi     r0, r4, 0x315F3030@l
-	lis      r4, 0x00393030@ha
-	stw      r0, 0x1c(r3)
-	addi     r0, r4, 0x00393030@l
-	stw      r0, 0x18(r3)
-	lwz      r4, 0x24c(r24)
-	lwz      r3, 0xf0(r24)
-	lwz      r0, 0x20(r4)
-	lwz      r12, 0(r3)
-	stw      r0, 0xc(r1)
-	lwz      r12, 0x24(r12)
-	lbz      r4, 0xf(r1)
-	mtctr    r12
-	bctrl
-	li       r0, 0
-	addi     r4, r1, 8
-	stb      r0, 0xf(r1)
-	lwz      r0, 0xc(r1)
-	stw      r0, 8(r1)
-	lwz      r3, 0xf0(r24)
-	lwz      r12, 0(r3)
-	lwz      r12, 0xa4(r12)
-	mtctr    r12
-	bctrl
-	lwz      r3, 0xc8(r24)
-	mr       r4, r25
-	mr       r5, r31
-	lwz      r12, 0(r3)
-	lwz      r12, 0x9c(r12)
-	mtctr    r12
-	bctrl
-	li       r27, 0
-	li       r30, 0
-	addi     r28, r13, mNewOffset__Q28Morimura10TZukanBase@sda21
-	b        lbl_8037AC38
-
-lbl_8037AB74:
-	lwz      r3, 0x88(r24)
-	lwzx     r3, r3, r30
-	lwz      r3, 4(r3)
-	lbz      r0, 0xb0(r3)
-	cmplwi   r0, 0
-	beq      lbl_8037AC30
-	li       r26, 0
-	li       r29, 0
-
-lbl_8037AB94:
-	lwz      r0, 0x88(r24)
-	lwz      r4, 0x23c(r24)
-	lwzx     r3, r30, r0
-	lwz      r3, 0x20(r3)
-	lwzx     r3, r3, r29
-	lwz      r0, 0(r3)
-	cmpw     r4, r0
-	bne      lbl_8037AC20
-	bne      lbl_8037AC20
-	lwz      r0, 0x18(r3)
-	cmplwi   r0, 0
-	beq      lbl_8037AC20
-	lwz      r3, 0x10(r3)
-	mr       r4, r25
-	lfs      f1, mNewOffset__Q28Morimura10TZukanBase@sda21(r13)
-	mr       r5, r31
-	lfs      f0, 0x8c(r3)
-	lwz      r3, 0xf0(r24)
-	fadds    f0, f1, f0
-	stfs     f0, 0x8c(r3)
-	lwz      r0, 0x88(r24)
-	lfs      f1, 4(r28)
-	lwzx     r6, r30, r0
-	lwz      r3, 0xf0(r24)
-	lwz      r6, 0x20(r6)
-	lwzx     r6, r6, r29
-	lwz      r6, 0x10(r6)
-	lfs      f0, 0x9c(r6)
-	fadds    f0, f1, f0
-	stfs     f0, 0x9c(r3)
-	lwz      r3, 0xcc(r24)
-	lwz      r12, 0(r3)
-	lwz      r12, 0x14(r12)
-	mtctr    r12
-	bctrl
-
-lbl_8037AC20:
-	addi     r26, r26, 1
-	addi     r29, r29, 4
-	cmpwi    r26, 3
-	blt      lbl_8037AB94
-
-lbl_8037AC30:
-	addi     r30, r30, 4
-	addi     r27, r27, 1
-
-lbl_8037AC38:
-	lha      r0, 0x8e(r24)
-	cmpw     r27, r0
-	blt      lbl_8037AB74
-	lis      r3, 0x305F3030@ha
-	lwz      r5, 0xf0(r24)
-	addi     r0, r3, 0x305F3030@l
-	lis      r3, 0x00393030@ha
-	stw      r0, 0x1c(r5)
-	addi     r0, r3, 0x00393030@l
-	li       r3, 0
-	li       r4, 0
-	stw      r0, 0x18(r5)
-	li       r5, 0x280
-	li       r6, 0x1e0
-	bl       GXSetScissor
-
-lbl_8037AC74:
-	lwz      r3, 0xdc(r24)
-	mr       r4, r25
-	mr       r5, r31
-	lwz      r12, 0(r3)
-	lwz      r12, 0x10(r12)
-	mtctr    r12
-	bctrl
-	psq_l    f31, 216(r1), 0, qr0
-	lfd      f31, 0xd0(r1)
-	psq_l    f30, 200(r1), 0, qr0
-	lfd      f30, 0xc0(r1)
-	lmw      r23, 0x9c(r1)
-	lwz      r0, 0xe4(r1)
-	mtlr     r0
-	addi     r1, r1, 0xe0
-	blr
-	*/
 }
 
 /**
@@ -4265,10 +4028,22 @@ void TItemZukan::setDetail()
 		mWeightCounter->setBlind(true);
 	} else {
 		mInfoVal1 = getPrice(id);
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+		JUT_ASSERTLINE(4733, mInfoVal1 < 10000, "price (%d) = %d\n", id, mInfoVal1);
+#elif defined(VERSION_JP)
+		JUT_ASSERTLINE(4682, mInfoVal1 < 10000, "price (%d) = %d\n", id, mInfoVal1);
+#else
 		JUT_ASSERTLINE(4726, mInfoVal1 < 10000, "price (%d) = %d\n", id, mInfoVal1);
+#endif
 
 		mInfoVal2 = getWeight(id);
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+		JUT_ASSERTLINE(4735, mInfoVal2 < 10000, "weight (%d) = %d\n", id, mInfoVal2);
+#elif defined(VERSION_JP)
+		JUT_ASSERTLINE(4684, mInfoVal2 < 10000, "weight (%d) = %d\n", id, mInfoVal2);
+#else
 		JUT_ASSERTLINE(4728, mInfoVal2 < 10000, "weight (%d) = %d\n", id, mInfoVal2);
+#endif
 
 		if (isListShow(id)) {
 			mIsCurrentSelUnlocked = true;
@@ -4535,7 +4310,13 @@ TCallbackScrollMsg::TCallbackScrollMsg()
  */
 void TCallbackScrollMsg::doInit()
 {
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+	P2ASSERTLINE(5032, mPane->getTypeID() == PANETYPE_TextBox);
+#elif defined(VERSION_JP)
+	P2ASSERTLINE(4981, mPane->getTypeID() == PANETYPE_TextBox);
+#else
 	P2ASSERTLINE(5025, mPane->getTypeID() == PANETYPE_TextBox);
+#endif
 	mControl->setTextBoxInfo(static_cast<J2DTextBox*>(mPane));
 }
 
@@ -4639,7 +4420,13 @@ void TZukanWindow::create(char const* filename, u32 flag)
 	mScreenObj->addCallBack('mg_demo', mScissor);
 
 	mPaneWinCap = mScreenObj->search('Wwincap');
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+	P2ASSERTLINE(5184, mPaneWinCap);
+#elif defined(VERSION_JP)
+	P2ASSERTLINE(5133, mPaneWinCap);
+#else
 	P2ASSERTLINE(5177, mPaneWinCap);
+#endif
 
 	mMsgCallback = new TCallbackScrollMsg;
 	mScreenObj->addCallBack('mg_demo', mMsgCallback);
@@ -4653,13 +4440,31 @@ void TZukanWindow::create(char const* filename, u32 flag)
 	og::Screen::setAlphaScreen(mScreenObj);
 
 	mPaneIcon = mScreenObj->search('Nicon');
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+	P2ASSERTLINE(5200, mPaneIcon);
+#elif defined(VERSION_JP)
+	P2ASSERTLINE(5149, mPaneIcon);
+#else
 	P2ASSERTLINE(5193, mPaneIcon);
+#endif
 
 	mPaneWinMap = mScreenObj->search('Pwinmap');
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+	P2ASSERTLINE(5204, mPaneWinMap);
+#elif defined(VERSION_JP)
+	P2ASSERTLINE(5153, mPaneWinMap);
+#else
 	P2ASSERTLINE(5197, mPaneWinMap);
+#endif
 
 	mPaneIconLight = mScreenObj->search('P_icon_l');
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+	P2ASSERTLINE(5208, mPaneIconLight);
+#elif defined(VERSION_JP)
+	P2ASSERTLINE(5157, mPaneIconLight);
+#else
 	P2ASSERTLINE(5201, mPaneIconLight);
+#endif
 	mPaneIconLight->setInfluencedAlpha(false, false);
 
 	mAnimPaneLight = new og::Screen::AnimPane;
@@ -4743,13 +4548,17 @@ void TZukanWindow::update()
 		}
 	}
 
-	JGeometry::TVec3f bottomLeft = mPaneWinCap->getGlbVtx(GLBVTX_BtmLeft);
-	JGeometry::TVec3f topRight   = mPaneWinCap->getGlbVtx(GLBVTX_TopRight);
-	JGeometry::TBox2f box(bottomLeft, topRight);
-	box.i.x += 10.0f;
-	box.i.y += 5.0f;
-	box.f.x -= 10.0f;
-	box.f.y -= 10.0f;
+	const JGeometry::TVec3f& bottomLeft = mPaneWinCap->getGlbVtx(GLBVTX_BtmLeft);
+	f32 left                            = bottomLeft.x;
+	f32 bottom                          = bottomLeft.y;
+	const JGeometry::TVec3f& topRight   = mPaneWinCap->getGlbVtx(GLBVTX_TopRight);
+	f32 right                           = topRight.x;
+	f32 top                             = topRight.y;
+	left += 10.0f;
+	bottom += 5.0f;
+	right -= 10.0f;
+	top -= 10.0f;
+	JGeometry::TBox2f box(left, bottom, right, top);
 	mScissor->mBounds = box;
 }
 
@@ -4835,7 +4644,13 @@ void TZukanWindow::setIconColor(J2DGXColorS10& color1, J2DGXColorS10& color2)
  */
 void TZukanWindow::onIcon(int id)
 {
+#if defined(VERSION_PAL) || defined(VERSION_US_DEMO1)
+	P2ASSERTLINE(5422, id < 2);
+#elif defined(VERSION_JP)
+	P2ASSERTLINE(5371, id < 2);
+#else
 	P2ASSERTLINE(5415, id < 2);
+#endif
 	if (mCharacterIcon[id]) {
 		mCharacterIcon[id]->show();
 		mCharacterIcon[1 - id]->hide();
@@ -4878,6 +4693,8 @@ void TZukanWindow::changeIconTexture(int id, ResTIMG* file)
 	mCharacterIcon[id]->changeTexture(file, 0);
 }
 
+} // namespace Morimura
+namespace Morimura {
 TZukanBase::StaticValues TZukanBase::mScrollParm;
 
 JGeometry::TVec2f TZukanBase::mNewOffset(0.0f, -12.5f);
@@ -4890,6 +4707,7 @@ JUtility::TColor TZukanBase::mCategoryColor0b(255, 255, 255, 0);
 JUtility::TColor TZukanBase::mCategoryColor1w(255, 255, 255, 255);
 JUtility::TColor TZukanBase::mCategoryColor1b(255, 255, 255, 0);
 
-} // namespace Morimura
+JKRHeap* TZukanBase::mDebugHeapParent;
+JKRExpHeap* TZukanBase::mDebugHeap;
 
-#include "nans.h"
+} // namespace Morimura

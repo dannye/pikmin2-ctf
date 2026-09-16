@@ -255,175 +255,6 @@ void Obj::updateCaptureMatrix()
 		matTr.makeTR(Vector3f::zero, rot);
 		pellet->updateCapture(matTr);
 	}
-	/*
-	stwu     r1, -0xd0(r1)
-	mflr     r0
-	stw      r0, 0xd4(r1)
-	stfd     f31, 0xc0(r1)
-	psq_st   f31, 200(r1), 0, qr0
-	stfd     f30, 0xb0(r1)
-	psq_st   f30, 184(r1), 0, qr0
-	stfd     f29, 0xa0(r1)
-	psq_st   f29, 168(r1), 0, qr0
-	stfd     f28, 0x90(r1)
-	psq_st   f28, 152(r1), 0, qr0
-	stw      r31, 0x8c(r1)
-	stw      r30, 0x88(r1)
-	mr       r30, r3
-	bl       getCarryTarget__Q34Game13PanModokiBase3ObjFv
-	lwz      r4, gameSystem__4Game@sda21(r13)
-	mr       r31, r3
-	cmplwi   r4, 0
-	beq      lbl_803500CC
-	lwz      r0, 0x44(r4)
-	cmpwi    r0, 1
-	bne      lbl_803500CC
-	cmplwi   r31, 0
-	beq      lbl_803500CC
-	mr       r3, r30
-	bl       isStickTo__Q24Game8CreatureFv
-	clrlwi.  r0, r3, 0x18
-	bne      lbl_803500CC
-	mr       r3, r30
-	bl       releaseCarryTarget__Q34Game13PanModokiBase3ObjFv
-
-lbl_803500CC:
-	mr       r3, r31
-	lwz      r12, 0(r31)
-	lwz      r12, 0x1f4(r12)
-	mtctr    r12
-	bctrl
-	clrlwi   r0, r3, 0x18
-	cmplwi   r0, 1
-	bne      lbl_80350110
-	mr       r3, r31
-	lwz      r12, 0(r31)
-	lwz      r12, 0xa8(r12)
-	mtctr    r12
-	bctrl
-	clrlwi.  r0, r3, 0x18
-	bne      lbl_80350110
-	mr       r3, r30
-	bl       releaseCarryTarget__Q34Game13PanModokiBase3ObjFv
-
-lbl_80350110:
-	mr       r3, r30
-	bl       getCarryTarget__Q34Game13PanModokiBase3ObjFv
-	cmplwi   r3, 0
-	beq      lbl_80350298
-	lwz      r3, 0x2d8(r30)
-	bl       getWorldMatrix__Q28SysShape5JointFv
-	lfs      f31, 0(r3)
-	addi     r4, r1, 0x44
-	lfs      f30, 0x10(r3)
-	lfs      f29, 0x20(r3)
-	mr       r3, r30
-	bl       "calcSlotGlobalPos__Q34Game13PanModokiBase3ObjFR10Vector3<f>"
-	mr       r4, r31
-	addi     r3, r1, 0x20
-	lwz      r12, 0(r31)
-	lwz      r12, 8(r12)
-	mtctr    r12
-	bctrl
-	mr       r4, r31
-	addi     r3, r1, 0x2c
-	lwz      r12, 0(r31)
-	lfs      f28, 0x28(r1)
-	lwz      r12, 8(r12)
-	mtctr    r12
-	bctrl
-	lfs      f0, 0x4c(r1)
-	lfs      f2, 0x2c(r1)
-	fsubs    f1, f0, f28
-	lfs      f0, 0x44(r1)
-	lfs      f3, lbl_8051E490@sda21(r2)
-	fsubs    f2, f0, f2
-	fmuls    f0, f1, f1
-	fmadds   f0, f2, f2, f0
-	fcmpo    cr0, f0, f3
-	ble      lbl_80350200
-	mr       r4, r31
-	addi     r3, r1, 0x14
-	lwz      r12, 0(r31)
-	lwz      r12, 8(r12)
-	mtctr    r12
-	bctrl
-	mr       r4, r31
-	addi     r3, r1, 8
-	lwz      r12, 0(r31)
-	lfs      f28, 0x1c(r1)
-	lwz      r12, 8(r12)
-	mtctr    r12
-	bctrl
-	lfs      f0, 0x4c(r1)
-	lfs      f3, 8(r1)
-	fsubs    f2, f0, f28
-	lfs      f1, 0x44(r1)
-	lfs      f0, lbl_8051E490@sda21(r2)
-	fsubs    f3, f1, f3
-	fmuls    f1, f2, f2
-	fmadds   f3, f3, f3, f1
-	fcmpo    cr0, f3, f0
-	ble      lbl_80350200
-	frsqrte  f0, f3
-	fmuls    f3, f0, f3
-
-lbl_80350200:
-	lfs      f1, lbl_8051E4BC@sda21(r2)
-	lfs      f0, 0x32c(r30)
-	lwz      r3, 0x2d8(r30)
-	fmadds   f28, f1, f0, f3
-	bl       getWorldMatrix__Q28SysShape5JointFv
-	addi     r4, r30, 0x348
-	bl       PSMTXCopy
-	fmuls    f2, f31, f28
-	lfs      f3, 0x354(r30)
-	fmuls    f1, f30, f28
-	mr       r3, r31
-	fmuls    f0, f29, f28
-	addi     r4, r30, 0x348
-	fadds    f2, f3, f2
-	stfs     f2, 0x354(r30)
-	lfs      f2, 0x364(r30)
-	fadds    f1, f2, f1
-	stfs     f1, 0x364(r30)
-	lfs      f1, 0x374(r30)
-	fadds    f0, f1, f0
-	stfs     f0, 0x374(r30)
-	bl       startCapture__Q24Game8CreatureFP7Matrixf
-	lfs      f2, lbl_8051E4C0@sda21(r2)
-	lis      r3, "zero__10Vector3<f>"@ha
-	lfs      f0, 0x2e0(r30)
-	addi     r4, r3, "zero__10Vector3<f>"@l
-	lfs      f1, lbl_8051E490@sda21(r2)
-	addi     r3, r1, 0x50
-	fsubs    f2, f2, f0
-	lfs      f0, lbl_8051E4C4@sda21(r2)
-	stfs     f1, 0x38(r1)
-	addi     r5, r1, 0x38
-	stfs     f2, 0x3c(r1)
-	stfs     f0, 0x40(r1)
-	bl       "makeTR__7MatrixfFR10Vector3<f>R10Vector3<f>"
-	mr       r3, r31
-	addi     r4, r1, 0x50
-	bl       updateCapture__Q24Game8CreatureFR7Matrixf
-
-lbl_80350298:
-	psq_l    f31, 200(r1), 0, qr0
-	lfd      f31, 0xc0(r1)
-	psq_l    f30, 184(r1), 0, qr0
-	lfd      f30, 0xb0(r1)
-	psq_l    f29, 168(r1), 0, qr0
-	lfd      f29, 0xa0(r1)
-	psq_l    f28, 152(r1), 0, qr0
-	lfd      f28, 0x90(r1)
-	lwz      r31, 0x8c(r1)
-	lwz      r0, 0xd4(r1)
-	lwz      r30, 0x88(r1)
-	mtlr     r0
-	addi     r1, r1, 0xd0
-	blr
-	*/
 }
 
 /**
@@ -686,6 +517,9 @@ void Obj::initMouthSlots()
  */
 void Obj::onKill(CreatureKillArg* settings)
 {
+#if defined(VERSION_PAL)
+	fadePulledSmokeEffect();
+#endif
 	EnemyBase::onKill(settings);
 	throwUpEatItem();
 	releasePathFinder();
@@ -810,7 +644,11 @@ void Obj::findNextRoutePoint(bool cond)
 	}
 
 	WayPoint* wp2 = routeMgr->getWayPoint(mWpIndex2);
+#if defined(VERSION_PAL)
+	P2ASSERTLINE(995, wp2);
+#else
 	P2ASSERTLINE(993, wp2);
+#endif
 	s16 idxArray[8];
 	int counter = 0;
 
@@ -993,7 +831,11 @@ bool Obj::isReachToGoal(f32 radius)
 
 	Creature* creature = mTargetCreature;
 	if (creature) {
+#if defined(VERSION_PAL)
+		P2ASSERTLINE(1202, creature);
+#else
 		P2ASSERTLINE(1200, creature);
+#endif
 		radius += static_cast<Pellet*>(creature)->mConfig->mParams.mRadius.mData;
 	} else {
 		radius *= 2.0f;
@@ -1130,13 +972,21 @@ void Obj::checkNearHomeGraphIndex()
 	WPSearchArg searchArgs(mPosition, nullptr, 0, 10.0f);
 	RouteMgr* route  = mapMgr->mRouteMgr;
 	WayPoint* nearWP = route->getNearestWayPoint(searchArgs);
+#if defined(VERSION_PAL)
+	JUT_ASSERTLINE(1371, nearWP, "P2Assert");
+#else
 	JUT_ASSERTLINE(1369, nearWP, "P2Assert");
+#endif
 	s16 index = nearWP->mIndex;
 	mWpIndex1 = index;
 	mWpIndex3 = index;
 	mWpIndex2 = index;
 	nearWP    = route->getWayPoint(mWpIndex2);
+#if defined(VERSION_PAL)
+	JUT_ASSERTLINE(1376, nearWP, "P2Assert");
+#else
 	JUT_ASSERTLINE(1374, nearWP, "P2Assert");
+#endif
 	mNextWayPointPosition = Vector3f(nearWP->mPosition);
 	WPEdgeSearchArg edgeSearchArgs(mPosition);
 	if (route->getNearestEdge(edgeSearchArgs)) {
@@ -1382,7 +1232,11 @@ bool Obj::isEndPathFinder()
 	if (mIsPathfinding) {
 		return true;
 	} else {
+#if defined(VERSION_PAL)
+		P2ASSERTLINE(1710, testPathfinder);
+#else
 		P2ASSERTLINE(1708, testPathfinder);
+#endif
 		switch (testPathfinder->check(mPathID)) {
 		case 0:
 			testPathfinder->makepath(mPathID, &mPathNode);
@@ -1421,7 +1275,11 @@ bool Obj::setPathFinder(bool cond)
 	mPelletCarryVelocity = 0.0f;
 	WPEdgeSearchArg args(mPosition);
 	RouteMgr* routeMgr = mapMgr->mRouteMgr;
+#if defined(VERSION_PAL)
+	P2ASSERTLINE(1758, routeMgr);
+#else
 	P2ASSERTLINE(1756, routeMgr);
+#endif
 	if (routeMgr->getNearestEdge(args)) {
 		WayPoint* wp1   = args.mWp1;
 		WayPoint* wp2   = args.mWp2;
@@ -1466,7 +1324,11 @@ bool Obj::setPathFinder(bool cond)
 		mNextWayPointPosition.z = wpPos.z;
 		return true;
 	}
+#if defined(VERSION_PAL)
+	JUT_PANICLINE(1812, nullptr);
+#else
 	JUT_PANICLINE(1810, nullptr);
+#endif
 	return false;
 }
 
@@ -1541,7 +1403,11 @@ void Obj::calcSlotGlobalPos(Vector3f& pos)
 	Pellet* pellet = static_cast<Pellet*>(mTargetCreature);
 	Matrixf matrix;
 	pellet = getCarryTarget();
+#if defined(VERSION_PAL)
+	P2ASSERTLINE(1905, pellet);
+#else
 	P2ASSERTLINE(1903, pellet);
+#endif
 	f32 rad      = pellet->getPickRadius();
 	f32 angle    = mAlsoRotationOffset;
 	Vector3f dir = Vector3f(rad * sinf(angle), 0.0f, rad * cosf(angle));

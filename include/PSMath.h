@@ -10,14 +10,6 @@
 
 namespace PSMath {
 
-template <typename A, typename B>
-inline f32 calcSquareDistance(const A& a, const B& b)
-{
-	Vector3f delta(a.x - b.x, a.y - b.y, a.z - b.z);
-	Vector3f squares = delta * delta;
-	return squares.z + (squares.x + squares.y);
-}
-
 static inline Vec squareComponents(Vec vector)
 {
 	vector.x *= vector.x;
@@ -27,7 +19,24 @@ static inline Vec squareComponents(Vec vector)
 }
 
 template <typename A, typename B>
-inline f32 calcDistance(const A& from, B to)
+inline f32 calcSquareDistance(const A& a, const B& b)
+{
+	JGeometry::TVec3f positionGeometry;
+	positionGeometry.x = b.x;
+	positionGeometry.y = b.y;
+	positionGeometry.z = b.z;
+	Vec position = positionGeometry;
+	JGeometry::TVec3f deltaGeometry;
+	deltaGeometry.x = a.x - position.x;
+	deltaGeometry.y = a.y - position.y;
+	deltaGeometry.z = a.z - position.z;
+	Vec delta = deltaGeometry;
+	Vec squares = squareComponents(delta);
+	return squares.z + (squares.x + squares.y);
+}
+
+template <typename A, typename B>
+inline f32 calcDistance(A from, B to)
 {
 	JGeometry::TVec3f fromGeometry;
 	fromGeometry.set(from.x, from.y, from.z);

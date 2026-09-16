@@ -27,14 +27,14 @@ from tools.project import (
 )
 
 # Game versions
-DEFAULT_VERSION = 4
-VERSIONS = [
-    "GPVE01_D17",  # 0
-    "GPVE01_D18",  # 1
-    "GPVJ01",  # 2
-    "GPVP01",  # 3
-    "GPVE01",  # 4
-]
+DEFAULT_VERSION = "GPVE01"
+VERSIONS = {
+    "GPVE01_D17": 0,
+    "GPVE01_D18": 1,
+    "GPVJ01": 2,
+    "GPVP01": 3,
+    "GPVE01": 4,
+}
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -49,7 +49,7 @@ parser.add_argument(
     "--version",
     choices=VERSIONS,
     type=str.upper,
-    default=VERSIONS[DEFAULT_VERSION],
+    default=DEFAULT_VERSION,
     help="version to build",
 )
 parser.add_argument(
@@ -127,7 +127,7 @@ args = parser.parse_args()
 
 config = ProjectConfig()
 config.version = str(args.version)
-version_num = VERSIONS.index(config.version)
+version_num = VERSIONS[config.version]
 
 # Apply arguments
 config.build_dir = args.build_dir
@@ -203,7 +203,7 @@ cflags_base = [
     "-i include",
     "-i include/stl",
     f"-i build/{config.version}/include",
-    f"-DVERNUM={version_num}",
+    f"-DVERSION_{config.version}",
 ]
 
 # Debug flags
@@ -231,11 +231,29 @@ cflags_pikmin = [
 
 config.linker_version = "GC/2.6"
 
-Matching = True  # Object matches and should be linked
-NonMatching = False  # Object does not match and should not be linked
-Equivalent = (
-    config.non_matching
-)  # Object should be linked when configured with --non-matching
+# Helpers for noting which version matches/is equivalent.
+# Unlisted versions are NonMatching/use the split assembly.
+US = "GPVE01"
+US_DEMO1 = "GPVE01_D17"
+US_DEMO2 = "GPVE01_D18"
+JP = "GPVJ01"
+PAL = "GPVP01"
+
+Matching = True  # Verified matching for every supported version
+NonMatching = False  # Use the original object
+Equivalent = config.non_matching  # Functionally equivalent for every version - usable for modding
+
+
+def MatchingFor(*versions):
+    return config.version in versions
+
+
+def EquivalentFor(*versions):
+    return config.non_matching and MatchingFor(*versions)
+
+
+# List multiple within one type with commas, and combine types with "or", e.g.
+# Object(MatchingFor(US, JP) or EquivalentFor(PAL), "path/file.cpp")
 
 config.warn_missing_config = True
 config.warn_missing_source = False
@@ -454,14 +472,14 @@ config.libs = [
             Object(Equivalent, "JSystem/J2D/J2DScreen.cpp"),
             Object(Matching, "JSystem/J2D/J2DTextBox.cpp"),
             Object(Equivalent, "JSystem/J2D/J2DWindow.cpp"),
-            Object(Equivalent, "JSystem/J2D/J2DWindowEx.cpp"),
+            Object(Matching, "JSystem/J2D/J2DWindowEx.cpp"),
             Object(Matching, "JSystem/J2D/J2DAnmLoader.cpp"),
-            Object(Equivalent, "JSystem/J2D/J2DBloSaver.cpp"),
+            Object(Matching, "JSystem/J2D/J2DBloSaver.cpp"),
             Object(Matching, "JSystem/J2D/J2DManage.cpp"),
-            Object(Equivalent, "JSystem/J2D/J2DMatBlock.cpp"),
+            Object(Matching, "JSystem/J2D/J2DMatBlock.cpp"),
             Object(Matching, "JSystem/J2D/J2DMaterial.cpp"),
-            Object(Equivalent, "JSystem/J2D/J2DMaterialFactory.cpp"),
-            Object(Equivalent, "JSystem/J2D/J2DPictureEx.cpp"),
+            Object(Matching, "JSystem/J2D/J2DMaterialFactory.cpp"),
+            Object(Matching, "JSystem/J2D/J2DPictureEx.cpp"),
             Object(Matching, "JSystem/J2D/J2DTevs.cpp"),
             Object(Matching, "JSystem/J2D/J2DTextBoxEx.cpp"),
             Object(Matching, "JSystem/J2D/J2DAnimation.cpp"),
@@ -563,7 +581,7 @@ config.libs = [
         "progress_category": "jsystem",
         "host": True,
         "objects": [
-            Object(Equivalent, "JSystem/JAudio/JAS/JASWSParser.cpp"),
+            Object(Matching, "JSystem/JAudio/JAS/JASWSParser.cpp"),
             Object(Matching, "JSystem/JAudio/JAS/JASBankMgr.cpp"),
             Object(Matching, "JSystem/JAudio/JAS/JASBasicBank.cpp"),
             Object(Matching, "JSystem/JAudio/JAS/JASBasicInst.cpp"),
@@ -708,7 +726,7 @@ config.libs = [
             Object(
                 Matching,
                 "Dolphin/TRK_MINNOW_DOLPHIN/targsupp.c",
-                extra_cflags=["-func_align 32"],
+                source="Dolphin/TRK_MINNOW_DOLPHIN/targsupp.s",
             ),
             Object(Matching, "Dolphin/TRK_MINNOW_DOLPHIN/mpc_7xx_603e.c"),
             Object(Matching, "Dolphin/TRK_MINNOW_DOLPHIN/__exception.s"),
@@ -810,127 +828,37 @@ config.libs = [
             Object(Matching, "Dolphin/MSL_C/MSL_Common/strtoul.c"),
             Object(Matching, "Dolphin/MSL_C/MSL_Common/wchar_io.c"),
             Object(Matching, "Dolphin/MSL_C/PPC_EABI/uart_console_io_gcn.c"),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_asin.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_atan2.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_exp.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_fmod.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_log.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_log10.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_pow.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_rem_pio2.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/k_cos.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/k_rem_pio2.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/k_sin.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/k_tan.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_atan.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_ceil.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_copysign.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_cos.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_floor.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_frexp.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_ldexp.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_modf.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_sin.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_tan.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_asin.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_atan2.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_exp.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_fmod.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_log10.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_pow.c",
-            ),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_sqrt.c",
-            ),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_asin.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_atan2.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_exp.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_fmod.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_log.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_log10.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_pow.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_rem_pio2.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/k_cos.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/k_rem_pio2.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/k_sin.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/k_tan.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_atan.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_ceil.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_copysign.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_cos.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_floor.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_frexp.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_ldexp.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_modf.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_sin.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_tan.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_asin.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_atan2.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_exp.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_fmod.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_log10.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_pow.c"),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_sqrt.c"),
             Object(Matching, "Dolphin/MSL_C/PPC_EABI/math_ppc.c"),
-            Object(
-                Matching,
-                "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_sqrt.c",
-            ),
+            Object(Matching, "Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_sqrt.c"),
             Object(Matching, "Dolphin/MSL_C/MSL_Common/extras.c"),
         ],
     },
@@ -1263,7 +1191,7 @@ config.libs = [
             Object(Matching, "plugProjectKandoU/creature.cpp"),
             Object(Equivalent, "plugProjectKandoU/fakePiki.cpp"),
             Object(Equivalent, "plugProjectKandoU/navi.cpp"),
-            Object(Equivalent, "plugProjectKandoU/piki.cpp"),
+            Object(Matching, "plugProjectKandoU/piki.cpp"),
             Object(Equivalent, "plugProjectKandoU/baseGameSection.cpp"),
             Object(Matching, "plugProjectKandoU/singleGameSection.cpp"),
             Object(Equivalent, "plugProjectKandoU/cellPyramid.cpp"),
@@ -1476,7 +1404,7 @@ config.libs = [
             Object(Matching, "plugProjectNishimuraU/SaraiAnimator.cpp"),
             Object(Matching, "plugProjectNishimuraU/SaraiMgr.cpp"),
             Object(Matching, "plugProjectNishimuraU/Sarai.cpp"),
-            Object(Equivalent, "plugProjectNishimuraU/TankState.cpp"),
+            Object(Matching, "plugProjectNishimuraU/TankState.cpp"),
             Object(Matching, "plugProjectNishimuraU/TankAnimator.cpp"),
             Object(Matching, "plugProjectNishimuraU/TankMgr.cpp"),
             Object(Matching, "plugProjectNishimuraU/Tank.cpp"),
@@ -1497,14 +1425,14 @@ config.libs = [
             Object(Equivalent, "plugProjectNishimuraU/Mar.cpp"),
             Object(Matching, "plugProjectNishimuraU/MarAnimator.cpp"),
             Object(Matching, "plugProjectNishimuraU/MarMgr.cpp"),
-            Object(Equivalent, "plugProjectNishimuraU/MarState.cpp"),
+            Object(Matching, "plugProjectNishimuraU/MarState.cpp"),
             Object(Matching, "plugProjectNishimuraU/WealthyMgr.cpp"),
             Object(Matching, "plugProjectNishimuraU/Wealthy.cpp"),
             Object(Matching, "plugProjectNishimuraU/FartMgr.cpp"),
             Object(Matching, "plugProjectNishimuraU/Fart.cpp"),
             Object(Matching, "plugProjectNishimuraU/ArmorState.cpp"),
             Object(Matching, "plugProjectNishimuraU/ArmorAnimator.cpp"),
-            Object(Equivalent, "plugProjectNishimuraU/QueenState.cpp"),
+            Object(Matching, "plugProjectNishimuraU/QueenState.cpp"),
             Object(Matching, "plugProjectNishimuraU/QueenAnimator.cpp"),
             Object(Matching, "plugProjectNishimuraU/QueenMgr.cpp"),
             Object(Matching, "plugProjectNishimuraU/Queen.cpp"),
@@ -1534,7 +1462,7 @@ config.libs = [
             Object(Matching, "plugProjectNishimuraU/FtankMgr.cpp"),
             Object(Matching, "plugProjectNishimuraU/Ftank.cpp"),
             Object(Matching, "plugProjectNishimuraU/RandPlantUnit.cpp"),
-            Object(Equivalent, "plugProjectNishimuraU/HanachirashiState.cpp"),
+            Object(Matching, "plugProjectNishimuraU/HanachirashiState.cpp"),
             Object(Matching, "plugProjectNishimuraU/HanachirashiAnimator.cpp"),
             Object(Matching, "plugProjectNishimuraU/HanachirashiMgr.cpp"),
             Object(Equivalent, "plugProjectNishimuraU/Hanachirashi.cpp"),
@@ -1565,7 +1493,7 @@ config.libs = [
             Object(Matching, "plugProjectNishimuraU/GasOtakara.cpp"),
             Object(Matching, "plugProjectNishimuraU/ElecOtakaraMgr.cpp"),
             Object(Matching, "plugProjectNishimuraU/ElecOtakara.cpp"),
-            Object(Equivalent, "plugProjectNishimuraU/ImomushiState.cpp"),
+            Object(Matching, "plugProjectNishimuraU/ImomushiState.cpp"),
             Object(Matching, "plugProjectNishimuraU/ImomushiAnimator.cpp"),
             Object(Matching, "plugProjectNishimuraU/ImomushiMgr.cpp"),
             Object(Equivalent, "plugProjectNishimuraU/Imomushi.cpp"),
@@ -1613,7 +1541,7 @@ config.libs = [
             Object(Matching, "plugProjectNishimuraU/SokkuriMgr.cpp"),
             Object(Matching, "plugProjectNishimuraU/Sokkuri.cpp"),
             Object(Equivalent, "plugProjectNishimuraU/JointShadowBase.cpp"),
-            Object(Equivalent, "plugProjectNishimuraU/UmimushiShadow.cpp"),
+            Object(Matching, "plugProjectNishimuraU/UmimushiShadow.cpp"),
             Object(Matching, "plugProjectNishimuraU/HanaMgr.cpp"),
             Object(Matching, "plugProjectNishimuraU/Hana.cpp"),
             Object(Equivalent, "plugProjectNishimuraU/BigTreasureAttack.cpp"),
@@ -1623,7 +1551,7 @@ config.libs = [
             Object(Matching, "plugProjectNishimuraU/BombOtakara.cpp"),
             Object(Matching, "plugProjectNishimuraU/DangoMushiState.cpp"),
             Object(Matching, "plugProjectNishimuraU/DangoMushiMgr.cpp"),
-            Object(Equivalent, "plugProjectNishimuraU/DangoMushi.cpp"),
+            Object(Matching, "plugProjectNishimuraU/DangoMushi.cpp"),
             Object(Matching, "plugProjectNishimuraU/GreenKabutoMgr.cpp"),
             Object(Matching, "plugProjectNishimuraU/GreenKabuto.cpp"),
             Object(Matching, "plugProjectNishimuraU/RedKabutoMgr.cpp"),
@@ -1758,7 +1686,7 @@ config.libs = [
         "host": True,
         "objects": [
             Object(Equivalent, "plugProjectMorimuraU/dayEndCount.cpp"),
-            Object(Equivalent, "plugProjectMorimuraU/hurryUp2D.cpp"),
+            Object(Matching, "plugProjectMorimuraU/hurryUp2D.cpp"),
             Object(Matching, "plugProjectMorimuraU/gameOver2D.cpp"),
             Object(Matching, "plugProjectMorimuraU/testBase.cpp"),
             Object(Matching, "plugProjectMorimuraU/bombState.cpp"),
@@ -1772,7 +1700,7 @@ config.libs = [
             Object(Matching, "plugProjectMorimuraU/panModokiState.cpp"),
             Object(Matching, "plugProjectMorimuraU/panModokiAnimator.cpp"),
             Object(Matching, "plugProjectMorimuraU/panModokiMgr.cpp"),
-            Object(Equivalent, "plugProjectMorimuraU/panModoki.cpp"),
+            Object(Matching, "plugProjectMorimuraU/panModoki.cpp"),
             Object(Matching, "plugProjectMorimuraU/plantsMgr.cpp"),
             Object(Matching, "plugProjectMorimuraU/plantsAnimator.cpp"),
             Object(Matching, "plugProjectMorimuraU/plants.cpp"),
@@ -1793,7 +1721,7 @@ config.libs = [
             Object(Matching, "plugProjectMorimuraU/tamagoMushiAnimator.cpp"),
             Object(Matching, "plugProjectMorimuraU/tamagoMushiMgr.cpp"),
             Object(Matching, "plugProjectMorimuraU/tamagoMushi.cpp"),
-            Object(Equivalent, "plugProjectMorimuraU/zukan2D.cpp"),
+            Object(Matching, "plugProjectMorimuraU/zukan2D.cpp"),
             Object(Equivalent, "plugProjectMorimuraU/hiScore2D.cpp"),
             Object(Matching, "plugProjectMorimuraU/umiMushiState.cpp"),
             Object(Matching, "plugProjectMorimuraU/umiMushiAnimator.cpp"),
@@ -1853,7 +1781,7 @@ config.libs = [
             Object(Matching, "plugProjectEbisawaU/ebiScreenFramework.cpp"),
             Object(Matching, "plugProjectEbisawaU/ebiScreenPushStart.cpp"),
             Object(
-                Equivalent,
+                Matching,
                 "plugProjectEbisawaU/ebiScreenFileSelect.cpp",
                 extra_cflags=["-sym on"],
             ),
@@ -1888,8 +1816,20 @@ config.libs = [
                 "plugProjectEbisawaU/ebiScreenTMBack.cpp",
                 extra_cflags=["-sym on"],
             ),
+            # JP-only title menu
+            *(
+                [
+                    Object(
+                        MatchingFor(JP),
+                        "plugProjectEbisawaU/ebiScreenE3TitleMenu.cpp",
+                        extra_cflags=["-sym on"],
+                    )
+                ]
+                if config.version == "GPVJ01"
+                else []
+            ),
             Object(
-                Equivalent,
+                Matching,
                 "plugProjectEbisawaU/ebiMainTitleMgr.cpp",
                 extra_cflags=["-sym on"],
             ),
@@ -1906,7 +1846,7 @@ config.libs = [
                 extra_cflags=["-sym on"],
             ),
             Object(
-                Equivalent,
+                Matching,
                 "plugProjectEbisawaU/ebiOmakeMgr.cpp",
                 extra_cflags=["-sym on"],
             ),
@@ -1941,7 +1881,7 @@ config.libs = [
             Object(Matching, "plugProjectKonoU/newScreenMgr.cpp"),
             Object(Matching, "plugProjectKonoU/khReadyGo.cpp"),
             Object(Matching, "plugProjectKonoU/khFinalFloor.cpp"),
-            Object(Equivalent, "plugProjectKonoU/khDayEndResult.cpp"),
+            Object(Matching, "plugProjectKonoU/khDayEndResult.cpp"),
             Object(Matching, "plugProjectKonoU/khUtil.cpp"),
             Object(Equivalent, "plugProjectKonoU/khFinalResult.cpp"),
             Object(Matching, "plugProjectKonoU/khPayDept.cpp"),

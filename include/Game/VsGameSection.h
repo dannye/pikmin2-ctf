@@ -130,6 +130,7 @@ struct VsGameSection : public BaseGameSection {
 	bool isVersusMode()    { return mGameMode == MODETYPE_Versus; }
 	bool isFruitMode()     { return mGameMode == MODETYPE_Fruit; }
 
+	// Member offsets below are for US/JP/PAL - for US_DEMO1, add 0x24.
 	u8 mGameMode;                                  // _174
 	VSFifo* mVsFifo;                               // _178
 	StateMachine<Game::VsGameSection>* mFsm;       // _17C

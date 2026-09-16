@@ -467,7 +467,7 @@ f32 Pellet::getBuryDepth()
 f32 Pellet::getBuryRadius(f32 pelletSize)
 {
 	f32 buryRadiusValues[5] = { mConfig->mParams.mDepthA.mData, mConfig->mParams.mDepthB.mData, mConfig->mParams.mDepthC.mData,
-		                        mConfig->mParams.mDepthD.mData, mConfig->mParams.mDepthD.mData };
+	                            mConfig->mParams.mDepthD.mData, mConfig->mParams.mDepthD.mData };
 
 	int arrayIndex    = pelletSize * 4.0f;
 	f32 indexFraction = (f32)arrayIndex * 0.25f;
@@ -1033,9 +1033,7 @@ void Pellet::setupParticles()
 				f32 mid       = mConfig->mParams.mHeight.mData * 0.5f;
 				f32 midRadius = radius - mid;
 				f32 theta     = (TAU / (f32)particleCount) * (f32)i;
-				f32 cos       = midRadius * cosf(theta);
-				f32 sin       = midRadius * sinf(theta);
-				Vector3f rotation(sin, 0.0f, cos);
+				Vector3f rotation(midRadius * sinf(theta), 0.0f, midRadius * cosf(theta));
 				// _2F4                        = _2F4 + rotation;
 				setupDynParticle(i, mid, rotation);
 				// mDynParticle->getAt(i)->_00 = rotation;
@@ -1299,13 +1297,14 @@ void Pellet::setupParticles_simple()
 	f32 radius = getStickRadius();
 	createParticles(mMaxCollParticle);
 
-	f32 endIndex = (f32)mMaxCollParticle;
+	f32 endIndex    = (f32)mMaxCollParticle;
+	f32 angularStep = TAU / endIndex;
 
 	f32 mid = mConfig->mParams.mHeight.mData * 0.5f;
 	radius -= mid;
 
 	for (int i = 0; i < mMaxCollParticle; i++) {
-		f32 theta = (TAU / endIndex) * (f32)i;
+		f32 theta = angularStep * (f32)i;
 		Vector3f rotation(radius * sinf(theta), 0.0f, radius * cosf(theta));
 		setupDynParticle(i, mid, rotation);
 	}
@@ -1480,8 +1479,9 @@ void Pellet::setupParticles_tall()
 	f32 endIndex   = (f32)count;
 	mid            = radius - height;
 
+	f32 angularStep = TAU / endIndex;
 	for (int i = 0; i < count; i++) {
-		f32 theta = (TAU / endIndex) * (f32)i;
+		f32 theta = angularStep * (f32)i;
 		Vector3f rotation(mid * sinf(theta), heightDiff, mid * cosf(theta));
 		setupDynParticle(i, height, rotation);
 	}
@@ -4677,6 +4677,14 @@ void BasePelletMgr::load()
 	char buffer[512];
 	char* file = nullptr;
 
+#if defined(VERSION_PAL)
+	if (gGameConfig.mParms.mPelletMultiLang.mData != 0) {
+		sprintf(buffer, "/user/Abe/Pellet/%s/", "pal");
+		file = buffer;
+	} else {
+		file = "user/Kando/pellet/";
+	}
+#else
 	if (gGameConfig.mParms.mPelletMultiLang.mData != 0) {
 		switch (sys->mRegion) {
 		case System::LANG_Japanese:
@@ -4699,6 +4707,7 @@ void BasePelletMgr::load()
 	} else {
 		file = "user/Kando/pellet/";
 	}
+#endif
 
 	char buffer2[512];
 
@@ -4762,6 +4771,14 @@ void BasePelletMgr::load_texArc(char* filename)
 	char buffer[512];
 	char* directory = nullptr;
 
+#if defined(VERSION_PAL)
+	if (gGameConfig.mParms.mPelletMultiLang.mData != 0) {
+		sprintf(buffer, "/user/Abe/Pellet/%s/", "pal");
+		directory = buffer;
+	} else {
+		directory = "user/Kando/pellet/";
+	}
+#else
 	if (gGameConfig.mParms.mPelletMultiLang.mData != 0) {
 		switch (sys->mRegion) {
 		case System::LANG_Japanese:
@@ -4784,6 +4801,7 @@ void BasePelletMgr::load_texArc(char* filename)
 	} else {
 		directory = "user/Kando/pellet/";
 	}
+#endif
 
 	char path[512];
 	sprintf(path, "%s%s", directory, filename);
@@ -4865,6 +4883,14 @@ JKRArchive* BasePelletMgr::openTextArc(char* arc)
 {
 	char directory[512];
 	char* file = nullptr;
+#if defined(VERSION_PAL)
+	if (gGameConfig.mParms.mPelletMultiLang.mData != 0) {
+		sprintf(directory, "/user/Abe/Pellet/%s/", "pal");
+		file = directory;
+	} else {
+		file = "user/Kando/pellet/";
+	}
+#else
 	if (gGameConfig.mParms.mPelletMultiLang.mData != 0) {
 		switch (sys->mRegion) {
 		case System::LANG_Japanese:
@@ -4887,6 +4913,7 @@ JKRArchive* BasePelletMgr::openTextArc(char* arc)
 	} else {
 		file = "user/Kando/pellet/";
 	}
+#endif
 
 	char filePath[512];
 
