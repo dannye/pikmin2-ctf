@@ -755,6 +755,133 @@ bool NaviWalkState::execAI_wait(Navi* navi)
 		navi->mFaceDir = roundAng(navi->mFaceDir);
 	}
 	return true;
+	/*
+	stwu     r1, -0x50(r1)
+	mflr     r0
+	stw      r0, 0x54(r1)
+	stfd     f31, 0x40(r1)
+	psq_st   f31, 72(r1), 0, qr0
+	stfd     f30, 0x30(r1)
+	psq_st   f30, 56(r1), 0, qr0
+	stw      r31, 0x2c(r1)
+	stw      r30, 0x28(r1)
+	lis      r5, "zero__10Vector3<f>"@ha
+	mr       r30, r3
+	addi     r5, r5, "zero__10Vector3<f>"@l
+	mr       r31, r4
+	bl       "blendVelocity__Q24Game13NaviWalkStateFPQ24Game4NaviR10Vector3<f>"
+	lwz      r3, sys@sda21(r13)
+	lfs      f2, 0x14(r30)
+	lfs      f1, 0x54(r3)
+	lfs      f0, lbl_80518BE0@sda21(r2)
+	fsubs    f1, f2, f1
+	stfs     f1, 0x14(r30)
+	lfs      f1, 0x14(r30)
+	fcmpo    cr0, f1, f0
+	cror     2, 0, 2
+	bne      lbl_8017F5F4
+	mr       r3, r30
+	mr       r4, r31
+	bl       initAI_animation__Q24Game13NaviWalkStateFPQ24Game4Navi
+	bl       rand
+	xoris    r3, r3, 0x8000
+	lis      r0, 0x4330
+	stw      r3, 0x24(r1)
+	lfd      f3, lbl_80518C30@sda21(r2)
+	stw      r0, 0x20(r1)
+	lfs      f1, lbl_80518C08@sda21(r2)
+	lfd      f2, 0x20(r1)
+	lfs      f0, lbl_80518C3C@sda21(r2)
+	fsubs    f2, f2, f3
+	fdivs    f1, f2, f1
+	fadds    f0, f0, f1
+	stfs     f0, 0x14(r30)
+	b        lbl_8017F6EC
+
+lbl_8017F5F4:
+	lwz      r0, 0x18(r30)
+	cmplwi   r0, 0
+	beq      lbl_8017F6EC
+	mr       r4, r31
+	addi     r3, r1, 0x14
+	lwz      r12, 0(r31)
+	lwz      r12, 8(r12)
+	mtctr    r12
+	bctrl
+	lwz      r4, 0x18(r30)
+	addi     r3, r1, 8
+	lfs      f31, 0x14(r1)
+	lwz      r12, 0(r4)
+	lfs      f30, 0x1c(r1)
+	lwz      r12, 8(r12)
+	mtctr    r12
+	bctrl
+	lfs      f2, 0x10(r1)
+	lfs      f4, 8(r1)
+	fsubs    f1, f30, f2
+	lfs      f0, lbl_80518C44@sda21(r2)
+	fsubs    f3, f31, f4
+	fmuls    f1, f1, f1
+	fmadds   f1, f3, f3, f1
+	fcmpo    cr0, f1, f0
+	ble      lbl_8017F668
+	li       r0, 0
+	stw      r0, 0x18(r30)
+	b        lbl_8017F6EC
+
+lbl_8017F668:
+	fsubs    f2, f2, f30
+	lfs      f3, lbl_80518BE0@sda21(r2)
+	fsubs    f1, f4, f31
+	fmuls    f4, f2, f2
+	fmadds   f0, f1, f1, f3
+	fadds    f4, f4, f0
+	fcmpo    cr0, f4, f3
+	ble      lbl_8017F698
+	ble      lbl_8017F69C
+	frsqrte  f0, f4
+	fmuls    f4, f0, f4
+	b        lbl_8017F69C
+
+lbl_8017F698:
+	fmr      f4, f3
+
+lbl_8017F69C:
+	lfs      f0, lbl_80518BE0@sda21(r2)
+	fcmpo    cr0, f4, f0
+	ble      lbl_8017F6B8
+	lfs      f0, lbl_80518C48@sda21(r2)
+	fdivs    f0, f0, f4
+	fmuls    f1, f1, f0
+	fmuls    f2, f2, f0
+
+lbl_8017F6B8:
+	lis      r3, atanTable___5JMath@ha
+	addi     r3, r3, atanTable___5JMath@l
+	bl       "atan2___Q25JMath18TAtanTable<1024,f>CFff"
+	bl       roundAng__Ff
+	lfs      f2, 0x1fc(r31)
+	bl       angDist__Fff
+	lfs      f2, lbl_80518C28@sda21(r2)
+	lfs      f0, 0x1fc(r31)
+	fmadds   f0, f2, f1, f0
+	stfs     f0, 0x1fc(r31)
+	lfs      f1, 0x1fc(r31)
+	bl       roundAng__Ff
+	stfs     f1, 0x1fc(r31)
+
+lbl_8017F6EC:
+	psq_l    f31, 72(r1), 0, qr0
+	lfd      f31, 0x40(r1)
+	psq_l    f30, 56(r1), 0, qr0
+	lfd      f30, 0x30(r1)
+	lwz      r31, 0x2c(r1)
+	lwz      r0, 0x54(r1)
+	lwz      r30, 0x28(r1)
+	mtlr     r0
+	addi     r1, r1, 0x50
+	blr
+	*/
 }
 
 /**
@@ -2377,6 +2504,552 @@ void NaviNukuAdjustState::exec(Navi* navi)
 		navi->mVelocity       = finalVel;
 		navi->mTargetVelocity = finalVel;
 	}
+
+	/*
+	stwu     r1, -0xf0(r1)
+	mflr     r0
+	stw      r0, 0xf4(r1)
+	stfd     f31, 0xe0(r1)
+	psq_st   f31, 232(r1), 0, qr0
+	stfd     f30, 0xd0(r1)
+	psq_st   f30, 216(r1), 0, qr0
+	stfd     f29, 0xc0(r1)
+	psq_st   f29, 200(r1), 0, qr0
+	stfd     f28, 0xb0(r1)
+	psq_st   f28, 184(r1), 0, qr0
+	stfd     f27, 0xa0(r1)
+	psq_st   f27, 168(r1), 0, qr0
+	stfd     f26, 0x90(r1)
+	psq_st   f26, 152(r1), 0, qr0
+	stfd     f25, 0x80(r1)
+	psq_st   f25, 136(r1), 0, qr0
+	stw      r31, 0x7c(r1)
+	stw      r30, 0x78(r1)
+	stw      r29, 0x74(r1)
+	lwz      r5, moviePlayer__4Game@sda21(r13)
+	mr       r30, r3
+	mr       r31, r4
+	cmplwi   r5, 0
+	beq      lbl_801824CC
+	lwz      r0, 0x18(r5)
+	cmpwi    r0, 0
+	beq      lbl_801824CC
+	lbz      r0, 0x48(r30)
+	cmplwi   r0, 0
+	beq      lbl_801824B0
+	lwz      r12, 0(r3)
+	li       r5, 1
+	li       r6, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80182B48
+
+	lbl_801824B0:
+	lwz      r12, 0(r3)
+	li       r5, 0
+	li       r6, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80182B48
+
+	lbl_801824CC:
+	lwz      r3, 0x44(r30)
+	lwz      r12, 0(r3)
+	lwz      r12, 0xa8(r12)
+	mtctr    r12
+	bctrl
+	clrlwi.  r0, r3, 0x18
+	bne      lbl_8018253C
+	lbz      r0, 0x48(r30)
+	cmplwi   r0, 0
+	beq      lbl_80182518
+	mr       r3, r30
+	mr       r4, r31
+	lwz      r12, 0(r30)
+	li       r5, 1
+	li       r6, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80182B48
+
+	lbl_80182518:
+	mr       r3, r30
+	mr       r4, r31
+	lwz      r12, 0(r30)
+	li       r5, 0
+	li       r6, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80182B48
+
+	lbl_8018253C:
+	lbz      r0, 0x48(r30)
+	cmplwi   r0, 0
+	bne      lbl_80182554
+	mr       r3, r31
+	li       r4, 0
+	bl       makeCStick__Q24Game4NaviFb
+
+	lbl_80182554:
+	lwz      r3, 0x278(r31)
+	cmplwi   r3, 0
+	beq      lbl_80182598
+	lwz      r0, 0x18(r3)
+	rlwinm.  r0, r0, 0, 0x16, 0x16
+	beq      lbl_80182598
+	li       r0, 0
+	mr       r3, r30
+	stb      r0, 0x26a(r31)
+	mr       r4, r31
+	li       r5, 0
+	li       r6, 0
+	lwz      r12, 0(r30)
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80182B48
+
+	lbl_80182598:
+	mr       r4, r31
+	addi     r3, r1, 0x50
+	lwz      r12, 0(r31)
+	lwz      r12, 8(r12)
+	mtctr    r12
+	bctrl
+	lfs      f0, 0x50(r1)
+	mr       r4, r31
+	addi     r3, r1, 0x38
+	stfs     f0, 0x24(r30)
+	lfs      f0, 0x54(r1)
+	stfs     f0, 0x28(r30)
+	lfs      f0, 0x58(r1)
+	stfs     f0, 0x2c(r30)
+	lwz      r12, 0(r31)
+	lwz      r12, 8(r12)
+	mtctr    r12
+	bctrl
+	lwz      r4, 0x44(r30)
+	addi     r3, r1, 0x44
+	lwz      r12, 0(r4)
+	lwz      r12, 8(r12)
+	mtctr    r12
+	bctrl
+	lfs      f1, 0x48(r1)
+	lfs      f0, 0x3c(r1)
+	lfs      f3, 0x44(r1)
+	fsubs    f4, f1, f0
+	lfs      f2, 0x38(r1)
+	lfs      f1, 0x4c(r1)
+	lfs      f0, 0x40(r1)
+	fsubs    f2, f3, f2
+	fmuls    f4, f4, f4
+	fsubs    f3, f1, f0
+	lfs      f0, lbl_80518BE0@sda21(r2)
+	fmadds   f1, f2, f2, f4
+	fmuls    f2, f3, f3
+	fadds    f1, f2, f1
+	fcmpo    cr0, f1, f0
+	mr       r4, r31
+	addi     r3, r1, 0x2c
+	lwz      r12, 0(r31)
+	lwz      r12, 8(r12)
+	mtctr    r12
+	bctrl
+	lfs      f3, 0x14(r30)
+	lfs      f2, 0x2c(r1)
+	lfs      f1, 0x1c(r30)
+	lfs      f0, 0x34(r1)
+	fsubs    f28, f3, f2
+	lfs      f2, 0x18(r30)
+	fsubs    f26, f1, f0
+	lfs      f1, 0x30(r1)
+	fmuls    f4, f28, f28
+	lfs      f0, lbl_80518BE0@sda21(r2)
+	fsubs    f27, f2, f1
+	fmuls    f3, f26, f26
+	fadds    f1, f4, f3
+	fcmpo    cr0, f1, f0
+	ble      lbl_801826A0
+	fmadds   f31, f28, f28, f3
+	fcmpo    cr0, f31, f0
+	ble      lbl_801826A4
+	frsqrte  f0, f31
+	fmuls    f31, f0, f31
+	b        lbl_801826A4
+
+	lbl_801826A0:
+	fmr      f31, f0
+
+	lbl_801826A4:
+	fmuls    f5, f27, f27
+	lfs      f1, lbl_80518BE0@sda21(r2)
+	fabs     f2, f27
+	fadds    f0, f4, f5
+	frsp     f29, f2
+	fadds    f0, f3, f0
+	fcmpo    cr0, f0, f1
+	ble      lbl_801826E0
+	fmadds   f0, f28, f28, f5
+	fadds    f30, f3, f0
+	fcmpo    cr0, f30, f1
+	ble      lbl_801826E4
+	frsqrte  f0, f30
+	fmuls    f30, f0, f30
+	b        lbl_801826E4
+
+	lbl_801826E0:
+	fmr      f30, f1
+
+	lbl_801826E4:
+	lfs      f0, lbl_80518BE0@sda21(r2)
+	fcmpo    cr0, f30, f0
+	ble      lbl_80182708
+	lfs      f0, lbl_80518C48@sda21(r2)
+	fdivs    f0, f0, f30
+	fmuls    f28, f28, f0
+	fmuls    f27, f27, f0
+	fmuls    f26, f26, f0
+	b        lbl_8018270C
+
+	lbl_80182708:
+	fmr      f30, f0
+
+	lbl_8018270C:
+	lfs      f25, 0x10(r30)
+	lfs      f2, 0x1fc(r31)
+	fmr      f1, f25
+	bl       angDist__Fff
+	fabs     f2, f1
+	lfs      f0, lbl_80518C84@sda21(r2)
+	frsp     f2, f2
+	fcmpo    cr0, f2, f0
+	bge      lbl_801828AC
+	lfs      f0, lbl_80518C3C@sda21(r2)
+	fcmpo    cr0, f31, f0
+	bge      lbl_801828AC
+	lfs      f0, lbl_80518C4C@sda21(r2)
+	fcmpo    cr0, f29, f0
+	bge      lbl_801828AC
+	stfs     f25, 0x1fc(r31)
+	li       r0, 1
+	stw      r0, mBirthMode__Q24Game7PikiMgr@sda21(r13)
+	lwz      r3, pikiMgr__4Game@sda21(r13)
+	lwz      r12, 0(r3)
+	lwz      r12, 0x7c(r12)
+	mtctr    r12
+	bctrl
+	li       r0, 0
+	or.      r29, r3, r3
+	stw      r0, mBirthMode__Q24Game7PikiMgr@sda21(r13)
+	bne      lbl_801827CC
+	lbz      r0, 0x48(r30)
+	cmplwi   r0, 0
+	beq      lbl_801827A8
+	mr       r3, r30
+	mr       r4, r31
+	lwz      r12, 0(r30)
+	li       r5, 1
+	li       r6, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80182B48
+
+	lbl_801827A8:
+	mr       r3, r30
+	mr       r4, r31
+	lwz      r12, 0(r30)
+	li       r5, 0
+	li       r6, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80182B48
+
+	lbl_801827CC:
+	li       r4, 0
+	bl       init__Q24Game8CreatureFPQ24Game15CreatureInitArg
+	lwz      r4, 0x44(r30)
+	mr       r3, r29
+	lhz      r4, 0x1f4(r4)
+	bl       changeShape__Q24Game4PikiFi
+	lwz      r4, 0x44(r30)
+	mr       r3, r29
+	lhz      r4, 0x1f6(r4)
+	bl       changeHappa__Q24Game4PikiFi
+	lwz      r4, 0x44(r30)
+	addi     r3, r1, 0x20
+	lwz      r12, 0(r4)
+	lwz      r12, 8(r12)
+	mtctr    r12
+	bctrl
+	lfs      f2, 0x20(r1)
+	mr       r3, r29
+	lfs      f1, 0x24(r1)
+	addi     r4, r1, 0x5c
+	lfs      f0, 0x28(r1)
+	li       r5, 0
+	stfs     f2, 0x5c(r1)
+	stfs     f1, 0x60(r1)
+	stfs     f0, 0x64(r1)
+	bl       "setPosition__Q24Game8CreatureFR10Vector3<f>b"
+	lwz      r3, 0x44(r30)
+	li       r4, 0
+	bl       kill__Q24Game8CreatureFPQ24Game15CreatureKillArg
+	li       r0, 0
+	mr       r4, r29
+	stw      r0, 0x44(r30)
+	addi     r6, r1, 0xc
+	li       r5, 0xc
+	lbz      r3, 0x26a(r31)
+	neg      r0, r3
+	stw      r31, 0x10(r1)
+	or       r0, r0, r3
+	srwi     r0, r0, 0x1f
+	stb      r0, 0xc(r1)
+	lwz      r3, 0x28c(r29)
+	lwz      r12, 0(r3)
+	lwz      r12, 0x14(r12)
+	mtctr    r12
+	bctrl
+	lbz      r0, 0x48(r30)
+	mr       r3, r30
+	mr       r4, r31
+	addi     r6, r1, 8
+	stb      r0, 8(r1)
+	li       r5, 8
+	lwz      r12, 0(r30)
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80182918
+
+	lbl_801828AC:
+	lfs      f0, lbl_80518C28@sda21(r2)
+	lfs      f2, 0x1fc(r31)
+	fmuls    f0, f0, f1
+	fadds    f1, f2, f0
+	bl       roundAng__Ff
+	stfs     f1, 0x1fc(r31)
+	lfs      f4, lbl_80518C14@sda21(r2)
+	lwz      r3, sys@sda21(r13)
+	lfs      f1, 0x54(r3)
+	fmuls    f0, f4, f1
+	fcmpo    cr0, f0, f30
+	ble      lbl_801828E4
+	lfs      f0, lbl_80518C04@sda21(r2)
+	fdivs    f4, f0, f1
+
+	lbl_801828E4:
+	fmuls    f3, f28, f4
+	lfs      f0, lbl_80518BE0@sda21(r2)
+	fmuls    f2, f27, f4
+	fmuls    f1, f26, f4
+	stfs     f3, 0x200(r31)
+	stfs     f2, 0x204(r31)
+	stfs     f1, 0x208(r31)
+	stfs     f0, 0x1e4(r31)
+	stfs     f0, 0x1e8(r31)
+	stfs     f0, 0x1ec(r31)
+	stfs     f3, 0x1e4(r31)
+	stfs     f2, 0x1e8(r31)
+	stfs     f1, 0x1ec(r31)
+
+	lbl_80182918:
+	lbz      r0, 0x5c(r30)
+	cmplwi   r0, 0xa
+	ble      lbl_80182978
+	lbz      r0, 0x48(r30)
+	cmplwi   r0, 0
+	beq      lbl_80182954
+	mr       r3, r30
+	mr       r4, r31
+	lwz      r12, 0(r30)
+	li       r5, 1
+	li       r6, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80182B48
+
+	lbl_80182954:
+	mr       r3, r30
+	mr       r4, r31
+	lwz      r12, 0(r30)
+	li       r5, 0
+	li       r6, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80182B48
+
+	lbl_80182978:
+	lbz      r3, 0x4c(r30)
+	cmplwi   r3, 0
+	beq      lbl_80182B48
+	lfs      f29, 0x200(r31)
+	addi     r0, r3, -1
+	lfs      f30, 0x204(r31)
+	mr       r4, r31
+	lfs      f31, 0x208(r31)
+	addi     r3, r1, 0x14
+	stb      r0, 0x4c(r30)
+	lwz      r12, 0(r31)
+	lwz      r12, 8(r12)
+	mtctr    r12
+	bctrl
+	lfs      f1, 0x54(r30)
+	lfs      f0, 0x18(r1)
+	lfs      f2, 0x50(r30)
+	fsubs    f4, f1, f0
+	lfs      f1, 0x14(r1)
+	lfs      f3, 0x58(r30)
+	lfs      f0, 0x1c(r1)
+	fsubs    f5, f2, f1
+	fmuls    f1, f4, f4
+	fsubs    f3, f3, f0
+	lfs      f0, lbl_80518BE0@sda21(r2)
+	fmadds   f1, f5, f5, f1
+	fmuls    f2, f3, f3
+	fadds    f1, f2, f1
+	fcmpo    cr0, f1, f0
+	ble      lbl_80182A00
+	ble      lbl_80182A04
+	frsqrte  f0, f1
+	fmuls    f1, f0, f1
+	b        lbl_80182A04
+
+	lbl_80182A00:
+	fmr      f1, f0
+
+	lbl_80182A04:
+	lfs      f0, lbl_80518BE0@sda21(r2)
+	fcmpo    cr0, f1, f0
+	ble      lbl_80182A24
+	lfs      f0, lbl_80518C48@sda21(r2)
+	fdivs    f0, f0, f1
+	fmuls    f5, f5, f0
+	fmuls    f3, f3, f0
+	b        lbl_80182A28
+
+	lbl_80182A24:
+	fmr      f1, f0
+
+	lbl_80182A28:
+	lfs      f2, lbl_80518BE0@sda21(r2)
+	fcmpo    cr0, f1, f2
+	ble      lbl_80182B48
+	fmuls    f0, f30, f30
+	fmuls    f1, f5, f31
+	fmuls    f4, f31, f31
+	fmadds   f0, f29, f29, f0
+	fmsubs   f1, f3, f29, f1
+	fneg     f3, f3
+	fadds    f7, f4, f0
+	fcmpo    cr0, f7, f2
+	ble      lbl_80182A68
+	ble      lbl_80182A6C
+	frsqrte  f0, f7
+	fmuls    f7, f0, f7
+	b        lbl_80182A6C
+
+	lbl_80182A68:
+	fmr      f7, f2
+
+	lbl_80182A6C:
+	lfs      f0, lbl_80518BE0@sda21(r2)
+	fmuls    f3, f3, f7
+	fmuls    f8, f5, f7
+	fcmpo    cr0, f1, f0
+	fmuls    f1, f0, f7
+	blt      lbl_80182A94
+	lfs      f0, lbl_80518C88@sda21(r2)
+	fmuls    f3, f3, f0
+	fmuls    f1, f1, f0
+	fmuls    f8, f8, f0
+
+	lbl_80182A94:
+	lfs      f6, lbl_80518C8C@sda21(r2)
+	lfs      f4, lbl_80518C90@sda21(r2)
+	fmuls    f2, f30, f6
+	lfs      f0, lbl_80518BE0@sda21(r2)
+	fmuls    f1, f1, f4
+	fmuls    f5, f29, f6
+	fmuls    f3, f3, f4
+	fadds    f9, f2, f1
+	fmuls    f2, f31, f6
+	fmuls    f1, f8, f4
+	fadds    f4, f5, f3
+	fmuls    f3, f9, f9
+	fadds    f5, f2, f1
+	fmadds   f1, f4, f4, f3
+	fmuls    f2, f5, f5
+	fadds    f1, f2, f1
+	fcmpo    cr0, f1, f0
+	ble      lbl_80182AEC
+	ble      lbl_80182AF0
+	frsqrte  f0, f1
+	fmuls    f1, f0, f1
+	b        lbl_80182AF0
+
+	lbl_80182AEC:
+	fmr      f1, f0
+
+	lbl_80182AF0:
+	lfs      f0, lbl_80518BE0@sda21(r2)
+	fcmpo    cr0, f1, f0
+	ble      lbl_80182B14
+	lfs      f0, lbl_80518C48@sda21(r2)
+	fdivs    f0, f0, f1
+	fmuls    f4, f4, f0
+	fmuls    f9, f9, f0
+	fmuls    f5, f5, f0
+	b        lbl_80182B18
+
+	lbl_80182B14:
+	fmr      f1, f0
+
+	lbl_80182B18:
+	lfs      f0, lbl_80518BE0@sda21(r2)
+	fcmpu    cr0, f0, f1
+	beq      lbl_80182B48
+	fmuls    f0, f4, f7
+	fmuls    f1, f9, f7
+	fmuls    f2, f5, f7
+	stfs     f0, 0x200(r31)
+	stfs     f1, 0x204(r31)
+	stfs     f2, 0x208(r31)
+	stfs     f0, 0x1e4(r31)
+	stfs     f1, 0x1e8(r31)
+	stfs     f2, 0x1ec(r31)
+
+	lbl_80182B48:
+	psq_l    f31, 232(r1), 0, qr0
+	lfd      f31, 0xe0(r1)
+	psq_l    f30, 216(r1), 0, qr0
+	lfd      f30, 0xd0(r1)
+	psq_l    f29, 200(r1), 0, qr0
+	lfd      f29, 0xc0(r1)
+	psq_l    f28, 184(r1), 0, qr0
+	lfd      f28, 0xb0(r1)
+	psq_l    f27, 168(r1), 0, qr0
+	lfd      f27, 0xa0(r1)
+	psq_l    f26, 152(r1), 0, qr0
+	lfd      f26, 0x90(r1)
+	psq_l    f25, 136(r1), 0, qr0
+	lfd      f25, 0x80(r1)
+	lwz      r31, 0x7c(r1)
+	lwz      r30, 0x78(r1)
+	lwz      r0, 0xf4(r1)
+	lwz      r29, 0x74(r1)
+	mtlr     r0
+	addi     r1, r1, 0xf0
+	blr
+	*/
 }
 
 /**
@@ -4636,6 +5309,777 @@ void NaviThrowWaitState::exec(Navi* navi)
 			sortPikis(navi);
 		}
 	}
+
+	/*
+	stwu     r1, -0xf0(r1)
+	mflr     r0
+	stw      r0, 0xf4(r1)
+	stfd     f31, 0xe0(r1)
+	psq_st   f31, 232(r1), 0, qr0
+	stfd     f30, 0xd0(r1)
+	psq_st   f30, 216(r1), 0, qr0
+	stfd     f29, 0xc0(r1)
+	psq_st   f29, 200(r1), 0, qr0
+	stmw     r23, 0x9c(r1)
+	lwz      r5, moviePlayer__4Game@sda21(r13)
+	mr       r28, r3
+	mr       r29, r4
+	cmplwi   r5, 0
+	beq      lbl_80186358
+	lwz      r0, 0x18(r5)
+	cmpwi    r0, 0
+	beq      lbl_80186358
+	lwz      r12, 0(r3)
+	li       r5, 0
+	li       r6, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80186DA8
+
+lbl_80186358:
+	lwz      r0, 0x278(r29)
+	cmplwi   r0, 0
+	beq      lbl_80186DA8
+	mr       r3, r29
+	bl       control__Q24Game4NaviFv
+	lwz      r0, 0x14(r28)
+	cmplwi   r0, 0
+	bne      lbl_80186544
+	lwz      r0, 0x18(r28)
+	cmplwi   r0, 0
+	beq      lbl_80186520
+	lwz      r3, sys@sda21(r13)
+	lfs      f2, 0x28(r28)
+	lfs      f1, 0x54(r3)
+	lfs      f0, lbl_80518BE0@sda21(r2)
+	fsubs    f1, f2, f1
+	stfs     f1, 0x28(r28)
+	lfs      f1, 0x28(r28)
+	fcmpo    cr0, f1, f0
+	bge      lbl_801863CC
+	mr       r3, r28
+	mr       r4, r29
+	lwz      r12, 0(r28)
+	li       r5, 0
+	li       r6, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80186DA8
+
+lbl_801863CC:
+	lwz      r3, 0x278(r29)
+	lwz      r0, 0x1c(r3)
+	rlwinm.  r0, r0, 0, 0x16, 0x16
+	beq      lbl_80186400
+	mr       r3, r28
+	mr       r4, r29
+	lwz      r12, 0(r28)
+	li       r5, 0
+	li       r6, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80186DA8
+
+lbl_80186400:
+	lis      r4, 0x72686E64@ha
+	lwz      r3, 0x114(r29)
+	addi     r4, r4, 0x72686E64@l
+	bl       getCollPart__8CollTreeFUl
+	lwz      r4, 0x18(r28)
+	lfs      f31, 0x4c(r3)
+	lwz      r12, 0(r4)
+	lfs      f30, 0x50(r3)
+	lwz      r12, 8(r12)
+	lfs      f29, 0x54(r3)
+	addi     r3, r1, 0x30
+	mtctr    r12
+	bctrl
+	lfs      f0, 0x34(r1)
+	lfs      f2, 0x30(r1)
+	fsubs    f4, f30, f0
+	lfs      f1, 0x38(r1)
+	fsubs    f3, f31, f2
+	lfs      f0, lbl_80518BE0@sda21(r2)
+	fsubs    f2, f29, f1
+	fmuls    f1, f4, f4
+	fmuls    f2, f2, f2
+	fmadds   f1, f3, f3, f1
+	fadds    f1, f2, f1
+	fcmpo    cr0, f1, f0
+	ble      lbl_80186478
+	ble      lbl_8018647C
+	frsqrte  f0, f1
+	fmuls    f1, f0, f1
+	b        lbl_8018647C
+
+lbl_80186478:
+	fmr      f1, f0
+
+lbl_8018647C:
+	lfs      f0, lbl_80518CC0@sda21(r2)
+	fcmpo    cr0, f1, f0
+	cror     2, 0, 2
+	bne      lbl_80186DA8
+	lfs      f0, lbl_80518C64@sda21(r2)
+	cmplwi   r28, 0
+	mr       r6, r28
+	stfs     f0, 0x234(r29)
+	beq      lbl_801864A4
+	lwz      r6, 0x10(r28)
+
+lbl_801864A4:
+	lwz      r12, 0(r29)
+	mr       r3, r29
+	li       r4, 0x22
+	li       r5, 0x22
+	lwz      r12, 0x208(r12)
+	li       r7, 0
+	mtctr    r12
+	bctrl
+	mr       r3, r29
+	bl       enableMotionBlend__Q24Game8FakePikiFv
+	lwz      r3, 0x18(r28)
+	li       r0, 0
+	li       r4, 2
+	stw      r3, 0x14(r28)
+	stw      r0, 0x18(r28)
+	lwz      r5, 0x34(r28)
+	lwz      r3, rumbleMgr__4Game@sda21(r13)
+	lhz      r5, 0x2dc(r5)
+	bl       startRumble__Q24Game9RumbleMgrFii
+	lwz      r4, 0x14(r28)
+	li       r5, 4
+	li       r6, 0
+	lwz      r3, 0x28c(r4)
+	lwz      r12, 0(r3)
+	lwz      r12, 0x14(r12)
+	mtctr    r12
+	bctrl
+	li       r0, 1
+	stb      r0, 0x20(r28)
+	b        lbl_80186544
+	b        lbl_80186DA8
+
+lbl_80186520:
+	mr       r3, r28
+	mr       r4, r29
+	lwz      r12, 0(r28)
+	li       r5, 2
+	li       r6, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80186DA8
+
+lbl_80186544:
+	lwz      r3, 0x14(r28)
+	lis      r0, 0x4330
+	stw      r0, 0x88(r1)
+	lfd      f4, lbl_80518C30@sda21(r2)
+	stw      r3, 0x2a8(r29)
+	lfs      f3, lbl_80518C38@sda21(r2)
+	lwz      r3, 0x1c(r28)
+	lwz      r4, 0xc0(r29)
+	xoris    r3, r3, 0x8000
+	stw      r0, 0x90(r1)
+	lfs      f0, 0x520(r4)
+	stw      r3, 0x8c(r1)
+	lfs      f1, 0x548(r4)
+	lfd      f2, 0x88(r1)
+	fsubs    f0, f0, f1
+	fsubs    f2, f2, f4
+	fdivs    f2, f2, f3
+	fmadds   f0, f2, f0, f1
+	stfs     f0, 0x2b4(r29)
+	lwz      r0, 0x1c(r28)
+	lwz      r3, 0xc0(r29)
+	xoris    r0, r0, 0x8000
+	stw      r0, 0x94(r1)
+	lfs      f0, 0x570(r3)
+	lfd      f2, 0x90(r1)
+	lfs      f1, 0x598(r3)
+	fsubs    f2, f2, f4
+	fsubs    f0, f0, f1
+	fdivs    f2, f2, f3
+	fmadds   f0, f2, f0, f1
+	stfs     f0, 0x2b8(r29)
+	lwz      r3, 0x14(r28)
+	cmplwi   r3, 0
+	beq      lbl_80186610
+	lbz      r0, 0x20(r28)
+	cmplwi   r0, 0
+	beq      lbl_80186610
+	bl       getStateID__Q24Game4PikiFv
+	cmpwi    r3, 4
+	beq      lbl_80186610
+	cmpwi    r3, 3
+	beq      lbl_80186610
+	mr       r3, r28
+	mr       r4, r29
+	lwz      r12, 0(r28)
+	li       r5, 0
+	li       r6, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80186DA8
+
+lbl_80186610:
+	lwz      r3, 0x278(r29)
+	lwz      r3, 0x1c(r3)
+	rlwinm.  r0, r3, 0, 0x1e, 0x1e
+	beq      lbl_8018681C
+	li       r0, -1
+	lis      r3, 0x92492493@ha
+	stw      r0, 0x38(r28)
+	addi     r9, r3, 0x92492493@l
+	addi     r26, r1, 0x6c
+	li       r31, 0
+	lwz      r3, 0x14(r28)
+	li       r30, 0
+	lbz      r27, 0x2b8(r3)
+	addi     r10, r27, 1
+	addi     r7, r27, 2
+	mulhw    r6, r9, r10
+	addi     r5, r27, 3
+	addi     r3, r27, 4
+	addi     r0, r27, 5
+	addi     r12, r27, 6
+	mulhw    r4, r9, r7
+	add      r6, r6, r10
+	srawi    r8, r6, 2
+	mulhw    r6, r9, r5
+	srwi     r11, r8, 0x1f
+	add      r4, r4, r7
+	add      r8, r8, r11
+	srawi    r11, r4, 2
+	mulhw    r4, r9, r3
+	add      r6, r6, r5
+	srwi     r24, r11, 0x1f
+	srawi    r23, r6, 2
+	add      r6, r11, r24
+	mulhw    r11, r9, r0
+	add      r4, r4, r3
+	srwi     r25, r23, 0x1f
+	srawi    r24, r4, 2
+	add      r4, r23, r25
+	mulhw    r9, r9, r12
+	srwi     r25, r24, 0x1f
+	add      r11, r11, r0
+	add      r25, r24, r25
+	srawi    r23, r11, 2
+	mulli    r6, r6, 7
+	add      r9, r9, r12
+	srwi     r24, r23, 0x1f
+	mulli    r4, r4, 7
+	srawi    r9, r9, 2
+	subf     r6, r6, r7
+	stw      r6, 0x70(r1)
+	srwi     r11, r9, 0x1f
+	mulli    r6, r25, 7
+	subf     r4, r4, r5
+	add      r23, r23, r24
+	stw      r4, 0x74(r1)
+	mulli    r4, r23, 7
+	add      r9, r9, r11
+	subf     r3, r6, r3
+	stw      r3, 0x78(r1)
+	mulli    r8, r8, 7
+	subf     r0, r4, r0
+	stw      r0, 0x7c(r1)
+	mulli    r3, r9, 7
+	subf     r8, r8, r10
+	stw      r8, 0x6c(r1)
+	subf     r0, r3, r12
+	stw      r0, 0x80(r1)
+
+lbl_8018671C:
+	lwz      r5, 0(r26)
+	mr       r3, r28
+	mr       r4, r29
+	bl       findNearestColorPiki__Q24Game18NaviThrowWaitStateFPQ24Game4Navii
+	cmplwi   r3, 0
+	beq      lbl_8018673C
+	mr       r31, r3
+	b        lbl_8018674C
+
+lbl_8018673C:
+	addi     r30, r30, 1
+	addi     r26, r26, 4
+	cmpwi    r30, 6
+	blt      lbl_8018671C
+
+lbl_8018674C:
+	cmplwi   r31, 0
+	beq      lbl_80186BA4
+	lwz      r23, 0x14(r28)
+	lwz      r3, 0x2c4(r23)
+	cmplwi   r3, 0
+	beq      lbl_801867A8
+	cmpwi    r27, 5
+	bne      lbl_8018678C
+	lwz      r3, 0x26c(r3)
+	li       r4, 0x286b
+	lwzu     r12, 0x30(r3)
+	li       r5, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_801867A8
+
+lbl_8018678C:
+	lwz      r3, 0x26c(r3)
+	li       r4, 0x2802
+	lwzu     r12, 0x30(r3)
+	li       r5, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+
+lbl_801867A8:
+	lwz      r3, 0x28c(r23)
+	mr       r4, r23
+	li       r5, 0
+	li       r6, 0
+	lwz      r12, 0(r3)
+	lwz      r12, 0x14(r12)
+	mtctr    r12
+	bctrl
+	stw      r31, 0x14(r28)
+	mr       r4, r31
+	li       r5, 4
+	li       r6, 0
+	lwz      r3, 0x28c(r31)
+	lwz      r12, 0(r3)
+	lwz      r12, 0x14(r12)
+	mtctr    r12
+	bctrl
+	mr       r3, r28
+	mr       r4, r29
+	bl       sortPikis__Q24Game18NaviThrowWaitStateFPQ24Game4Navi
+	lwz      r3, spSysIF__8PSSystem@sda21(r13)
+	li       r4, 0x1822
+	li       r5, 0
+	bl       playSystemSe__Q28PSSystem5SysIFFUlUl
+	lwz      r3, rumbleMgr__4Game@sda21(r13)
+	li       r4, 2
+	lhz      r5, 0x2dc(r29)
+	bl       startRumble__Q24Game9RumbleMgrFii
+	b        lbl_80186DA8
+
+lbl_8018681C:
+	clrlwi.  r0, r3, 0x1f
+	beq      lbl_80186A20
+	li       r0, -1
+	lis      r3, 0x92492493@ha
+	stw      r0, 0x38(r28)
+	addi     r9, r3, 0x92492493@l
+	addi     r26, r1, 0x54
+	li       r30, 0
+	lwz      r3, 0x14(r28)
+	li       r31, 0
+	lbz      r27, 0x2b8(r3)
+	addi     r10, r27, 6
+	addi     r7, r27, 5
+	mulhw    r6, r9, r10
+	addi     r5, r27, 4
+	addi     r3, r27, 3
+	addi     r0, r27, 2
+	addi     r12, r27, 1
+	mulhw    r4, r9, r7
+	add      r6, r6, r10
+	srawi    r8, r6, 2
+	mulhw    r6, r9, r5
+	srwi     r11, r8, 0x1f
+	add      r4, r4, r7
+	add      r8, r8, r11
+	srawi    r11, r4, 2
+	mulhw    r4, r9, r3
+	add      r6, r6, r5
+	srwi     r24, r11, 0x1f
+	srawi    r23, r6, 2
+	add      r6, r11, r24
+	mulhw    r11, r9, r0
+	add      r4, r4, r3
+	srwi     r25, r23, 0x1f
+	srawi    r24, r4, 2
+	add      r4, r23, r25
+	mulhw    r9, r9, r12
+	srwi     r23, r24, 0x1f
+	add      r11, r11, r0
+	add      r23, r24, r23
+	srawi    r25, r11, 2
+	mulli    r6, r6, 7
+	add      r9, r9, r12
+	srwi     r24, r25, 0x1f
+	mulli    r4, r4, 7
+	srawi    r9, r9, 2
+	subf     r6, r6, r7
+	stw      r6, 0x58(r1)
+	srwi     r11, r9, 0x1f
+	mulli    r6, r23, 7
+	subf     r4, r4, r5
+	add      r25, r25, r24
+	stw      r4, 0x5c(r1)
+	mulli    r4, r25, 7
+	add      r9, r9, r11
+	subf     r3, r6, r3
+	stw      r3, 0x60(r1)
+	mulli    r8, r8, 7
+	subf     r0, r4, r0
+	stw      r0, 0x64(r1)
+	mulli    r3, r9, 7
+	subf     r8, r8, r10
+	stw      r8, 0x54(r1)
+	subf     r0, r3, r12
+	stw      r0, 0x68(r1)
+
+lbl_80186920:
+	lwz      r5, 0(r26)
+	mr       r3, r28
+	mr       r4, r29
+	bl       findNearestColorPiki__Q24Game18NaviThrowWaitStateFPQ24Game4Navii
+	cmplwi   r3, 0
+	beq      lbl_80186940
+	mr       r30, r3
+	b        lbl_80186950
+
+lbl_80186940:
+	addi     r31, r31, 1
+	addi     r26, r26, 4
+	cmpwi    r31, 6
+	blt      lbl_80186920
+
+lbl_80186950:
+	cmplwi   r30, 0
+	beq      lbl_80186BA4
+	lwz      r23, 0x14(r28)
+	lwz      r3, 0x2c4(r23)
+	cmplwi   r3, 0
+	beq      lbl_801869AC
+	cmpwi    r27, 5
+	bne      lbl_80186990
+	lwz      r3, 0x26c(r3)
+	li       r4, 0x286b
+	lwzu     r12, 0x30(r3)
+	li       r5, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_801869AC
+
+lbl_80186990:
+	lwz      r3, 0x26c(r3)
+	li       r4, 0x2802
+	lwzu     r12, 0x30(r3)
+	li       r5, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+
+lbl_801869AC:
+	lwz      r3, 0x28c(r23)
+	mr       r4, r23
+	li       r5, 0
+	li       r6, 0
+	lwz      r12, 0(r3)
+	lwz      r12, 0x14(r12)
+	mtctr    r12
+	bctrl
+	stw      r30, 0x14(r28)
+	mr       r4, r30
+	li       r5, 4
+	li       r6, 0
+	lwz      r3, 0x28c(r30)
+	lwz      r12, 0(r3)
+	lwz      r12, 0x14(r12)
+	mtctr    r12
+	bctrl
+	mr       r3, r28
+	mr       r4, r29
+	bl       sortPikis__Q24Game18NaviThrowWaitStateFPQ24Game4Navi
+	lwz      r3, spSysIF__8PSSystem@sda21(r13)
+	li       r4, 0x1822
+	li       r5, 0
+	bl       playSystemSe__Q28PSSystem5SysIFFUlUl
+	lwz      r3, rumbleMgr__4Game@sda21(r13)
+	li       r4, 2
+	lhz      r5, 0x2dc(r29)
+	bl       startRumble__Q24Game9RumbleMgrFii
+	b        lbl_80186DA8
+
+lbl_80186A20:
+	rlwinm.  r0, r3, 0, 0x1c, 0x1c
+	bne      lbl_80186A30
+	rlwinm.  r0, r3, 0, 0x1d, 0x1d
+	beq      lbl_80186BA4
+
+lbl_80186A30:
+	lwz      r4, 0x14(r28)
+	rlwinm   r31, r3, 0x1e, 0x1f, 0x1f
+	li       r26, 0
+	lbz      r30, 0x2b8(r4)
+	lbz      r27, 0x2b9(r4)
+
+lbl_80186A44:
+	cmplwi   r31, 0
+	beq      lbl_80186A78
+	lwz      r4, 0x38(r28)
+	lis      r3, 0x55555556@ha
+	addi     r0, r3, 0x55555556@l
+	addi     r4, r4, 2
+	mulhw    r3, r0, r4
+	srwi     r0, r3, 0x1f
+	add      r0, r3, r0
+	mulli    r0, r0, 3
+	subf     r0, r0, r4
+	stw      r0, 0x38(r28)
+	b        lbl_80186AA0
+
+lbl_80186A78:
+	lwz      r4, 0x38(r28)
+	lis      r3, 0x55555556@ha
+	addi     r0, r3, 0x55555556@l
+	addi     r4, r4, 1
+	mulhw    r3, r0, r4
+	srwi     r0, r3, 0x1f
+	add      r0, r3, r0
+	mulli    r0, r0, 3
+	subf     r0, r0, r4
+	stw      r0, 0x38(r28)
+
+lbl_80186AA0:
+	mr       r3, r28
+	mr       r4, r29
+	mr       r5, r30
+	bl       findNearestColorPiki__Q24Game18NaviThrowWaitStateFPQ24Game4Navii
+	or.      r23, r3, r3
+	beq      lbl_80186AC4
+	lbz      r0, 0x2b9(r23)
+	cmpw     r27, r0
+	bne      lbl_80186AD4
+
+lbl_80186AC4:
+	addi     r26, r26, 1
+	li       r23, 0
+	cmpwi    r26, 2
+	blt      lbl_80186A44
+
+lbl_80186AD4:
+	cmplwi   r23, 0
+	beq      lbl_80186BA4
+	lwz      r24, 0x14(r28)
+	lwz      r3, 0x2c4(r24)
+	cmplwi   r3, 0
+	beq      lbl_80186B30
+	cmpwi    r30, 5
+	bne      lbl_80186B14
+	lwz      r3, 0x26c(r3)
+	li       r4, 0x286b
+	lwzu     r12, 0x30(r3)
+	li       r5, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80186B30
+
+lbl_80186B14:
+	lwz      r3, 0x26c(r3)
+	li       r4, 0x2802
+	lwzu     r12, 0x30(r3)
+	li       r5, 0
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+
+lbl_80186B30:
+	lwz      r3, 0x28c(r24)
+	mr       r4, r24
+	li       r5, 0
+	li       r6, 0
+	lwz      r12, 0(r3)
+	lwz      r12, 0x14(r12)
+	mtctr    r12
+	bctrl
+	stw      r23, 0x14(r28)
+	mr       r4, r23
+	li       r5, 4
+	li       r6, 0
+	lwz      r3, 0x28c(r23)
+	lwz      r12, 0(r3)
+	lwz      r12, 0x14(r12)
+	mtctr    r12
+	bctrl
+	mr       r3, r28
+	mr       r4, r29
+	bl       sortPikis__Q24Game18NaviThrowWaitStateFPQ24Game4Navi
+	lwz      r3, spSysIF__8PSSystem@sda21(r13)
+	li       r4, 0x1822
+	li       r5, 0
+	bl       playSystemSe__Q28PSSystem5SysIFFUlUl
+	lwz      r3, rumbleMgr__4Game@sda21(r13)
+	li       r4, 2
+	lhz      r5, 0x2dc(r29)
+	bl       startRumble__Q24Game9RumbleMgrFii
+	b        lbl_80186DA8
+
+lbl_80186BA4:
+	lwz      r3, 0x278(r29)
+	lwz      r0, 0x18(r3)
+	rlwinm.  r0, r0, 0, 0x17, 0x17
+	bne      lbl_80186C24
+	mr       r3, r28
+	mr       r4, r29
+	bl       sortPikis__Q24Game18NaviThrowWaitStateFPQ24Game4Navi
+	lwz      r4, 0x1c(r28)
+	lis      r0, 0x4330
+	lwz      r7, 0xc0(r29)
+	mr       r3, r28
+	xoris    r5, r4, 0x8000
+	stw      r0, 0x90(r1)
+	lfd      f3, lbl_80518C30@sda21(r2)
+	mr       r4, r29
+	stw      r5, 0x94(r1)
+	addi     r6, r1, 8
+	lfs      f1, lbl_80518C38@sda21(r2)
+	li       r5, 5
+	lfd      f2, 0x90(r1)
+	lfs      f0, 0x4f8(r7)
+	fsubs    f2, f2, f3
+	fdivs    f1, f2, f1
+	fmuls    f0, f1, f0
+	stfs     f0, 0x2b0(r29)
+	lwz      r0, 0x14(r28)
+	stw      r0, 8(r1)
+	lwz      r12, 0(r28)
+	lwz      r12, 0x1c(r12)
+	mtctr    r12
+	bctrl
+	b        lbl_80186DA8
+
+lbl_80186C24:
+	lwz      r3, sys@sda21(r13)
+	lfs      f1, 0x2b0(r29)
+	lfs      f0, 0x54(r3)
+	fadds    f0, f1, f0
+	stfs     f0, 0x2b0(r29)
+	lwz      r3, 0xc0(r29)
+	lfs      f1, 0x2b0(r29)
+	lfs      f0, 0x4f8(r3)
+	fcmpo    cr0, f1, f0
+	ble      lbl_80186C50
+	stfs     f0, 0x2b0(r29)
+
+lbl_80186C50:
+	lfs      f2, 0x2c(r28)
+	lfs      f1, lbl_80518BE0@sda21(r2)
+	fcmpo    cr0, f2, f1
+	ble      lbl_80186C90
+	lwz      r3, sys@sda21(r13)
+	lfs      f0, 0x54(r3)
+	fsubs    f0, f2, f0
+	stfs     f0, 0x2c(r28)
+	lfs      f0, 0x2c(r28)
+	fcmpo    cr0, f0, f1
+	cror     2, 0, 2
+	bne      lbl_80186DA8
+	mr       r3, r28
+	mr       r4, r29
+	bl       sortPikis__Q24Game18NaviThrowWaitStateFPQ24Game4Navi
+	b        lbl_80186DA8
+
+lbl_80186C90:
+	lwz      r3, 0x254(r29)
+	lwz      r0, 0xbc(r3)
+	cmpwi    r0, 0
+	ble      lbl_80186DA8
+	mr       r4, r29
+	lwz      r5, 0xc0(r3)
+	lwz      r12, 0(r29)
+	addi     r3, r1, 0x24
+	lfs      f29, 0xc(r5)
+	lwz      r12, 8(r12)
+	lfs      f30, 0x10(r5)
+	lfs      f31, 0x14(r5)
+	mtctr    r12
+	bctrl
+	lfs      f0, 0x28(r1)
+	lfs      f2, 0x24(r1)
+	fsubs    f4, f30, f0
+	lfs      f1, 0x2c(r1)
+	fsubs    f3, f29, f2
+	lfs      f0, lbl_80518BE0@sda21(r2)
+	fsubs    f2, f31, f1
+	fmuls    f1, f4, f4
+	fmuls    f2, f2, f2
+	fmadds   f1, f3, f3, f1
+	fadds    f1, f2, f1
+	fcmpo    cr0, f1, f0
+	ble      lbl_80186D0C
+	ble      lbl_80186D10
+	frsqrte  f0, f1
+	fmuls    f1, f0, f1
+	b        lbl_80186D10
+
+lbl_80186D0C:
+	fmr      f1, f0
+
+lbl_80186D10:
+	lfs      f0, lbl_80518C64@sda21(r2)
+	fcmpo    cr0, f1, f0
+	ble      lbl_80186DA8
+	mr       r4, r29
+	addi     r3, r1, 0x18
+	lwz      r12, 0(r29)
+	lwz      r12, 8(r12)
+	mtctr    r12
+	bctrl
+	lfs      f2, 0x18(r1)
+	mr       r4, r29
+	lfs      f1, 0x1c(r1)
+	addi     r3, r1, 0xc
+	lfs      f0, 0x20(r1)
+	stfs     f2, 0x48(r1)
+	stfs     f1, 0x4c(r1)
+	stfs     f0, 0x50(r1)
+	lwz      r12, 0(r29)
+	lwz      r12, 0x6c(r12)
+	mtctr    r12
+	bctrl
+	lfs      f1, 0xc(r1)
+	addi     r4, r1, 0x48
+	lfs      f2, 0x10(r1)
+	addi     r5, r1, 0x3c
+	lfs      f0, 0x14(r1)
+	stfs     f1, 0x3c(r1)
+	lfs      f1, lbl_80518CA4@sda21(r2)
+	stfs     f2, 0x40(r1)
+	lfs      f2, lbl_80518C48@sda21(r2)
+	stfs     f0, 0x44(r1)
+	lfs      f0, 0x1fc(r29)
+	lwz      r3, 0x254(r29)
+	fadds    f1, f1, f0
+	bl       "setPos__Q24Game6CPlateFR10Vector3<f>fR10Vector3<f>f"
+	mr       r3, r28
+	mr       r4, r29
+	bl       sortPikis__Q24Game18NaviThrowWaitStateFPQ24Game4Navi
+
+lbl_80186DA8:
+	psq_l    f31, 232(r1), 0, qr0
+	lfd      f31, 0xe0(r1)
+	psq_l    f30, 216(r1), 0, qr0
+	lfd      f30, 0xd0(r1)
+	psq_l    f29, 200(r1), 0, qr0
+	lfd      f29, 0xc0(r1)
+	lmw      r23, 0x9c(r1)
+	lwz      r0, 0xf4(r1)
+	mtlr     r0
+	addi     r1, r1, 0xf0
+	blr
+	*/
 }
 
 /**
