@@ -108,7 +108,7 @@ struct NaviWhistle {
 	Color4 mColor;           // _38
 };
 
-#define NAVI_THROWTIMER_LENGTH (10)
+#define NAVI_THROWTIMER_LENGTH (15)
 
 struct Navi : public FakePiki, virtual public PelletView {
 	typedef NaviState StateType;
@@ -176,7 +176,7 @@ struct Navi : public FakePiki, virtual public PelletView {
 	ItemHole::Item* checkHole();
 	Onyon* checkOnyon();
 	void clearKaisanDisable();
-	void clearThrowDisable();
+	void clearThrowTimer();
 	bool commandOn();
 	void control();
 	bool demoCheck();
@@ -209,12 +209,12 @@ struct Navi : public FakePiki, virtual public PelletView {
 	void setLifeMax();
 	void setupNukuAdjustArg(ItemPikihead::Item*, NaviNukuAdjustStateArg&);
 	void startDamage(f32);
-	void startThrowDisable();
+	void startThrowTimer();
 	bool throwable();
 	void throwPiki(Piki*, Vector3f&);
 	void updateCursor();
 	void updateKaisanDisable();
-	void updateThrowDisable();
+	void updateThrowTimer();
 	void useDope(int);
 
 	inline void setCalcs()
@@ -265,7 +265,7 @@ struct Navi : public FakePiki, virtual public PelletView {
 	s32 mSprayCounts[2];                    // _25C proven signed by Navi::hasDope
 	u8 _264[4];                             // _264
 	bool mHideModel;                        // _268
-	u8 mUnusedFlag;                         // _269
+	u8 mThrowKind;                          // _269
 	u8 mPluckingCounter;                    // _26A
 	PSM::Navi* mSoundObj;                   // _26C
 	NaviFSM* mFsm;                          // _270

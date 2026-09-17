@@ -108,7 +108,7 @@ void Navi::onInit(Game::CreatureInitArg* arg)
 	mPlateScaleTimer = 0;
 
 	clearKaisanDisable();
-	clearThrowDisable();
+	clearThrowTimer();
 
 	mInvincibleTimer = 0;
 	mCStickAngle     = 0.0f;
@@ -160,7 +160,7 @@ void Navi::onInit(Game::CreatureInitArg* arg)
 	setLifeMax();
 
 	mPluckingCounter = 0;
-	mUnusedFlag      = 0;
+	mThrowKind       = 0;
 
 	Vector3f modelScale;
 	modelScale = Vector3f(OLIMAR_SCALE);
@@ -1934,7 +1934,7 @@ void Navi::update()
 	updateLook();
 	updateLookCreature();
 	updateKaisanDisable();
-	updateThrowDisable();
+	updateThrowTimer();
 	mEffectsObj->update();
 
 	ItemHole::Item* hole = checkHole();
@@ -3627,14 +3627,14 @@ void Navi::clearKaisanDisable()
  */
 bool Navi::throwable()
 {
-	return mThrowTimer == 0;
+	return true;
 }
 
 /**
  * @note Address: 0x80144B60
  * @note Size: 0xC
  */
-void Navi::startThrowDisable()
+void Navi::startThrowTimer()
 {
 	mThrowTimer = NAVI_THROWTIMER_LENGTH;
 }
@@ -3643,14 +3643,10 @@ void Navi::startThrowDisable()
  * @note Address: 0x80144B6C
  * @note Size: 0x3C
  */
-void Navi::updateThrowDisable()
+void Navi::updateThrowTimer()
 {
 	if (mThrowTimer == 0) {
 		return;
-	}
-
-	if (mController1 && mController1->getButton() & Controller::PRESS_A) {
-		mThrowTimer = NAVI_THROWTIMER_LENGTH;
 	}
 
 	mThrowTimer--;
@@ -3660,7 +3656,7 @@ void Navi::updateThrowDisable()
  * @note Address: 0x80144BA8
  * @note Size: 0xC
  */
-void Navi::clearThrowDisable()
+void Navi::clearThrowTimer()
 {
 	mThrowTimer = 0;
 }
@@ -5364,8 +5360,10 @@ bool Navi::isCStickNetural()
 void Navi::findNextThrowPiki()
 {
 	mNextThrowPiki = nullptr;
+	Piki* sameKindPiki = nullptr;
 	Iterator<Creature> iterator(mCPlateMgr);
 	f32 minDist = 200.0f;
+	f32 minSameKindDist = 200.0f;
 
 	CI_LOOP(iterator)
 	{
@@ -5373,11 +5371,18 @@ void Navi::findNextThrowPiki()
 		Vector3f naviPos = getPosition();
 		Vector3f pikiPos = piki->getPosition();
 		f32 dist         = pikmin2_sqrtf(sqrDistanceXZ(naviPos, pikiPos));
-		if (piki->mNavi == this && dist < minDist && piki->getStateID() == PIKISTATE_Walk && piki->isThrowable()) {
-			mNextThrowPiki = piki;
-			minDist        = dist;
+		if (piki->mNavi == this && piki->getStateID() == PIKISTATE_Walk && piki->isThrowable()) {
+			if (dist < minSameKindDist && mThrowTimer && piki->mPikiKind == mThrowKind) {
+				sameKindPiki    = piki;
+				minSameKindDist = dist;
+			}
+			if (dist < minDist) {
+				mNextThrowPiki = piki;
+				minDist        = dist;
+			}
 		}
 	}
+	if (sameKindPiki) mNextThrowPiki = sameKindPiki;
 }
 
 /**
@@ -5417,6 +5422,9 @@ inline f32 pikmin2_normalise(Vector3f& vec)
  */
 void Navi::throwPiki(Piki* piki, Vector3f& cursorPos)
 {
+	startThrowTimer();
+	mThrowKind = piki->mPikiKind;
+
 	// Play throw sound.
 	mSoundObj->startSound(PSSE_PL_THROW, 0);
 

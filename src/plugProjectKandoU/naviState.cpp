@@ -2064,7 +2064,6 @@ void NaviNukuState::exec(Navi* navi)
 void NaviNukuState::cleanup(Navi* navi)
 {
 	navi->mMass = 1.0f;
-	navi->startThrowDisable();
 }
 
 /**
@@ -4601,8 +4600,10 @@ void NaviThrowWaitState::init(Navi* navi, StateArg* stateArg)
 	mCurrHappa           = -1;
 	mNavi                = navi;
 	f32 minDist          = 80.0f;
+	f32 minSameKindDist  = 80.0f;
 	navi->mHoldPikiTimer = 0.0f;
 	Piki* retPiki        = nullptr;
+	Piki* sameKindPiki   = nullptr;
 	mHeldPiki            = nullptr;
 	mNextPiki            = nullptr;
 
@@ -4618,12 +4619,19 @@ void NaviThrowWaitState::init(Navi* navi, StateArg* stateArg)
 			if (diff.dot(naviFaceDir) > -0.1f) {
 				dist += 10.0f;
 			}
-			if (dist < minDist && piki->getStateID() == PIKISTATE_Walk && piki->isThrowable()) {
-				retPiki = piki;
-				minDist = dist;
+			if (piki->getStateID() == PIKISTATE_Walk && piki->isThrowable()) {
+				if (dist < minSameKindDist && navi->mThrowTimer && piki->mPikiKind == navi->mThrowKind) {
+					sameKindPiki    = piki;
+					minSameKindDist = dist;
+				}
+				if (dist < minDist) {
+					retPiki = piki;
+					minDist = dist;
+				}
 			}
 		}
 	}
+	if (sameKindPiki) retPiki = sameKindPiki;
 
 	if (minDist <= static_cast<NaviParms*>(navi->mParms)->mNaviParms.mGrabPikiRange.mValue) {
 		mHeldPiki = retPiki;
