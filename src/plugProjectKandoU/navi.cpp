@@ -2772,9 +2772,9 @@ void Navi::doDirectDraw(Graphics& gfx)
 			gfx.drawLine(prev, end);
 
 			GXSetZMode(GX_FALSE, GX_LESS, GX_FALSE);
-			Vector3f pos(mWhistle->mPosition.x, mWhistle->mPosition.y + 45.0f, mWhistle->mPosition.z);
+			Vector3f pos(mWhistle->mPosition + mWhistle->mNormal * 45.0f);
 
-			PerspPrintfInfo info(0.4f);
+			PerspPrintfInfo info(0.35f);
 			info.mFont = gP2JMEMgr->mFont;
 			info.mColorA = Color4(piki->mPikiColor);
 			info.mColorB = Color4(piki->mDefaultColor);
