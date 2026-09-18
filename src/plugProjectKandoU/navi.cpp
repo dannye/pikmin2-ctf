@@ -2770,6 +2770,15 @@ void Navi::doDirectDraw(Graphics& gfx)
 				prev = next;
 			}
 			gfx.drawLine(prev, end);
+
+			GXSetZMode(GX_FALSE, GX_LESS, GX_FALSE);
+			Vector3f pos(mWhistle->mPosition.x, mWhistle->mPosition.y + 45.0f, mWhistle->mPosition.z);
+
+			PerspPrintfInfo info(0.4f);
+			info.mFont = gP2JMEMgr->mFont;
+			info.mColorA = Color4(piki->mPikiColor);
+			info.mColorB = Color4(piki->mDefaultColor);
+			gfx.perspPrintf(info, pos, "%d", GameStat::formationPikis.getCount(mNaviIndex, piki->mPikiKind));
 		}
 		return;
 	}
