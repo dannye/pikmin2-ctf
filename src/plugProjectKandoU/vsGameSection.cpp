@@ -323,8 +323,10 @@ void VsGameSection::onSetSoundScene()
 		PSGame::SceneInfo info;
 		setDefaultPSSceneInfo(info);
 		info.setStageFlag(PSGame::SceneInfo::SCENEFLAG_Unk0, PSGame::SceneInfo::SFBS_1);
-		// @todo @fixme
-		info.mSceneType = PSGame::SceneInfo::COURSE_TUTORIALDAY1; // mCurrentCourseInfo->mCourseIndex + 1
+		info.mSceneType = PSGame::SceneInfo::COURSE_TUTORIALDAY1;
+		if (mCurrentCourseInfo->mCourseIndex + 1 < PSGame::SceneInfo::COURSE_TEST) {
+			info.mSceneType = mCurrentCourseInfo->mCourseIndex + 1;
+		}
 		PSMSetSceneInfo(info);
 		PSSystem::getSceneMgr()->doFirstLoad();
 		naviMgr->createPSMDirectorUpdator();
