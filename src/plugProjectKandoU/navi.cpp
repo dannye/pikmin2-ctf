@@ -5363,7 +5363,7 @@ void Navi::findNextThrowPiki()
 	Piki* sameKindPiki = nullptr;
 	Iterator<Creature> iterator(mCPlateMgr);
 	f32 minDist = 200.0f;
-	f32 minSameKindDist = 200.0f;
+	f32 minSameKindDist = 80.0f;
 
 	CI_LOOP(iterator)
 	{
