@@ -5,6 +5,8 @@
 #include "trig.h"
 #include "nans.h"
 
+#include "Game/GameSystem.h"
+
 namespace og {
 namespace newScreen {
 
@@ -95,7 +97,7 @@ void ObjChallengeBase::updateTimer(f32 set, f32 dec)
 		mPaneTime->setBlack(mBlack);
 	}
 
-	if (mIncTimeLeftDelay <= 0.0f) {
+	if (mIncTimeLeftDelay <= 0.0f && !Game::gameSystem->isFruitMode()) {
 		if (mTimeLeftInt == 30 && !mDoneChime1) {
 			mDoneChime1 = true;
 			ogSound->setChime();

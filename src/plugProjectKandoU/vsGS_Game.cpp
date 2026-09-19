@@ -68,10 +68,10 @@ void GameState::init(VsGameSection* section, StateArg* stateArg)
 	mHasKeyDemoPlayed = false;
 
 	if (gameSystem->isChallengeMode()) {
-		mTimer            = section->mTimeLimit;
 		mFloorExtendTimer = section->mChallengeStageData->mFloorTimerExtensions[section->getCurrFloor()];
-		mDisplayTime      = mTimer / 4;
+		mDisplayTime      = section->mTimeLimit / 4;
 		section->mTimeLimit += mFloorExtendTimer;
+		mTimer            = section->mTimeLimit;
 	}
 
 	section->mMarbleCount[1]        = 0;
@@ -996,6 +996,13 @@ void GameState::update_GameChallenge(VsGameSection* section)
 		disp.mFloorExtendTimer   = mFloorExtendTimer;
 		disp.mTimeLimit          = section->mTimeLimit;
 
+		if (gameSystem->isFruitMode() && mTimer != 0.0f) {
+			f32 sunRatio = (mTimer - section->mTimeLimit) / mTimer;
+			if (sunRatio < 0.0f) sunRatio = 0.0f;
+			if (sunRatio > 1.0f) sunRatio = 1.0f;
+			disp.mDataGame.mSunGaugeRatio = sunRatio;
+		}
+
 		Navi* olimar                    = naviMgr->getAt(NAVIID_Olimar);
 		disp.mOlimarData.mFollowPikis   = GameStat::formationPikis.mCounter[NAVIID_Olimar];
 		disp.mOlimarData.mNextThrowPiki = olimar->ogGetNextThrowPiki();
@@ -1103,6 +1110,13 @@ void GameState::update_GameChallenge(VsGameSection* section)
 	disp.mFloorExtendTimer = mFloorExtendTimer;
 	disp.mTimeLimit        = section->mTimeLimit;
 	disp.mDeadPiki         = section->mDeadPikiCount;
+
+	if (gameSystem->isFruitMode() && mTimer != 0.0f) {
+		f32 sunRatio = (mTimer - section->mTimeLimit) / mTimer;
+		if (sunRatio < 0.0f) sunRatio = 0.0f;
+		if (sunRatio > 1.0f) sunRatio = 1.0f;
+		disp.mDataGame.mSunGaugeRatio = sunRatio;
+	}
 
 	Navi* olimar                    = naviMgr->getAt(NAVIID_Olimar);
 	disp.mOlimarData.mFollowPikis   = GameStat::formationPikis.mCounter[0];

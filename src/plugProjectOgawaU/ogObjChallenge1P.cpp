@@ -144,7 +144,7 @@ void ObjChallenge1P::commonUpdate()
 	og::Screen::DispMemberChallenge1P* disp = mDisp;
 	if (disp) {
 		updateTimer(disp->mTimeLimit, disp->mFloorExtendTimer);
-		mSunMeter->mCurrentTime = 0.25f; // mDisp->mDataGame.mSunGaugeRatio;
+		mSunMeter->mCurrentTime = mDisp->mDataGame.mSunGaugeRatio;
 		mDoping->setParam(mDisp->mOlimarData);
 		disp = mDisp;
 		if (disp->mOlimarData.mActiveNaviID) {

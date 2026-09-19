@@ -59,7 +59,7 @@ void ObjChallenge2P::doCreate(JKRArchive* arc)
 	mScreenP1->init(&mDisp->mOlimarData, arc, mDisp);
 	mScreenP2->init(&mDisp->mLouieData, arc, mDisp);
 	mSunMeter->setCallBack();
-	mSunMeter->setXY(150.0f, 0.0f);
+	mSunMeter->setXY(138.0f, 0.0f);
 
 	og::Screen::CallBack_CounterRV* counter = og::Screen::setCallBack_CounterRV(mPokoScreen, 'Ppoko1', &mDisp->mPokos, 6, 1, 1, arc);
 	counter->mScaleUpSoundID                = PSSE_SY_REGI_SUM_UP;
@@ -194,7 +194,7 @@ void ObjChallenge2P::commonUpdate()
 	mPokoScreen->setXY(calc * 300.0f, 0.0f);
 
 	updateTimer(mDisp->mTimeLimit, mDisp->mFloorExtendTimer);
-	mSunMeter->mCurrentTime = 0.25f; // mDisp->mDataGame.mSunGaugeRatio;
+	mSunMeter->mCurrentTime = mDisp->mDataGame.mSunGaugeRatio;
 	mBloGroup->update();
 }
 

@@ -51,22 +51,22 @@ void CallBack_SunMeter::init(J2DScreen* canvas, f32* time)
 void CallBack_SunMeter::update()
 {
 	f32 currentTime = *mCurrentTime;
-	// Between 0.297 - 0.3, chime
-	if (0.297f < currentTime && currentTime < 0.3f && !mHasChimedMorning) {
+	// Between 0.247 - 0.253, chime
+	if (0.247f < currentTime && currentTime < 0.253f && !mHasChimedMorning) {
 		mHasChimedMorning = true;
 		ogSound->setChime();
 		startEffectChime();
 	}
 
-	// Between 0.497 - 0.5, chime
-	if (0.497f < currentTime && currentTime < 0.5f && !mHasChimedNoon) {
+	// Between 0.497 - 0.503, chime
+	if (0.497f < currentTime && currentTime < 0.503f && !mHasChimedNoon) {
 		mHasChimedNoon = true;
 		ogSound->setChimeNoon();
 		startEffectChime();
 	}
 
-	// Between 0.697 - 0.7, chime
-	if (0.697f < currentTime && currentTime < 0.7f && !mHasChimedEvening) {
+	// Between 0.747 - 0.753, chime
+	if (0.747f < currentTime && currentTime < 0.753f && !mHasChimedEvening) {
 		mHasChimedEvening = true;
 		ogSound->setChime();
 		startEffectChime();
@@ -77,7 +77,7 @@ void CallBack_SunMeter::update()
 	f32 x0 = mStartPane->getBounds()->i.x;
 	f32 x1 = mEndPane->getBounds()->i.x;
 	f32 y  = mSuniPane->getBounds()->i.y;
-	f32 x  = currentTime * (x1 - x0) + x0;
+	f32 x  = currentTime * (x1 - x0) + x0 - 8.0f;
 	mSuniPane->move(x, y);
 
 	mSun1Pane->rotate(mSun1Pane->getWidth() / 2, mSun1Pane->getHeight() / 2, J2DROTATE_Z, -mTimer);
