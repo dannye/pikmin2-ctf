@@ -5,6 +5,8 @@
 #include "System.h"
 #include "nans.h"
 
+#include "Game/GameSystem.h"
+
 namespace og {
 namespace newScreen {
 
@@ -24,6 +26,7 @@ ObjChallenge1P::ObjChallenge1P(const char* name)
 	mLifeGauge2  = nullptr;
 	mPikiCounter = nullptr;
 	mPokoScreen  = nullptr;
+	mSunMeter    = nullptr;
 }
 
 /**
@@ -56,18 +59,21 @@ void ObjChallenge1P::doCreate(JKRArchive* arc)
 	mLifeGauge2  = new og::Screen::NaviLifeGauge;
 	mPikiCounter = new og::Screen::PikminCounterChallenge1P;
 	mPokoScreen  = new P2DScreen::Mgr_tuning;
+	mSunMeter    = new og::Screen::SunMeter;
 
-	mBloGroup = new og::Screen::BloGroup(5);
+	mBloGroup = new og::Screen::BloGroup(6);
 	mBloGroup->addBlo("doping.blo", mDoping, 0x1040000, arc);
 	mBloGroup->addBlo("orima.blo", mLifeGauge1, 0x1040000, arc);
 	mBloGroup->addBlo("orima.blo", mLifeGauge2, 0x1040000, arc);
 	mBloGroup->addBlo("cave_pikmin.blo", mPikiCounter, 0x1040000, arc);
 	mBloGroup->addBlo("2P_challenge_poko.blo", mPokoScreen, 0x1040000, arc);
+	mBloGroup->addBlo("sun_meter.blo", mSunMeter, 0x1040000, arc);
 
 	mDoping->setCallBack(arc);
 	mLifeGauge1->setCallBack(&mDisp->mOlimarData, og::Screen::CallBack_LifeGauge::LIFEGAUGE_OLIMAR);
 	mLifeGauge2->setCallBack(&mDisp->mLouieData, og::Screen::CallBack_LifeGauge::LIFEGAUGE_LOUIE);
 	mPikiCounter->setCallBack(arc);
+	mSunMeter->setCallBack();
 
 	mDoping->setDopingEnable(true, true);
 	og::Screen::CallBack_CounterRV* counter = og::Screen::setCallBack_CounterRV(mPokoScreen, 'Ppoko1', &mDisp->mPokoCount, 6, 1, 1, arc);
@@ -138,6 +144,7 @@ void ObjChallenge1P::commonUpdate()
 	og::Screen::DispMemberChallenge1P* disp = mDisp;
 	if (disp) {
 		updateTimer(disp->mTimeLimit, disp->mFloorExtendTimer);
+		mSunMeter->mCurrentTime = 0.25f; // mDisp->mDataGame.mSunGaugeRatio;
 		mDoping->setParam(mDisp->mOlimarData);
 		disp = mDisp;
 		if (disp->mOlimarData.mActiveNaviID) {
@@ -176,6 +183,14 @@ bool ObjChallenge1P::doUpdate()
  */
 void ObjChallenge1P::doDraw(Graphics& gfx)
 {
+	if (Game::gameSystem->isFruitMode()) {
+		mSunMeter->show();
+		mPokoScreen->hide();
+	} else {
+		mSunMeter->hide();
+		mPokoScreen->show();
+	}
+
 	if (mBloGroup) {
 		mBloGroup->draw(&gfx.mPerspGraph);
 	}

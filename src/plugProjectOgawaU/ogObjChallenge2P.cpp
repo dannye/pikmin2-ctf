@@ -18,6 +18,7 @@ ObjChallenge2P::ObjChallenge2P(const char* name)
 	mDisp       = nullptr;
 	mBloGroup   = nullptr;
 	mPokoScreen = nullptr;
+	mSunMeter   = nullptr;
 }
 
 /**
@@ -49,12 +50,16 @@ void ObjChallenge2P::doCreate(JKRArchive* arc)
 	}
 
 	mPokoScreen = new P2DScreen::Mgr_tuning;
-	mBloGroup   = new og::Screen::BloGroup(3);
+	mSunMeter   = new og::Screen::SunMeter;
+	mBloGroup   = new og::Screen::BloGroup(4);
 	mBloGroup->addBlo("challenge_1P.blo", mScreenP1->mScreen, 0x1040000, arc);
 	mBloGroup->addBlo("challenge_2P.blo", mScreenP2->mScreen, 0x1040000, arc);
 	mBloGroup->addBlo("2P_challenge_poko.blo", mPokoScreen, 0x1040000, arc);
+	mBloGroup->addBlo("sun_meter.blo", mSunMeter, 0x1040000, arc);
 	mScreenP1->init(&mDisp->mOlimarData, arc, mDisp);
 	mScreenP2->init(&mDisp->mLouieData, arc, mDisp);
+	mSunMeter->setCallBack();
+	mSunMeter->setXY(150.0f, 0.0f);
 
 	og::Screen::CallBack_CounterRV* counter = og::Screen::setCallBack_CounterRV(mPokoScreen, 'Ppoko1', &mDisp->mPokos, 6, 1, 1, arc);
 	counter->mScaleUpSoundID                = PSSE_SY_REGI_SUM_UP;
@@ -189,6 +194,7 @@ void ObjChallenge2P::commonUpdate()
 	mPokoScreen->setXY(calc * 300.0f, 0.0f);
 
 	updateTimer(mDisp->mTimeLimit, mDisp->mFloorExtendTimer);
+	mSunMeter->mCurrentTime = 0.25f; // mDisp->mDataGame.mSunGaugeRatio;
 	mBloGroup->update();
 }
 
@@ -208,6 +214,14 @@ bool ObjChallenge2P::doUpdate()
  */
 void ObjChallenge2P::doDraw(Graphics& gfx)
 {
+	if (Game::gameSystem->isFruitMode()) {
+		mSunMeter->show();
+		mPokoScreen->hide();
+	} else {
+		mSunMeter->hide();
+		mPokoScreen->show();
+	}
+
 	J2DPerspGraph* graf = &gfx.mPerspGraph;
 	graf->setPort();
 

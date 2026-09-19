@@ -10,6 +10,8 @@
 #include "trig.h"
 #include "BitFlag.h"
 
+#include "og/Screen/SunMeter.h"
+
 namespace og {
 namespace Screen {
 struct NaviLifeGauge;
@@ -143,6 +145,8 @@ struct ObjChallenge1P : public ObjChallengeBase {
 	og::Screen::PikminCounterChallenge1P* mPikiCounter; // _74
 	P2DScreen::Mgr_tuning* mPokoScreen;                 // _78
 
+	og::Screen::SunMeter* mSunMeter;
+
 	static struct StaticValues {
 		inline StaticValues()
 		{
@@ -274,6 +278,8 @@ struct ObjChallenge2P : public ObjChallengeBase {
 	ScreenSet* mScreenP1;                     // _68
 	ScreenSet* mScreenP2;                     // _6C
 	P2DScreen::Mgr_tuning* mPokoScreen;       // _70
+
+	og::Screen::SunMeter* mSunMeter;
 
 	static struct StaticValues {
 		inline StaticValues()
