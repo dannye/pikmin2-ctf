@@ -417,6 +417,13 @@ void NaviWalkState::exec(Navi* navi)
 			return;
 		}
 
+		if (moviePlayer->mDemoState == DEMOSTATE_Finishing && gameSystem->isFruitMode()) {
+			if (navi->mController1->isButtonDown(JUTGamePad::PRESS_B)) {
+				transit(navi, NSID_Gather, nullptr);
+				return;
+			}
+		}
+
 		if (moviePlayer->mDemoState == DEMOSTATE_Inactive) {
 			if (navi->mStickCount) {
 				transit(navi, NSID_Stuck, nullptr);
