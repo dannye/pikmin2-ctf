@@ -5711,8 +5711,17 @@ bool Navi::commandOn()
 
 bool Navi::canSwap()
 {
-	s32 state = getStateID();
-	return isAlive() && state != NSID_Nuku && state != NSID_NukuAdjust && state != NSID_Punch;
+	s32 stateID = getStateID();
+	if (!isAlive() || stateID == NSID_Punch) return false;
+	if (stateID == NSID_Nuku) {
+		NaviNukuState* state = static_cast<NaviNukuState*>(mCurrentState);
+		return !state->mIsFollower;
+	}
+	if (stateID == NSID_NukuAdjust) {
+		NaviNukuAdjustState* state = static_cast<NaviNukuAdjustState*>(mCurrentState);
+		return !state->mIsFollowing;
+	}
+	return true;
 }
 
 f32 Navi::getMoveSpeed()
