@@ -1122,6 +1122,7 @@ void Piki::initColor()
 {
 	mColorFloat   = 1.0f;
 	mDefaultColor = pikiColors[getKind()];
+	mCursorColor  = pikiColorsCursor[getKind()];
 }
 
 /**
@@ -1164,17 +1165,17 @@ void Piki::setPastel(bool isBright)
 	Color4* color = &pikiColors[getKind()];
 
 	if (!isBright) {
-		mPikiColor       = *color;
-		mOldDefaultColor = mDefaultColor;
+		mPikiColor   = *color;
+		mCursorColor = pikiColorsCursor[getKind()];
 		return;
 	}
 
 	mPikiColor = *color;
 
-	mPikiColor.r     = (color->r + 160 < 255) ? color->r + 160 : 255;
-	mPikiColor.g     = (color->g + 160 < 255) ? color->g + 160 : 255;
-	mPikiColor.b     = (color->b + 160 < 255) ? color->b + 160 : 255;
-	mOldDefaultColor = mDefaultColor;
+	mPikiColor.r = (color->r + 160 < 255) ? color->r + 160 : 255;
+	mPikiColor.g = (color->g + 160 < 255) ? color->g + 160 : 255;
+	mPikiColor.b = (color->b + 160 < 255) ? color->b + 160 : 255;
+	mCursorColor = mPikiColor;
 }
 
 /**

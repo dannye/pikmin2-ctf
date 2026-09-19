@@ -288,7 +288,7 @@ struct Piki : public FakePiki {
 	s16 mTekiKillID;                  // _2A4
 	u8 mGasInvincible;                // _2A6
 	Color4 mDefaultColor;             // _2A7
-	Color4 mOldDefaultColor;          // _2AB
+	Color4 mCursorColor;              // _2AB
 	Color4 mPikiColor;                // _2AF
 	f32 mColorFloat;                  // _2B4
 	u8 mPikiKind;                     // _2B8, aka Piki kind (Blue, Yellow, Red, etc.)

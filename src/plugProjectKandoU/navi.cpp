@@ -2776,8 +2776,8 @@ void Navi::doDirectDraw(Graphics& gfx)
 
 			PerspPrintfInfo info(0.35f);
 			info.mFont = gP2JMEMgr->mFont;
-			info.mColorA = Color4(piki->mPikiColor);
-			info.mColorB = Color4(piki->mDefaultColor);
+			info.mColorA = piki->mCursorColor;
+			info.mColorB = Piki::pikiColorsCursor[piki->getKind()];
 			gfx.perspPrintf(info, pos, "%d", GameStat::formationPikis.getCount(mNaviIndex, piki->mPikiKind));
 		}
 		return;
