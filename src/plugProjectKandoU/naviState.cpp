@@ -498,9 +498,8 @@ void NaviWalkState::exec(Navi* navi)
 			    && navi->mController1->isButtonDown(JUTGamePad::PRESS_Y) && playData->isDemoFlag(DEMO_Unlock_Captain_Switch)) {
 
 				Navi* otherNavi = naviMgr->getAt(GET_OTHER_NAVI(navi));
-				int otherNaviID = otherNavi->getStateID();
 
-				if (otherNavi->isAlive() && otherNaviID != NSID_Nuku && otherNaviID != NSID_NukuAdjust && otherNaviID != NSID_Punch) {
+				if (otherNavi->canSwap()) {
 					gameSystem->mSection->pmTogglePlayer();
 
 					playChangeVoice(otherNavi);
@@ -4013,9 +4012,8 @@ void NaviSaraiState::exec(Navi* navi)
 	    && navi->mController1->isButtonDown(JUTGamePad::PRESS_Y)) {
 
 		Navi* currNavi = naviMgr->getAt(GET_OTHER_NAVI(navi));
-		int currID     = currNavi->getStateID();
 
-		if (currNavi->isAlive() && currID != NSID_Nuku && currID != NSID_NukuAdjust && currID != NSID_Punch) {
+		if (currNavi->canSwap()) {
 			gameSystem->mSection->pmTogglePlayer();
 
 			playChangeVoice(currNavi);
@@ -6281,9 +6279,8 @@ void NaviPelletState::exec(Navi* navi)
 		    && navi->mController1->isButtonDown(JUTGamePad::PRESS_Y) && playData->isDemoFlag(DEMO_Unlock_Captain_Switch)) {
 
 			Navi* currNavi = naviMgr->getAt(GET_OTHER_NAVI(navi));
-			int currID     = currNavi->getStateID();
 
-			if (currNavi->isAlive() && currID != NSID_Nuku && currID != NSID_NukuAdjust && currID != NSID_Punch) {
+			if (currNavi->canSwap()) {
 				gameSystem->mSection->pmTogglePlayer();
 
 				playChangeVoice(currNavi);
