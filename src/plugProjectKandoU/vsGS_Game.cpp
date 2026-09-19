@@ -765,10 +765,14 @@ void GameState::onMovieDone(VsGameSection* section, MovieConfig* config, u32 unu
 		section->setPlayerMode(NAVIID_Multiplayer);
 	}
 
-	RoomMapMgr* mgr   = static_cast<RoomMapMgr*>(mapMgr);
-	int currFloor     = mgr->mSublevel;
-	int floorMax      = mgr->mCaveInfo->getFloorMax();
-	bool isFinalFloor = (currFloor == floorMax - 1);
+	int currFloor = 0;
+	bool isFinalFloor = false;
+	if (gameSystem->mIsInCave) {
+		RoomMapMgr* mgr = static_cast<RoomMapMgr*>(mapMgr);
+		currFloor       = mgr->mSublevel;
+		int floorMax    = mgr->mCaveInfo->getFloorMax();
+		isFinalFloor    = (currFloor == floorMax - 1);
+	}
 
 	if (gameSystem->isChallengeMode() && Radar::Mgr::getNumOtakaraItems() == 0
 	    && (config->is("g2F_appear_hole") || config->is("g30_appear_fountain"))) {
