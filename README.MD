@@ -9,9 +9,10 @@ New Features/Enhancements:
 * Restore Yellow Pikmin bomb rocks
 * "Go Here" mod by Drought-Ender, intns, and dannye
 * Idle captains auto-pluck Pikmin
-* Press A once to Auto-pluck Pikmin
+* Press A once to auto-pluck Pikmin
 * Press B to cancel Pikmin throw
-* Display Pikmin throw trajectory
+* Display Pikmin throw trajectory and selected Pikmin type count
+* Prioritize throwing same Pikmin type when throwing very quickly
 * Flip carrying ratio (proper fraction)
 * Hold Y in Onion menu to increment/decrement by 10
 * Squad count increases/decreases as soon as Pikmin is plucked or thrown
