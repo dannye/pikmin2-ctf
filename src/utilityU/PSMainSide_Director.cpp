@@ -1,7 +1,7 @@
 #include "PSSystem/SeqTrack.h"
 #include "PSMath.h"
 #include "PSM/ObjCalc.h"
-#include "PSM/Otakara.h"
+#include "PSSystem/PSMainSide_ObjSound.h"
 #include "PSGame/Global.h"
 #include "PSAutoBgm/PSAutoBgm.h"
 #include "JSystem/JAudio/JALCalc.h"
@@ -357,8 +357,8 @@ f32 ActorDirector_Scaled::getNearestDistance()
 		FOREACH_NODE(JSULink<Game::Creature>, actors->getFirst(), link)
 		{
 			Vector3f objpos = link->getObject()->getPosition();
-			f32 p1Dist      = PSMath::calcDistance<const Vector3f&>(oPos, objpos);
-			f32 p2Dist      = PSMath::calcDistance<const Vector3f&>(lPos, objpos);
+			f32 p1Dist      = PSMath::calcDistance(PSMath::toVec(objpos), PSMath::toVec(oPos));
+			f32 p2Dist      = PSMath::calcDistance(PSMath::toVec(objpos), PSMath::toVec(lPos));
 			if (p1Dist <= p2Dist) {
 				if (p1Dist < minDist) {
 					minDist = p1Dist;
@@ -384,7 +384,7 @@ f32 ActorDirector_Scaled::getNearestDistance()
 		FOREACH_NODE(JSULink<Game::Creature>, mActor->getFirst(), link)
 		{
 			Vector3f objpos = link->getObject()->getPosition();
-			f32 dist        = PSMath::calcDistance<const Vector3f&>(naviPos, objpos);
+			f32 dist        = PSMath::calcDistance(PSMath::toVec(objpos), PSMath::toVec(naviPos));
 			if (dist < minDist) {
 				minDist = dist;
 				onSetMinDistObj(link->getObject());
@@ -898,6 +898,11 @@ static const char* unusedpath = "PSMainSide_ObjSound.h";
  */
 PikAttackDirector::PikAttackDirector(int numTracks)
     : TrackOnDirectorBase(numTracks, "pikatkD  ", 100, 100)
+{
+}
+
+// this is here for now, since putting it in a header causes the sym on ordering to go weird and wrong
+inline ExiteDirector::~ExiteDirector()
 {
 }
 

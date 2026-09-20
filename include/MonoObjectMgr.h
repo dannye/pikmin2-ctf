@@ -10,7 +10,10 @@ struct MonoObjectMgr : public ObjectMgr<T> {
 
 	virtual T* birth(); // _7C (weak)
 
+	// NB: these need to be between the virtual methods for weak function ordering
 	void kill(T* item);
+	void alloc(int count);
+
 	// virtual ~MonoObjectMgr() { }     // _08 (weak)
 	virtual void* getNext(void* idx); // _14 (weak)
 	virtual void* getStart();         // _18 (weak)
@@ -42,7 +45,7 @@ struct MonoObjectMgr : public ObjectMgr<T> {
 			mOpenIds[i] = true;
 		}
 	}
-	virtual void onAlloc(); // _88 (weak)
+	virtual void onAlloc() { } // _88 (weak)
 
 	int getEmptyIndex();
 
@@ -50,8 +53,6 @@ struct MonoObjectMgr : public ObjectMgr<T> {
 	{
 		return &mArray[(int)idx];
 	}
-
-	void alloc(int count);
 
 	inline int getMax() const { return mMax; }
 	inline void setFlag(int i, u32 flag) { mOpenIds[i] = flag; }
@@ -84,7 +85,7 @@ void MonoObjectMgr<T>::alloc(int count)
 	mOpenIds     = new u8[count];
 
 	for (int i = 0; i < count; i++) {
-		setFlag(i, 1);
+		mOpenIds[i] = 1;
 	}
 
 	onAlloc();
@@ -92,11 +93,6 @@ void MonoObjectMgr<T>::alloc(int count)
 	for (int i = 0; i < count; i++) {
 		mArray[i].constructor();
 	}
-}
-
-template <typename T>
-void MonoObjectMgr<T>::onAlloc()
-{
 }
 
 template <typename T>

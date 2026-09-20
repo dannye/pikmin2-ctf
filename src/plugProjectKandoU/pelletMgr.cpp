@@ -1,3 +1,6 @@
+#include "Game/Entities/PelletOtakara.h"
+#include "IDelegate.h"
+#include "MonoObjectMgr.h"
 #include "Game/GameConfig.h"
 #include "Game/gamePlayData.h"
 #include "Game/GameSystem.h"
@@ -12,11 +15,10 @@
 #include "Game/routeMgr.h"
 #include "Game/Entities/ItemOnyon.h"
 #include "Game/Entities/ItemTreasure.h"
+#include "Game/Entities/PelletNumber.h"
 #include "Game/Entities/PelletCarcass.h"
 #include "Game/Entities/PelletFruit.h"
 #include "Game/Entities/PelletItem.h"
-#include "Game/Entities/PelletNumber.h"
-#include "Game/Entities/PelletOtakara.h"
 #include "Game/Entities/ItemHole.h"
 #include "Game/Entities/ItemBigFountain.h"
 #include "Game/VsGameSection.h"
@@ -28,7 +30,7 @@
 #include "Dolphin/rand.h"
 #include "efx/TFruitsDown.h"
 #include "efx/TOtakara.h"
-#include "PSM/Otakara.h"
+#include "PSSystem/PSMainSide_ObjSound.h"
 #include "PSSystem/PSMainSide_Scene.h"
 #include "ObjectTypes.h"
 #include "CollInfo.h"
@@ -1030,9 +1032,9 @@ void Pellet::setupParticles()
 			createParticles(mMaxCollParticle);
 
 			for (int i = 0; i < particleCount; i++) {
+				f32 theta     = (TAU / (f32)particleCount) * (f32)i;
 				f32 mid       = mConfig->mParams.mHeight.mData * 0.5f;
 				f32 midRadius = radius - mid;
-				f32 theta     = (TAU / (f32)particleCount) * (f32)i;
 				Vector3f rotation(midRadius * sinf(theta), 0.0f, midRadius * cosf(theta));
 				// _2F4                        = _2F4 + rotation;
 				setupDynParticle(i, mid, rotation);
@@ -1041,8 +1043,8 @@ void Pellet::setupParticles()
 			}
 
 			Vector3f rotation(0.0f);
-			f32 configHeight = mConfig->mParams.mHeight.mData;
-			setupDynParticle(particleCount, configHeight * 0.5f, rotation);
+			f32 halfHeight = mConfig->mParams.mHeight.mData * 0.5f;
+			setupDynParticle(particleCount, halfHeight, rotation);
 			// _2F4               = _2F4 + Vector3f(0.0f, 0.0f, 0.0f);
 			// f32 height = configHeight / 2;
 			// mDynParticle->getAt(particleCount)->_00 = Vector3f(0.0f, 0.0f, 0.0f);
@@ -3765,8 +3767,7 @@ s16 Pellet::getNearFreeStickSlot(Vector3f& position)
 		if (!(flag & mSlots.mSlots[15 - index])) {
 			Vector3f slotPosition;
 			calcStickSlotGlobal(slot, slotPosition);
-			Vector3f diff = Vector3f(slotPosition.y - position.y, slotPosition.z - position.z, slotPosition.x - position.x);
-			f32 dist      = _length2(diff);
+			f32 dist = slotPosition.distance(position);
 			if (dist < minDist) {
 				minDist    = dist;
 				returnSlot = slot;
@@ -5194,18 +5195,33 @@ void PelletMgr::setupResources()
  * @note Size: 0x50C
  * calcNearestTreasure__Q24Game9PelletMgrFR10Vector3<f>f
  */
-void PelletMgr::calcNearestTreasure(Vector3f&, f32)
+Pellet* PelletMgr::calcNearestTreasure(Vector3f& position, f32 radius)
 {
-	// these are here to spawn the weak functions from these templates
+	Pellet* nearest = nullptr;
+	f32 distance = radius;
 	Iterator<PelletOtakara::Object> iterOta(PelletOtakara::mgr);
 	CI_LOOP(iterOta)
 	{
+		Pellet* pellet = *iterOta;
+		Vector3f offset = pellet->getPosition() - position;
+		f32 currentDistance = offset.length();
+		if (currentDistance < distance) {
+			distance = currentDistance;
+			nearest = pellet;
+		}
 	}
 	Iterator<PelletItem::Object> iterItem(PelletItem::mgr);
 	CI_LOOP(iterItem)
 	{
+		Pellet* pellet = *iterItem;
+		Vector3f offset = pellet->getPosition() - position;
+		f32 currentDistance = offset.length();
+		if (currentDistance < distance) {
+			distance = currentDistance;
+			nearest = pellet;
+		}
 	}
-	// UNUSED FUNCTION
+	return nearest;
 }
 
 /**

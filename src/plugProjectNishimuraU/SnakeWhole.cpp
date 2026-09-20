@@ -8,7 +8,6 @@
 #include "Game/CameraMgr.h"
 #include "Game/rumble.h"
 #include "efx/THebi.h"
-#include "PSM/EnemyBoss.h"
 #include "PSSystem/PSMainSide_ObjSound.h"
 #include "Dolphin/rand.h"
 
@@ -244,7 +243,7 @@ void Obj::getThrowupItemPosition(Vector3f* pos)
  */
 bool Obj::isOutTerritory()
 {
-	return (u8)(sqrDistanceXZ(mPosition, mHomePosition) > SQUARE(C_GENERALPARMS.mTerritoryRadius()));
+	return (u8)(mPosition.sqrDistance2D(mHomePosition) > SQUARE(C_GENERALPARMS.mTerritoryRadius()));
 }
 
 /**
@@ -253,7 +252,7 @@ bool Obj::isOutTerritory()
  */
 bool Obj::isInHomeRange()
 {
-	return (u8)(sqrDistanceXZ(mPosition, mHomePosition) < SQUARE(C_GENERALPARMS.mHomeRadius()));
+	return (u8)(mPosition.sqrDistance2D(mHomePosition) < SQUARE(C_GENERALPARMS.mHomeRadius()));
 }
 
 /**
@@ -337,7 +336,7 @@ void Obj::appearNearByTarget(Creature* target)
 	newPos *= 120.0f;
 	newPos += targetPos;
 
-	if (sqrDistanceXZ(mHomePosition, newPos) > SQUARE(C_GENERALPARMS.mTerritoryRadius())) {
+	if (mHomePosition.sqrDistance2D(newPos) > SQUARE(C_GENERALPARMS.mTerritoryRadius())) {
 		faceDir = JMAAtan2Radian(targetPos.x - mHomePosition.x, targetPos.z - mHomePosition.z);
 
 		faceDir = faceDir + (randWeightFloat(PI) - HALF_PI);
@@ -750,8 +749,8 @@ void Obj::setAttackPosition()
 		f32 dirFactor       = array1[i];
 		f32 orthoDirFactor  = array2[i];
 		mAttackPositions[i] = mPosition;
-		Vector3f forward = dir;
-		Vector3f sideways = orthoDir;
+		Vector3f forward    = dir;
+		Vector3f sideways   = orthoDir;
 		forward *= dirFactor;
 		sideways *= orthoDirFactor;
 		mAttackPositions[i] += forward;

@@ -5,7 +5,7 @@
 #include "Game/PikiMgr.h"
 #include "efx/TOtakara.h"
 #include "Dolphin/rand.h"
-#include "PSM/WorkItem.h"
+#include "PSSystem/PSMainSide_ObjSound.h"
 #include "VsOtakaraName.h"
 #include "JSystem/JKernel/JKRDvdRipper.h"
 #include "nans.h"
@@ -277,7 +277,7 @@ void Item::doDirectDraw(Graphics& gfx)
 bool Item::getVectorField(Sys::Sphere& bounds, Vector3f& pos)
 {
 	Vector3f diff = mPosition - bounds.mPosition;
-	f32 dist      = _normalise2(diff); // needs tweaking
+	f32 dist      = diff.normalize();
 
 	if (dist > getWorkRadius() + 5.0f) {
 		pos = diff;
@@ -366,7 +366,7 @@ void Item::createTreasure()
  */
 bool Item::interactAttack(InteractAttack& act)
 {
-	State* cState = mCurrentState;
+	State* cState = getCurrState();
 	if (cState) {
 		cState->onDamage(this, act.mDamage);
 

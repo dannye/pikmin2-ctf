@@ -1,6 +1,6 @@
 #include "types.h"
 #include "Game/Entities/DangoMushi.h"
-#include "PSM/EnemyBoss.h"
+#include "PSSystem/PSMainSide_ObjSound.h"
 #include "Game/EnemyFunc.h"
 #include "Game/PikiMgr.h"
 #include "Game/Navi.h"
@@ -9,7 +9,6 @@
 #include "Game/generalEnemyMgr.h"
 #include "Game/MapMgr.h"
 #include "Dolphin/rand.h"
-#include "PSSystem/PSMainSide_ObjSound.h"
 
 namespace Game {
 namespace DangoMushi {
@@ -393,7 +392,7 @@ void Obj::setRandTarget()
  */
 bool Obj::isReachedTarget()
 {
-	return sqrDistanceXZ(mPosition, mTargetPosition) < 625.0f;
+	return mPosition.sqrDistance2D(mTargetPosition) < 625.0f;
 }
 
 /**

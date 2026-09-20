@@ -451,8 +451,8 @@ void Item::onInit(CreatureInitArg* settings)
 void Item::onKill(CreatureKillArg* settings)
 {
 	Radar::Mgr::exit(this);
-	if (mCurrentState) {
-		mCurrentState->cleanup(this);
+	if (getCurrState()) {
+		getCurrState()->cleanup(this);
 	}
 	mgr->kill(this);
 	if (!settings || !settings->isFlag(CKILL_DontCountAsDeath)) {
@@ -685,7 +685,7 @@ lbl_801DA0E8:
  */
 void Item::doAI()
 {
-	mFsm->exec(this);
+	FSMItem::doAI();
 	if (mAutopluckedTimer > 0.0f) {
 		mAutopluckedTimer -= sys->mDeltaTime;
 		if (mAutopluckedTimer <= 0.0f) {
@@ -833,17 +833,9 @@ lbl_801DA34C:
  */
 void Item::onKeyEvent(const SysShape::KeyEvent& keyEvent)
 {
-	if (mCurrentState) {
-		mCurrentState->onKeyEvent(this, keyEvent);
+	if (getCurrState()) {
+		getCurrState()->onKeyEvent(this, keyEvent);
 	}
-}
-
-/**
- * @note Address: 0x801DA3CC
- * @note Size: 0x4
- */
-void State::onKeyEvent(Item* item, const SysShape::KeyEvent& keyEvent)
-{
 }
 
 /**
@@ -1045,7 +1037,7 @@ Item* Mgr::birth()
 		break;
 	}
 
-	return mMonoObjectMgr.birth();
+	return FixedSizeItemMgr<Item>::birth();
 }
 
 /**

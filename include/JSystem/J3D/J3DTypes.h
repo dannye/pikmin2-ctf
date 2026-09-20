@@ -393,7 +393,7 @@ struct J3DColorChanInfo {
 
 extern const J3DColorChanInfo j3dDefaultColorChanInfo;
 
-inline u16 calcColorChanID(u16 enable, u8 matSrc, u8 lightMask, u8 diffuseFn, u8 attnFn, u8 ambSrc)
+inline u16 calcColorChanID(u16 enable, u8 matSrc, u32 lightMask, u8 diffuseFn, GXAttnFn attnFn, u8 ambSrc)
 {
 	u32 reg = 0;
 	reg     = reg & ~0x0002 | enable << 1;
@@ -424,7 +424,7 @@ struct J3DColorChan {
 
 	J3DColorChan(const J3DColorChanInfo& info)
 	{
-		mChanCtrl = calcColorChanID(info.mEnable, info.mMatSrc, info.mLightMask, info.mDiffuseFn, info.mAttnFn,
+		mChanCtrl = calcColorChanID(info.mEnable, info.mMatSrc, info.mLightMask, info.mDiffuseFn, (GXAttnFn)info.mAttnFn,
 		                            info.mAmbSrc == 0xFF ? 0 : info.mAmbSrc);
 	}
 
@@ -441,7 +441,7 @@ struct J3DColorChan {
 		// same logic but without the bug.
 		// See J3DMaterialFactory::newColorChan - both the bugged and correct behavior are present there, as it calls
 		// both constructors.
-		mChanCtrl = calcColorChanID(info.mEnable, info.mMatSrc, info.mLightMask, info.mDiffuseFn, info.mAttnFn,
+		mChanCtrl = calcColorChanID(info.mEnable, info.mMatSrc, info.mLightMask, info.mDiffuseFn, (GXAttnFn)info.mAttnFn,
 		                            info.mAmbSrc == 0xFFFF ? 0 : info.mAmbSrc);
 	}
 
@@ -586,7 +586,10 @@ struct J3DTevSwapModeTableInfo {
 	u8 mA; // _03
 };
 
-extern const J3DTevSwapModeInfo j3dDefaultTevSwapMode;
+// this is another "this should be const but it fucks with everything"
+// so it's not const but forced to the right section in J3DTevs
+extern J3DTevSwapModeInfo j3dDefaultTevSwapMode;
+
 extern const J3DTevSwapModeTableInfo j3dDefaultTevSwapModeTable;
 extern const u8 j3dDefaultTevSwapTableID;
 
@@ -616,7 +619,7 @@ struct J3DTevStageInfo {
 	u8 mColorOp;      // _05
 	u8 mColorBias;    // _06
 	u8 mColorScale;   // _07
-	bool mColorClamp; // _08
+	u8 mColorClamp;   // _08
 	u8 mColorRegID;   // _09
 	u8 mAlphaInA;     // _0A
 	u8 mAlphaInB;     // _0B
@@ -625,7 +628,7 @@ struct J3DTevStageInfo {
 	u8 mAlphaOp;      // _0E
 	u8 mAlphaBias;    // _0F
 	u8 mAlphaScale;   // _10
-	bool mAlphaClamp; // _11
+	u8 mAlphaClamp;   // _11
 	u8 mAlphaRegID;   // _12
 	u8 _13;           // _13 - unknown
 };
@@ -655,7 +658,7 @@ struct J3DTevStage {
 		return *this;
 	}
 
-	void setTevColorOp(u8 param_1, u8 param_2, u8 param_3, u8 param_4, u8 param_5)
+	void setTevColorOp(const u8 param_1, const u8 param_2, const u8 param_3, const u8 param_4, const u8 param_5)
 	{
 		mTevColorOp = mTevColorOp & ~(0x01 << 2) | param_1 << 2;
 		if (param_1 <= 1) {
@@ -668,24 +671,24 @@ struct J3DTevStage {
 		mTevColorOp = mTevColorOp & ~(0x01 << 3) | param_4 << 3;
 		mTevColorOp = mTevColorOp & ~(0x03 << 6) | param_5 << 6;
 	}
-	void setTevColorAB(u8 a, u8 b) { mTevColorAB = a << 4 | b; }
-	void setTevColorCD(u8 c, u8 d) { mTevColorCD = c << 4 | d; }
-	void setAlphaA(u8 a) { mTevAlphaAB = mTevAlphaAB & ~(0x07 << 5) | a << 5; }
-	void setAlphaB(u8 b) { mTevAlphaAB = mTevAlphaAB & ~(0x07 << 2) | b << 2; }
-	void setAlphaC(u8 c)
+	void setTevColorAB(const u8 a, const u8 b) { mTevColorAB = a << 4 | b; }
+	void setTevColorCD(const u8 c, const u8 d) { mTevColorCD = c << 4 | d; }
+	void setAlphaA(const u8 a) { mTevAlphaAB = mTevAlphaAB & ~(0x07 << 5) | a << 5; }
+	void setAlphaB(const u8 b) { mTevAlphaAB = mTevAlphaAB & ~(0x07 << 2) | b << 2; }
+	void setAlphaC(const u8 c)
 	{
 		mTevAlphaAB      = mTevAlphaAB & ~0x03 | c >> 1;
 		mTevSwapModeInfo = mTevSwapModeInfo & ~(0x01 << 7) | c << 7;
 	}
-	void setAlphaD(u8 d) { mTevSwapModeInfo = mTevSwapModeInfo & ~(0x07 << 4) | d << 4; }
-	void setAlphaABCD(u8 a, u8 b, u8 c, u8 d)
+	void setAlphaD(const u8 d) { mTevSwapModeInfo = mTevSwapModeInfo & ~(0x07 << 4) | d << 4; }
+	void setAlphaABCD(const u8 a, const u8 b, const u8 c, const u8 d)
 	{
 		setAlphaA(a);
 		setAlphaB(b);
 		setAlphaC(c);
 		setAlphaD(d);
 	}
-	void setTevAlphaOp(u8 param_1, u8 param_2, u8 param_3, u8 param_4, u8 param_5)
+	void setTevAlphaOp(const u8 param_1, const u8 param_2, const u8 param_3, const u8 param_4, const u8 param_5)
 	{
 		mTevAlphaOp = mTevAlphaOp & ~(0x01 << 2) | param_1 << 2;
 		if (param_1 <= 1) {

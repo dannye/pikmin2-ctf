@@ -7,7 +7,6 @@
 #include "Game/SingleGameSection.h"
 #include "Game/CameraMgr.h"
 #include "Game/rumble.h"
-#include "PSM/EnemyBoss.h"
 #include "PSSystem/PSMainSide_ObjSound.h"
 #include "Dolphin/rand.h"
 #include "nans.h"
@@ -303,7 +302,7 @@ void Obj::appearNearByTarget(Creature* target)
 	newPos *= 120.0f;
 	newPos += targetPos;
 
-	if (sqrDistanceXZ(mHomePosition, newPos) > SQUARE(C_GENERALPARMS.mTerritoryRadius())) {
+	if (mHomePosition.sqrDistance2D(newPos) > SQUARE(C_GENERALPARMS.mTerritoryRadius())) {
 		f32 angleDist = JMAAtan2Radian(targetPos.x - mHomePosition.x, targetPos.z - mHomePosition.z);
 
 		faceDir = angleDist + (randWeightFloat(PI) - HALF_PI);
@@ -334,8 +333,8 @@ void Obj::setAttackPosition()
 		f32 dirFactor       = array1[i];
 		f32 orthoDirFactor  = array2[i];
 		mAttackPositions[i] = mPosition;
-		Vector3f forward = dir;
-		Vector3f sideways = orthoDir;
+		Vector3f forward    = dir;
+		Vector3f sideways   = orthoDir;
 		forward *= dirFactor;
 		sideways *= orthoDirFactor;
 		mAttackPositions[i] += forward;

@@ -1,7 +1,7 @@
 #include "Game/Navi.h"
 #include "Game/NaviState.h"
 #include "Game/NaviParms.h"
-#include "PSM/Navi.h"
+#include "PSSystem/PSMainSide_ObjSound.h"
 #include "Drought/Game/NaviGoHere.h"
 #include "Game/MoviePlayer.h"
 #include "Game/MapMgr.h"

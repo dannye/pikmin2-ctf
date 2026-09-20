@@ -1,6 +1,7 @@
 #ifndef _GAME_ENTITIES_ITEMUJAMUSHI_H
 #define _GAME_ENTITIES_ITEMUJAMUSHI_H
 
+#include "MonoObjectMgr.h"
 #include "Game/BaseItem.h"
 #include "Game/itemMgr.h"
 #include "Game/Interaction.h"
@@ -322,8 +323,8 @@ struct Item : public FSMItem<Item, FSM, State> {
 struct Mgr : public NodeItemMgr<Item> {
 	Mgr();
 
-	virtual void doSimpleDraw(Viewport* viewport);                                        // _20
 	virtual void onLoadResources();                                                       // _48
+	virtual void doSimpleDraw(Viewport* viewport);                                        // _20
 	virtual u32 generatorGetID() { return 'ujms'; }                                       // _58 (weak)
 	virtual BaseItem* generatorBirth(Vector3f& pos, Vector3f& rot, GenItemParm* genParm); // _5C
 	virtual void generatorWrite(Stream& output, GenItemParm* genParm);                    // _60

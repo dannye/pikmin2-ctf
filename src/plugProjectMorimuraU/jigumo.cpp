@@ -665,7 +665,7 @@ void Obj::walkFunc()
 		Vector3f seperation = mGoalPosition;
 		seperation -= mPosition;
 
-		f32 distance = _sqrtf2(SQUARE(seperation.x) + SQUARE(seperation.y) + SQUARE(seperation.z));
+		f32 distance = sqrtfClamped(SQUARE(seperation.x) + SQUARE(seperation.y) + SQUARE(seperation.z));
 		// f32 dist = mGoalPosition.distance(mPosition);
 		if (distance < 0.0f) {
 			distance = 0.0f;
@@ -674,7 +674,8 @@ void Obj::walkFunc()
 		// Calculate the pre-turn angle based on the distance and territory radius
 		// mTurnModifier is 0.05f by default (5% every frame)
 		f32 preTurnAngle = (C_PARMS->mTurnModifier * (distance * (360.0f * (1.0f / territoryRadius))));
-		f32 degreeAngle  = turningFactor * (f32)sin(180.0f + preTurnAngle); // f2
+		preTurnAngle += 180.0f;
+		f32 degreeAngle = turningFactor * (f32)sin(preTurnAngle); // f2
 
 		if (!C_PARMS->mIsGradualTurnActive) { // does not run by default, but forces angle to 0
 			degreeAngle = 0.0f;

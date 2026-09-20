@@ -4,7 +4,6 @@
 #include "Game/Navi.h"
 #include "Game/CameraMgr.h"
 #include "Game/rumble.h"
-#include "PSM/EnemyBoss.h"
 #include "PSSystem/PSMainSide_ObjSound.h"
 #include "nans.h"
 
@@ -544,8 +543,7 @@ void StateAttack::exec(EnemyBase* enemy)
 						Vector3f slotPos;
 						slot->getPosition(slotPos);
 						Vector3f naviPos = navi->getPosition();
-						Vector3f sep     = Vector3f(slotPos.y - naviPos.y, slotPos.z - naviPos.z, slotPos.x - naviPos.x); // why.
-						f32 dist         = _length2(sep);
+						f32 dist         = slotPos.distance(naviPos);
 						if (dist < slot->mRadius) {
 							InteractAttack attack(enemy, CG_GENERALPARMS(enemy).mAttackDamage.mValue, nullptr);
 							navi->stimulate(attack);

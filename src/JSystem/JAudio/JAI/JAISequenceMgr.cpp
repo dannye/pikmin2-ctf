@@ -546,7 +546,7 @@ void checkPlayingSeqTrack(u32 playTrackNo)
 {
 	SeqUpdateData* data = &seqTrackInfo[playTrackNo];
 	SeqParameter* param = &data->mSequence->mSeqParameter;
-	if (data->mSequence->mSeqParameter.mPauseMode == SOUNDPAUSE_Unk2) {
+	if (param->mPauseMode == SOUNDPAUSE_Unk2) {
 		return;
 	}
 
@@ -1979,24 +1979,6 @@ lbl_800B2B5C:
 	addi     r1, r1, 0xa0
 	blr
 	*/
-}
-
-/**
- * @note Address: 0x800B2B90
- * @note Size: 0x2C
- */
-void JAISequence::setPitch(f32 value, u32 moveTime, u8 type)
-{
-	setSeqInterPitch(type, value, moveTime);
-}
-
-/**
- * @note Address: 0x800B2BBC
- * @note Size: 0x2C
- */
-void JAISequence::setPan(f32 value, u32 moveTime, u8 type)
-{
-	setSeqInterPan(type, value, moveTime);
 }
 
 /**

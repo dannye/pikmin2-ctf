@@ -7,7 +7,6 @@
 #include "Game/generalEnemyMgr.h"
 #include "Game/CameraMgr.h"
 #include "Game/rumble.h"
-#include "PSM/EnemyBoss.h"
 #include "PSSystem/PSMainSide_ObjSound.h"
 #include "PS.h"
 #include "nans.h"
@@ -335,7 +334,7 @@ void Obj::setFlickWalkTimeMax()
  */
 void Obj::getTargetPosition()
 {
-	if (sqrDistanceXZ(mPosition, mHomePosition) < SQUARE(C_GENERALPARMS.mTerritoryRadius())) {
+	if (mPosition.sqrDistance2D(mHomePosition) < SQUARE(C_GENERALPARMS.mTerritoryRadius())) {
 		if (mIsEnraged) {
 			f32 adjustAngle = (randWeightFloat(2.0f * mIkSystemParms->mEnragedAngle) - mIkSystemParms->mEnragedAngle) * DEG2RAD * PI;
 			f32 randAngle   = mFaceDir + adjustAngle;
@@ -350,7 +349,7 @@ void Obj::getTargetPosition()
 			                                         &condition);
 			if (piki) {
 				mTargetPosition = piki->getPosition();
-			} else if (sqrDistanceXZ(mPosition, mTargetPosition) < 625.0f) {
+			} else if (mPosition.sqrDistance2D(mTargetPosition) < 625.0f) {
 				f32 range    = (C_GENERALPARMS.mTerritoryRadius.mValue - C_GENERALPARMS.mHomeRadius.mValue);
 				f32 randDist = C_GENERALPARMS.mHomeRadius.mValue + randWeightFloat(range);
 				f32 ang2     = JMAAtan2Radian(mPosition.x - mHomePosition.x, mPosition.z - mHomePosition.z);
@@ -391,7 +390,7 @@ void Obj::setupIKSystem()
 	mIkSystemMgr->init(this, nullptr);
 
 	char* joints[] = { "rhand1jnt", "rhand2jnt", "rhand3jnt", "lhand1jnt", "lhand2jnt", "lhand3jnt",
-		               "rfoot1jnt", "rfoot2jnt", "rfoot3jnt", "lfoot1jnt", "lfoot2jnt", "lfoot3jnt" };
+	                   "rfoot1jnt", "rfoot2jnt", "rfoot3jnt", "lfoot1jnt", "lfoot2jnt", "lfoot3jnt" };
 
 	mIkSystemMgr->setupJoint(mModel, 0, &joints[0]);
 	mIkSystemMgr->setupJoint(mModel, 1, &joints[3]);

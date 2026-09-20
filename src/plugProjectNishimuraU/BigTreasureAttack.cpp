@@ -114,7 +114,7 @@ bool BigTreasureFireAttack::update()
 			Vector3f creaturePos = creature->getPosition();
 			f32 yDiff            = absVal(pos.y - creaturePos.y);
 
-			if (yDiff < yComp && sqrDistanceXZ(pos, creaturePos) < radius) {
+			if (yDiff < yComp && pos.sqrDistance2D(creaturePos) < radius) {
 				InteractFire fire(mOwner, CG_GENERALPARMS(mOwner).mAttackDamage.mValue);
 				if (creature->isNavi()) {
 					if (!creature->stimulate(fire)) {
@@ -216,7 +216,7 @@ bool BigTreasureGasAttack::update()
 		Creature* creature = static_cast<Creature*>(*iter);
 		if (creature->isAlive()) {
 			Vector3f creaturePos = creature->getPosition();
-			if (absVal(gasPos.y - creaturePos.y) < 30.0f && sqrDistanceXZ(gasPos, creaturePos) < gasDist) {
+			if (absVal(gasPos.y - creaturePos.y) < 30.0f && gasPos.sqrDistance2D(creaturePos) < gasDist) {
 				InteractGas gas(mOwner, CG_GENERALPARMS(mOwner).mAttackDamage());
 				if (creature->isNavi()) {
 					if (creature->stimulate(gas)) {
@@ -342,7 +342,12 @@ bool BigTreasureWaterAttack::update()
  */
 void BigTreasureWaterAttack::finish()
 {
-	// UNUSED FUNCTION
+	mEfxWaterBomb->fade();
+
+	efx::Arg fxArg(mPosition);
+	efx::TOootaWbHit hitFX;
+	hitFX.create(&fxArg);
+	PSStartSoundVec(PSSE_EN_BIGTAKARA_W_GROUND, (Vec*)&mPosition);
 }
 
 /**
@@ -2174,12 +2179,7 @@ void BigTreasureAttackMgr::updateWaterAttack()
 	while (waterNode) {
 		BigTreasureWaterAttack* nextNode = waterNode->getNext();
 		if (waterNode->update()) {
-			waterNode->mEfxWaterBomb->fade();
-
-			efx::Arg fxArg(waterNode->mPosition);
-			efx::TOootaWbHit hitFX;
-			hitFX.create(&fxArg);
-			PSStartSoundVec(PSSE_EN_BIGTAKARA_W_GROUND, (Vec*)&waterNode->mPosition);
+			waterNode->finish();
 			waterNode->del();
 			mWaterAttackNodes->add(waterNode);
 			delAttackShadow(waterNode);
