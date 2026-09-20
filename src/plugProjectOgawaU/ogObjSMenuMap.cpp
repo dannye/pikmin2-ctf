@@ -12,6 +12,8 @@
 
 #include "Game/GameSystem.h"
 
+#define ROTATE_RADAR_MAP (false)
+
 static const u32 padding[] = { 0, 0, 0 };
 
 namespace og {
@@ -1509,7 +1511,7 @@ void ObjSMenuMap::doCreate(JKRArchive* arc)
 	mMapAngle = 0.0f;
 
 	// set starting map orientation/rotation
-	if (mDisp->mActiveNavi) {
+	if (mDisp->mActiveNavi && ROTATE_RADAR_MAP) {
 		// Game::Navi* navi = Game::naviMgr->getActiveNavi();
 		Vector3f naviViewVec = Game::cameraMgr->mCameraObjList[Game::naviMgr->getActiveNavi()->mNaviIndex]->getViewVector();
 		mMapAngle            = 180.0f * (JMAAtan2Radian(naviViewVec.x, -naviViewVec.z) / PI); // in degrees
