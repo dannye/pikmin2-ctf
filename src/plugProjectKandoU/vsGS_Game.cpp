@@ -65,6 +65,10 @@ void GameState::init(VsGameSection* section, StateArg* stateArg)
 		Screen::gGame2DMgr->startFadeBG_Floor();
 	}
 
+	if (section->mWeatherEfx) {
+		section->mWeatherEfx->create(nullptr);
+	}
+
 	mHasKeyDemoPlayed = false;
 
 	if (gameSystem->isChallengeMode()) {

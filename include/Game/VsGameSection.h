@@ -97,6 +97,8 @@ struct VsGameSection : public BaseGameSection {
 	virtual void onSetSoundScene();                                        // _128
 	virtual void onClearHeap();                                            // _130
 
+	virtual void on_setCamController(int);
+
 	void calcVsScores();
 	void clearCaveMenus();
 	void clearGetCherryCount();
@@ -183,6 +185,7 @@ struct VsGameSection : public BaseGameSection {
 	int mYellowMarbleCounts[2];                    // _3DC
 
 	Game::CourseInfo* mCurrentCourseInfo;
+	efx::TChasePos* mWeatherEfx;
 };
 } // namespace Game
 

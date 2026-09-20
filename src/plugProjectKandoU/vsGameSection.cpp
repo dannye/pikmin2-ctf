@@ -31,6 +31,10 @@
 #include "VsOtakaraName.h"
 #include "nans.h"
 
+#include "efx/TLastMomiji.h"
+#include "efx/TForestSakura.h"
+#include "efx/TTutorialSnow.h"
+
 namespace Game {
 namespace VsGame {
 
@@ -182,6 +186,7 @@ void VsGameSection::onInit()
 	mHole                 = nullptr;
 	mPokoCount            = 0;
 	mIsMenuRunning        = false;
+	mWeatherEfx           = nullptr;
 
 	sprintf(mCaveInfoFilename, "caveinfo.txt");
 	sprintf(mEditFilename, "random");
@@ -312,6 +317,15 @@ void VsGameSection::doDraw(Graphics& gfx)
 		mCurrentState->draw(this, gfx);
 	}
 }
+void VsGameSection::on_setCamController(int)
+{
+	if (mWeatherEfx) {
+		Navi* navi = naviMgr->getActiveNavi();
+		if (navi) {
+			mWeatherEfx->mPosition = navi->getSound_PosPtr();
+		}
+	}
+}
 
 /**
  * @note Address: 0x801C1668
@@ -379,6 +393,22 @@ void VsGameSection::onSetupFloatMemory()
 {
 	if (isFruitMode()) {
 		P2ASSERT(mCurrentCourseInfo);
+
+		switch (mCurrentCourseInfo->mCourseIndex) {
+		case 0: // Falling snow in Valley of Repose
+			mWeatherEfx = new efx::TTutorialSnow;
+			break;
+		case 1: // Falling flowers in Awakening Wood
+			mWeatherEfx = new efx::TForestSakura;
+			break;
+		case 3: // Falling leaves in Wistful Wild
+			mWeatherEfx = new efx::TLastMomiji;
+			break;
+		default: // Nothing in Perplexing Pool
+			mWeatherEfx = nullptr;
+			break;
+		}
+
 		Stages::createMapMgr(mCurrentCourseInfo, nullptr);
 		gameSystem->addObjectMgr(mapMgr);
 
@@ -448,6 +478,7 @@ void VsGameSection::onClearHeap()
 	if (Farm::farmMgr) {
 		Farm::farmMgr->del();
 		gameSystem->detachObjectMgr(Farm::farmMgr);
+		mWeatherEfx = nullptr;
 	}
 	if (gameSystem->isVersusMode()) {
 		mCherryArray = nullptr;
