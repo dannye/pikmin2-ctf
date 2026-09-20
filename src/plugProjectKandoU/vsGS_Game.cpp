@@ -72,6 +72,11 @@ void GameState::init(VsGameSection* section, StateArg* stateArg)
 		mDisplayTime      = section->mTimeLimit / 4;
 		section->mTimeLimit += mFloorExtendTimer;
 		mTimer            = section->mTimeLimit;
+
+		if (gameSystem->isFruitMode()) {
+			gameSystem->mTimeMgr->setChallengeDuration(mTimer * 2.0f);
+			gameSystem->mTimeMgr->resetFlag(TIMEFLAG_Stopped);
+		}
 	}
 
 	section->mMarbleCount[1]        = 0;
@@ -593,6 +598,7 @@ void GameState::draw(VsGameSection* section, Graphics& gfx)
  */
 void GameState::cleanup(VsGameSection* section)
 {
+	gameSystem->mTimeMgr->mSpeedFactor = 1.0f;
 	gameSystem->resetFlag(GAMESYS_IsPlaying);
 	gameSystem->setMoviePause(false, "vsgs_game:clean");
 	PSMCancelToPauseOffMainBgm();

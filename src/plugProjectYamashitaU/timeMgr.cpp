@@ -35,6 +35,13 @@ void TimeMgr::init()
 	setTime(mParms.mParms.mDayStartTime.mValue);
 }
 
+void TimeMgr::setChallengeDuration(f32 timeLimit)
+{
+	// 13.25 hours from start to finish, from 6 A.M. to 7:15 P.M.
+	mSpeedFactor = 13.25f * (mParms.mParms.mDayLengthSeconds.mValue / TIMEMGR_DAY_HOURS) / timeLimit;
+	setTime(6.0f);
+}
+
 /**
  * @note Address: 0x801270A0
  * @note Size: 0x3C

@@ -105,7 +105,8 @@ void GameSystem::startFrame()
 	collisionUpdateMgr->update();
 
 	if (!paused() && !mIsFrozen && !isFlag(GAMESYS_DisablePause) && !paused_soft()
-	    && (!moviePlayer || moviePlayer->mDemoState == DEMOSTATE_Inactive) && (int)gameSystem->mTimeMgr->mDayCount != 0) {
+	    && (!moviePlayer || moviePlayer->mDemoState == DEMOSTATE_Inactive)
+	    && ((int)gameSystem->mTimeMgr->mDayCount != 0 || isFruitMode())) {
 		mTimeMgr->update();
 	}
 }
