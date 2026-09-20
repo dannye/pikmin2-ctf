@@ -57,7 +57,11 @@ void ObjChallenge1P::doCreate(JKRArchive* arc)
 	mDoping      = new og::Screen::DopingScreen;
 	mLifeGauge1  = new og::Screen::NaviLifeGauge;
 	mLifeGauge2  = new og::Screen::NaviLifeGauge;
-	mPikiCounter = new og::Screen::PikminCounterChallenge1P;
+	if (Game::gameSystem->isFruitMode()) {
+		mPikiCounter = new og::Screen::PikminCounter;
+	} else {
+		mPikiCounter = new og::Screen::PikminCounterChallenge1P;
+	}
 	mPokoScreen  = new P2DScreen::Mgr_tuning;
 	mSunMeter    = new og::Screen::SunMeter;
 
@@ -65,7 +69,11 @@ void ObjChallenge1P::doCreate(JKRArchive* arc)
 	mBloGroup->addBlo("doping.blo", mDoping, 0x1040000, arc);
 	mBloGroup->addBlo("orima.blo", mLifeGauge1, 0x1040000, arc);
 	mBloGroup->addBlo("orima.blo", mLifeGauge2, 0x1040000, arc);
-	mBloGroup->addBlo("cave_pikmin.blo", mPikiCounter, 0x1040000, arc);
+	if (Game::gameSystem->isFruitMode()) {
+		mBloGroup->addBlo("gr_pikmin.blo", mPikiCounter, 0x1040000, arc);
+	} else {
+		mBloGroup->addBlo("cave_pikmin.blo", mPikiCounter, 0x1040000, arc);
+	}
 	mBloGroup->addBlo("2P_challenge_poko.blo", mPokoScreen, 0x1040000, arc);
 	mBloGroup->addBlo("sun_meter.blo", mSunMeter, 0x1040000, arc);
 

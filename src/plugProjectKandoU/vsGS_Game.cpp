@@ -1051,6 +1051,7 @@ void GameState::update_GameChallenge(VsGameSection* section)
 		}
 
 		disp.mDataGame.mMapPikminCount = GameStat::getMapPikmins(AllPikminCalcs);
+		disp.mDataGame.mTotalPikminCount = GameStat::getAllPikmins(AllPikminCalcs);
 		Screen::gGame2DMgr->setDispMember(&disp);
 		return;
 	}

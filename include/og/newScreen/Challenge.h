@@ -15,6 +15,7 @@
 namespace og {
 namespace Screen {
 struct NaviLifeGauge;
+struct PikminCounter;
 struct PikminCounterChallenge1P;
 } // namespace Screen
 
@@ -142,7 +143,7 @@ struct ObjChallenge1P : public ObjChallengeBase {
 	og::Screen::DopingScreen* mDoping;                  // _68
 	og::Screen::NaviLifeGauge* mLifeGauge1;             // _6C
 	og::Screen::NaviLifeGauge* mLifeGauge2;             // _70
-	og::Screen::PikminCounterChallenge1P* mPikiCounter; // _74
+	og::Screen::PikminCounter* mPikiCounter;            // _74
 	P2DScreen::Mgr_tuning* mPokoScreen;                 // _78
 
 	og::Screen::SunMeter* mSunMeter;
