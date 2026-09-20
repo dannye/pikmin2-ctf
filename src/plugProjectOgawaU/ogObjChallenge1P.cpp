@@ -186,6 +186,11 @@ void ObjChallenge1P::doDraw(Graphics& gfx)
 	if (Game::gameSystem->isFruitMode()) {
 		mSunMeter->show();
 		mPokoScreen->hide();
+		if (mDoping->mDopingCheck->mSpicySprayCount == 0 && mDoping->mDopingCheck->mBitterSprayCount == 0) {
+			mDoping->hide();
+		} else {
+			mDoping->show();
+		}
 	} else {
 		mSunMeter->hide();
 		mPokoScreen->show();
