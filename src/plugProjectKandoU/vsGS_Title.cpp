@@ -48,6 +48,7 @@ void TitleState::init(VsGameSection* section, StateArg* arg)
 	section->mGhostIconTimers[1] = 0.0f;
 	section->mGhostIconTimers[0] = 0.0f;
 	section->mPokoCount          = 0;
+	section->mFruitCount         = 0;
 	section->mTimeLimit          = 0.0f;
 	section->clearGetDopeCount();
 	section->clearGetCherryCount();

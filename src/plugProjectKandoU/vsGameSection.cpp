@@ -185,6 +185,7 @@ void VsGameSection::onInit()
 	mFruitMode            = isFruitMode();
 	mHole                 = nullptr;
 	mPokoCount            = 0;
+	mFruitCount           = 0;
 	mIsMenuRunning        = false;
 	mWeatherEfx           = nullptr;
 
@@ -881,6 +882,7 @@ void VsGameSection::createVsPikmins()
 void VsGameSection::addChallengeScore(int score)
 {
 	mPokoCount += score;
+	mFruitCount += 1;
 	if (isFruitMode() && Radar::Mgr::getNumOtakaraItems() == 1) {
 		mIsChallengePerfect = true;
 		VsGame::ResultArg arg;

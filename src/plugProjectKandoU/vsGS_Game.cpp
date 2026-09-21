@@ -1052,6 +1052,7 @@ void GameState::update_GameChallenge(VsGameSection* section)
 
 		disp.mDataGame.mMapPikminCount = GameStat::getMapPikmins(AllPikminCalcs);
 		disp.mDataGame.mTotalPikminCount = GameStat::getAllPikmins(AllPikminCalcs);
+		disp.mDataGame.mDayNum = section->mFruitCount;
 		Screen::gGame2DMgr->setDispMember(&disp);
 		return;
 	}

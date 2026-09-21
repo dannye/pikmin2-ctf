@@ -86,8 +86,10 @@ void PikminCounter::setCallBack(JKRArchive* arc)
 	setCallBackCommon(arc, false);
 
 	u32* days = &mDataGame.mDayNum;
-	setCallBack_CounterDay(this, 'dcsr', 'dcsl', 'dcsc', days, 10, arc);
-	setCallBack_CounterDay(this, 'dc_r', 'dc_l', 'dc_c', days, 10, arc);
+	CallBack_CounterDay* dayCounter1 = setCallBack_CounterDay(this, 'dcsr', 'dcsl', 'dcsc', days, 10, arc);
+	dayCounter1->mIsPuyoAnim = true;
+	CallBack_CounterDay* dayCounter2 = setCallBack_CounterDay(this, 'dc_r', 'dc_l', 'dc_c', days, 10, arc);
+	dayCounter2->mIsPuyoAnim = true;
 
 	setCallBack_CounterRV(this, 'c_lr', 'c_lc', 'c_ll', &mDataGame.mMapPikminCount, 10, 3, 1, arc);
 	CallBack_CounterRV* counter = setCallBack_CounterRV(this, 'c_s1', 'c_sr', 'c_sl', &mDataGame.mTotalPikminCount, 10, 4, 1, arc);

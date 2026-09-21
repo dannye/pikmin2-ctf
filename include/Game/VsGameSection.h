@@ -186,6 +186,7 @@ struct VsGameSection : public BaseGameSection {
 
 	Game::CourseInfo* mCurrentCourseInfo;
 	efx::TChasePos* mWeatherEfx;
+	int mFruitCount;
 };
 } // namespace Game
 

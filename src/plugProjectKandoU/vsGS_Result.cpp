@@ -217,6 +217,7 @@ void ResultState::cleanup(VsGameSection* section)
 	mHeap->becomeCurrentHeap();
 
 	section->mPokoCount = 0;
+	section->mFruitCount = 0;
 	section->mTimeLimit = 0;
 }
 } // namespace VsGame
