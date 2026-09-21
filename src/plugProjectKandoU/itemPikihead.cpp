@@ -258,7 +258,7 @@ void WaitState::init(Item* item, StateArg* arg)
 	if (item->mHeadType == Flower) {
 		mTimer = 2.0f * randFloat() + pikiMgr->mParms->mPikiParms.mWitherFromFlowerTime.mValue;
 	} else {
-		mTimer = 2.0f * randFloat() + pikiMgr->mParms->mPikiParms.mGrowUpToFlowerTime.mValue;
+		mTimer = 2.0f * randFloat() + pikiMgr->mParms->mPikiParms.mGrowUpToFlowerTime.mValue / 4.0f;
 	}
 }
 
