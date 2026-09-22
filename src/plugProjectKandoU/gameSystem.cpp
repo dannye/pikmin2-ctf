@@ -385,8 +385,16 @@ void GameSystem::doSimpleDraw(Viewport* vp)
  * @note Address: 0x801B5F40
  * @note Size: 0x4
  */
-void GameSystem::doDirectDraw(Graphics&)
+void GameSystem::doDirectDraw(Graphics& gfx)
 {
+#if DO_DEBUG_DRAW
+	Iterator<GenericObjectMgr> it(this);
+	CI_LOOP(it)
+	{
+		GenericObjectMgr* obj = *it;
+		obj->doDirectDraw(gfx);
+	}
+#endif
 }
 
 /**

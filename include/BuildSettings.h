@@ -10,6 +10,8 @@
 #define BUGFIX      false
 #define FOR_MODDING false
 
+#define DO_DEBUG_DRAW (false)
+
 // The following are constants that mods might be interested in tweaking.
 #define CHALLENGE_COURSE_COUNT 30
 

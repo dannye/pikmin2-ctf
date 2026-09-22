@@ -168,8 +168,13 @@ void Obj::doUpdate()
  * @note Address: 0x8034A7F4
  * @note Size: 0x4
  */
-void Obj::doDirectDraw(Graphics&)
+void Obj::doDirectDraw(Graphics& gfx)
 {
+#if DO_DEBUG_DRAW
+	gfx.initPrimDraw(nullptr);
+	gfx.mDrawColor = Color4(255, 0, 0, 255);
+	gfx.drawSphere(mPosition, CG_GENERALPARMS(this).mAttackRadius.mValue);
+#endif
 }
 
 /**

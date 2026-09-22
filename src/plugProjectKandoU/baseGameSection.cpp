@@ -1916,8 +1916,11 @@ void BaseGameSection::doDirectDrawPost(Graphics& gfx, Viewport*)
  * @note Address: 0x8014FD9C
  * @note Size: 0x4
  */
-void BaseGameSection::doDirectDraw(Graphics&, Viewport*)
+void BaseGameSection::doDirectDraw(Graphics& gfx, Viewport*)
 {
+#if DO_DEBUG_DRAW
+	gameSystem->doDirectDraw(gfx);
+#endif
 }
 
 /**
