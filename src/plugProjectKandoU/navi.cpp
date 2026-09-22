@@ -661,7 +661,11 @@ void Navi::doEntry()
 
 	J3DGXColorS10 color;
 	if (mNextThrowPiki) {
-		Color4& col = Piki::pikiColorsCursor[mNextThrowPiki->getKind()];
+		u8 kind = mNextThrowPiki->mPikiKind;
+		if (mNextThrowPiki->mBomb) {
+			kind = BombPikmin;
+		}
+		Color4& col = Piki::pikiColorsCursor[kind];
 		color.r     = col.r;
 		color.g     = col.g;
 		color.b     = col.b;
@@ -1473,8 +1477,13 @@ void Navi::doDirectDraw(Graphics& gfx)
 				distance = 1.0f;
 			}
 
+			u8 kind = piki->mPikiKind;
+			if (piki->mBomb) {
+				kind = BombPikmin;
+			}
+
 			GXSetLineWidth(stateID == NSID_ThrowWait ? 10 : 6, GX_TO_ZERO);
-			gfx.mDrawColor = piki->mDefaultColor;
+			gfx.mDrawColor = Piki::pikiColors[kind];
 			Vector3f prev = start;
 			for (int i = 1; i <= 31; ++i) {
 				float t = i / 32.0f;
@@ -1494,7 +1503,7 @@ void Navi::doDirectDraw(Graphics& gfx)
 			PerspPrintfInfo info(0.35f);
 			info.mFont = gP2JMEMgr->mFont;
 			info.mColorA = piki->mCursorColor;
-			info.mColorB = Piki::pikiColorsCursor[piki->getKind()];
+			info.mColorB = Piki::pikiColorsCursor[kind];
 			gfx.perspPrintf(info, pos, "%d", GameStat::formationPikis.getCount(mNaviIndex, piki->mPikiKind));
 		}
 		return;

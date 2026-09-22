@@ -28,10 +28,10 @@ namespace Game {
 
 Color4 Piki::pikiColors[PikiColorCount + 1]
     = { Color4(0, 50, 255, 255),    Color4(255, 30, 0, 255),  Color4(255, 210, 0, 255), Color4(28, 0, 52, 255),
-        Color4(255, 230, 255, 255), Color4(255, 140, 0, 255), Color4(255, 255, 255, 0) };
+        Color4(255, 230, 255, 255), Color4(255, 140, 0, 255), Color4(255, 255, 255, 0), Color4(255, 128, 0, 255) };
 Color4 Piki::pikiColorsCursor[PikiColorCount + 1]
     = { Color4(0, 50, 255, 255),    Color4(255, 30, 0, 255),  Color4(255, 210, 0, 255), Color4(120, 0, 250, 255),
-        Color4(255, 230, 255, 255), Color4(255, 140, 0, 255), Color4(255, 255, 255, 0) };
+        Color4(255, 230, 255, 255), Color4(255, 140, 0, 255), Color4(255, 255, 255, 0), Color4(255, 128, 0, 255) };
 
 static const int unusedPikiArray[] = { 0, 0, 0 };
 } // namespace Game
