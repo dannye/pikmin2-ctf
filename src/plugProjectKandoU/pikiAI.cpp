@@ -36,6 +36,10 @@ u8 Piki::sGraspSituationOptimise = 1;
  */
 int Piki::graspSituation_Fast(Game::Creature** outTarget)
 {
+	// Normally, Pikmin won't search for things to do during cutscenes.
+	// An exception is made though, for Wild Pikmin before the captains
+	// are reunited. This is done so that the wild Red Pikmin on day 1
+	// will attack the Dwarf Bulborb
 	if (moviePlayer && moviePlayer->mDemoState != DEMOSTATE_Inactive) {
 		*outTarget = nullptr;
 		if (!isZikatu() || playData->isDemoFlag(DEMO_Reunite_Captains)) {
@@ -48,6 +52,7 @@ int Piki::graspSituation_Fast(Game::Creature** outTarget)
 	int action       = PikiAI::ACT_NULL;
 	bool isActionSet = false;
 	waterCheck       = true;
+	// Don't target most things in water if we can't go in water
 	if (getKind() != Blue && getKind() != Bulbmin) {
 		waterCheck = false;
 	}
@@ -64,7 +69,7 @@ int Piki::graspSituation_Fast(Game::Creature** outTarget)
 		case OBJTYPE_Piki: { // can we battle? can we rescue?
 			Piki* otherPiki = static_cast<Piki*>(creature);
 
-			// check if we can fight the piki.
+			// check if we can fight the piki. (2p battle)
 			if (gameSystem->isVersusMode()) {          // need to be in vs mode to fight pikis
 				if (creature->isAlive() &&             // is it alive
 				    otherPiki->canVsBattle() &&        // is it battle-able
@@ -72,8 +77,8 @@ int Piki::graspSituation_Fast(Game::Creature** outTarget)
 				    otherPiki->getKind() != getKind()) // is it on the other team
 				{
 					f32 sphereDist = otherPiki->calcSphereDistance(this);
-					if (sphereDist < PIKI_BATTLE_RANGE &&                          // needs to be close enough to target
-					    ((isActionSet && (sphereDist < minDist)) || !isActionSet)) // have an action but piki is closer, OR no action yet
+					if (sphereDist < PIKI_BATTLE_RANGE &&                        // needs to be close enough to target
+					    (isActionSet && (sphereDist < minDist) || !isActionSet)) // have an action but piki is closer, OR no action yet
 					{
 						minDist     = sphereDist;
 						target      = otherPiki;
@@ -85,6 +90,7 @@ int Piki::graspSituation_Fast(Game::Creature** outTarget)
 				break;
 			}
 
+			// check for rescuing drowning Pikmin, note that this and the 2p battle check are mutually exclusive
 			if (getKind() == Blue &&                        // can we rescue
 			    creature->isAlive() &&                      // is piki alive
 			    otherPiki->getStateID() == PIKISTATE_Drown) // is piki drowning
@@ -102,6 +108,7 @@ int Piki::graspSituation_Fast(Game::Creature** outTarget)
 		case OBJTYPE_Pellet: { // can we pick up the pellet?
 			Pellet* pellet   = static_cast<Pellet*>(creature);
 			bool isGrabbable = true;
+			// Don't allow Upgrades to be picked up if their discovery cutscene hasn't played
 			if (pellet->getKind() == PelletType::Upgrade && gameSystem->isStoryMode()) {
 				int configIdx = pellet->getConfigIndex();
 				if (!playData->isFindItemDemoFlag(configIdx)) {
@@ -123,9 +130,11 @@ int Piki::graspSituation_Fast(Game::Creature** outTarget)
 		} break;
 
 		case OBJTYPE_Gate: { // can we attack the gate?
+			// not if the Pikmin was recently poisoned
 			if (!gasInvicible()) {
 				ItemGate* gate    = static_cast<ItemGate*>(creature);
 				bool isAttackable = true;
+				// not if a poison pipe is nearby when White Pikmin haven't found and we are... a White Pikmin? Cool check
 				if (gameSystem->isStoryMode() && !playData->hasMetPikmin(White) && getKind() != White) {
 					Vector3f gatePos = gate->getPosition();
 					Sys::Sphere gateSearchSphere(gatePos, GATE_GAS_PIPE_RANGE);
@@ -144,7 +153,7 @@ int Piki::graspSituation_Fast(Game::Creature** outTarget)
 
 				if (gate->isAlive() && isAttackable) {
 					f32 workDist = gate->getWorkDistance(mBoundingSphere);
-					if (!isActionSet && workDist < minDist && workDist < pikiMgr->mParms->mPikiParms.mNectarRockRangeDuplicate()) {
+					if (!isActionSet && workDist < minDist && workDist < pikiMgr->mParms->mPikiParms.mGateSearchRange()) {
 						minDist = workDist;
 						target  = gate;
 						action  = PikiAI::ACT_BreakGate;
@@ -154,6 +163,7 @@ int Piki::graspSituation_Fast(Game::Creature** outTarget)
 		} break;
 
 		case OBJTYPE_Bridge: { // can we attack the bridge?
+			// not if the Pikmin was recently poisoned
 			if (!gasInvicible()) {
 				ItemBridge::Item* bridge = static_cast<ItemBridge::Item*>(creature);
 				if (bridge->isAlive() && bridge->workable(mPosition)) {
@@ -242,7 +252,7 @@ int Piki::graspSituation_Fast(Game::Creature** outTarget)
 			}
 		} break;
 
-		case OBJTYPE_Navi: { // can we attack the navi?
+		case OBJTYPE_Navi: { // can we attack the navi? (for 2P battle)
 			if (gameSystem->isVersusMode()) {
 				Navi* navi = static_cast<Navi*>(creature);
 				if (navi->isAlive() && (int)navi->mNaviIndex == getKind()) {
@@ -306,6 +316,10 @@ int Piki::graspSituation_Fast(Game::Creature** outTarget)
 int Piki::graspSituation(Game::Creature** outTarget)
 {
 	P2ASSERT(false); // this function is not maintained
+
+	// NOTE: this whole function is effectively unused, as only graspSituation_fast is used in the final game
+	// its missing some checks compared to the used function, such as Navis
+
 	if (moviePlayer && moviePlayer->mDemoState != DEMOSTATE_Inactive) {
 		*outTarget = nullptr;
 		return PikiAI::ACT_NULL;
@@ -398,7 +412,7 @@ int Piki::graspSituation(Game::Creature** outTarget)
 	// check for gates to attack (NB: no poison check?)
 	if (itemGateMgr) {
 		ItemGate* targetGate = nullptr;
-		f32 minGateDist      = pikiMgr->mParms->mPikiParms.mNectarRockRangeDuplicate();
+		f32 minGateDist      = pikiMgr->mParms->mPikiParms.mGateSearchRange();
 		Iterator<ItemGate> gateIter(&itemGateMgr->mNodeObjectMgr);
 		CI_LOOP(gateIter)
 		{
@@ -422,7 +436,7 @@ int Piki::graspSituation(Game::Creature** outTarget)
 	// check for electric gates to attack
 	if (ItemDengekiGate::mgr) {
 		ItemGate* targetGate = nullptr;
-		f32 minGateDist      = pikiMgr->mParms->mPikiParms.mNectarRockRangeDuplicate();
+		f32 minGateDist      = pikiMgr->mParms->mPikiParms.mGateSearchRange();
 		Iterator<ItemGate> gateIter(ItemDengekiGate::mgr);
 		CI_LOOP(gateIter)
 		{
@@ -617,10 +631,11 @@ int Piki::graspSituation(Game::Creature** outTarget)
  * @note Address: 0x801B2DB0
  * @note Size: 0x7D4
  */
-bool Piki::invokeAI(Game::CollEvent* event, bool check)
+bool Piki::invokeAI(Game::CollEvent* event, bool isNaviSwarming)
 {
 	Creature* creature = event->mCollidingCreature;
 	bool formCheck     = true;
+	// check that the Pikmin is done joining your party
 	if (getCurrActionID() == PikiAI::ACT_Formation
 	    && static_cast<PikiAI::ActFormation*>(getCurrAction())->mSortState != FORMATION_SORT_FORMED) {
 		formCheck = false;
@@ -648,7 +663,7 @@ bool Piki::invokeAI(Game::CollEvent* event, bool check)
 
 	switch (creature->mObjectTypeID) {
 	case OBJTYPE_Navi: {
-		if (check && gameSystem->isVersusMode() && creature->isAlive() && static_cast<Navi*>(creature)->mNaviIndex == mPikiKind) {
+		if (isNaviSwarming && gameSystem->isVersusMode() && creature->isAlive() && static_cast<Navi*>(creature)->mNaviIndex == mPikiKind) {
 			PikiAI::ActAttackArg attackArg;
 			attackArg.mCreature = creature;
 			attackArg.mCollPart = nullptr;
@@ -667,7 +682,7 @@ bool Piki::invokeAI(Game::CollEvent* event, bool check)
 
 	case OBJTYPE_Pellet: {
 		Pellet* pellet = static_cast<Pellet*>(creature);
-		if (check && pellet->isAlive() && !isZikatu()) {
+		if (isNaviSwarming && pellet->isAlive() && !isZikatu()) {
 			if (!gameSystem->isVersusMode() || pellet->getBedamaColor() != getKind()) {
 				if (pellet->getTotalPikmins() < pellet->getPelletConfigMax() && !pellet->discoverDisabled()) {
 					bool upgradeReady = true;
@@ -691,7 +706,7 @@ bool Piki::invokeAI(Game::CollEvent* event, bool check)
 	} break;
 
 	case OBJTYPE_Teki: {
-		if (check && creature->isLivingThing() && creature->isAlive()) {
+		if (isNaviSwarming && creature->isLivingThing() && creature->isAlive()) {
 			CollPart* part = event->mCollisionObj;
 			PikiAI::ActAttackArg attackArg;
 			attackArg.mCreature = creature;
@@ -701,7 +716,7 @@ bool Piki::invokeAI(Game::CollEvent* event, bool check)
 
 		EnemyBase* enemy = static_cast<EnemyBase*>(creature);
 		if (
-			check &&
+			isNaviSwarming &&
 			(getKind() == Yellow || (RBY_BOMB_PIKIS && getKind() <= Yellow)) &&
 			mBomb == nullptr &&
 			enemy->isAlive() &&
@@ -719,7 +734,7 @@ bool Piki::invokeAI(Game::CollEvent* event, bool check)
 
 	case OBJTYPE_Gate: {
 		ItemGate* gate = static_cast<ItemGate*>(creature);
-		if (check) {
+		if (isNaviSwarming) {
 			bool isAttackable = true;
 			if (gameSystem->isStoryMode() && !playData->hasMetPikmin(White) && getKind() != White) {
 				Vector3f gatePos = gate->getPosition();
@@ -749,7 +764,7 @@ bool Piki::invokeAI(Game::CollEvent* event, bool check)
 	case OBJTYPE_Rock:
 	case OBJTYPE_Barrel:
 	case OBJTYPE_Treasure: {
-		if (check) {
+		if (isNaviSwarming) {
 			if (creature->mObjectTypeID == OBJTYPE_Treasure && getKind() != White
 			    && !static_cast<ItemTreasure::Item*>(creature)->isVisible()) {
 				return false;
@@ -768,7 +783,7 @@ bool Piki::invokeAI(Game::CollEvent* event, bool check)
 	} break;
 
 	case OBJTYPE_BigFountain: {
-		if (check && creature->isAlive()) {
+		if (isNaviSwarming && creature->isAlive()) {
 			PikiAI::ActBreakRockArg breakRockArg;
 			breakRockArg.mRock = static_cast<BaseItem*>(creature);
 			return mBrain->start(PikiAI::ACT_BreakRock, &breakRockArg);
@@ -776,7 +791,7 @@ bool Piki::invokeAI(Game::CollEvent* event, bool check)
 	} break;
 
 	case OBJTYPE_Plant: {
-		if (check) {
+		if (isNaviSwarming) {
 			PikiAI::ActCropArg cropArg;
 			cropArg.mCreature = creature;
 			return mBrain->start(PikiAI::ACT_Crop, &cropArg);
@@ -808,11 +823,14 @@ bool Piki::invokeAI(Game::PlatEvent* event)
 
 	switch (item->mObjectTypeID) {
 	case OBJTYPE_Gate:
+		// attack the gate if we are touching its central part and not the sides
 		if (event->mInstance->mId.match('gate', '*') || event->mInstance->mId.match('elec', '*')) {
+			// not if we were recently poisoned
 			if (gasInvicible()) {
 				return false;
 			}
 
+			// not if a poison pipe is nearby when White Pikmin haven't found and we are... a White Pikmin? Cool check
 			if (gameSystem->isStoryMode() && !playData->hasMetPikmin(White) && getKind() != White) {
 				Vector3f itemPos = item->getPosition();
 
@@ -885,16 +903,19 @@ bool Piki::checkInvokeAI(bool isSimpleCheck)
 
 	Game::Creature* target = nullptr;
 	int action;
+	// sGraspSituationOptimise is always true, so graspSituation goes unused
 	if (sGraspSituationOptimise) {
 		action = graspSituation_Fast(&target);
 	} else {
 		action = graspSituation(&target);
 	}
 
+	// exit without actually starting the new state, just return that a new action is found
 	if (isSimpleCheck) {
 		return action != PikiAI::ACT_NULL;
 	}
 
+	// exit if no target object was found
 	if (!target) {
 		return false;
 	}
