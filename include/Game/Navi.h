@@ -193,6 +193,8 @@ struct Navi : public FakePiki, virtual public PelletView {
 	bool hasDope(int);
 	void holeinAllPikis(Vector3f&);
 
+	GameStat::PikiCounter getAllPikiCounts(u32& numBombs);
+
 	// Increase the amount of sprays in sprayType (use enum SPRAY_TYPE)
 	void incDopeCount(int sprayType);
 	bool invincible();

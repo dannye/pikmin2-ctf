@@ -1504,7 +1504,16 @@ void Navi::doDirectDraw(Graphics& gfx)
 			info.mFont = gP2JMEMgr->mFont;
 			info.mColorA = piki->mCursorColor;
 			info.mColorB = Piki::pikiColorsCursor[kind];
-			gfx.perspPrintf(info, pos, "%d", GameStat::formationPikis.getCount(mNaviIndex, piki->mPikiKind));
+
+			u32 numBombs = 0;
+			GameStat::PikiCounter pikiCounts = getAllPikiCounts(numBombs);
+			u32 pikiCount;
+			if (piki->mBomb) {
+				pikiCount = numBombs;
+			} else {
+				pikiCount = pikiCounts(piki->mPikiKind);
+			}
+			gfx.perspPrintf(info, pos, "%d", pikiCount);
 		}
 		return;
 	}
@@ -1986,6 +1995,21 @@ void Navi::updateThrowTimer()
 void Navi::clearThrowTimer()
 {
 	mThrowTimer = 0;
+}
+
+GameStat::PikiCounter Navi::getAllPikiCounts(u32& numBombs) {
+	GameStat::PikiCounter pikiCounts;
+	Iterator<Creature> iterator(mCPlateMgr);
+	CI_LOOP(iterator)
+	{
+		Piki* piki = static_cast<Piki*>(*iterator);
+		if (piki->mBomb) {
+			numBombs += 1;
+		} else {
+			pikiCounts.inc(piki->getKind());
+		}
+	}
+	return pikiCounts;
 }
 
 /**
