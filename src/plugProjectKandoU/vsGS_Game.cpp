@@ -427,13 +427,16 @@ void GameState::checkFindKeyDemo(VsGameSection* section)
 	}
 }
 
-void GameState::setDispMemberSMenu(og::Screen::DispMemberSMenuAll& disp, VsGameSection* section)
+void GameState::setDispMemberSMenu(og::Screen::DispMemberSMenuAll& disp, VsGameSection* section, bool player2)
 {
 	// General data
 	Navi* navi = naviMgr->getActiveNavi();
 	int id     = NAVIID_Olimar;
 	if (navi) {
 		id = navi->mNaviIndex;
+	}
+	if (gameSystem->isMultiplayerMode() && player2) {
+		id = NAVIID_Louie;
 	}
 	disp.mIsDay1 = false;
 
@@ -561,7 +564,7 @@ void GameState::checkSMenu(VsGameSection* section)
 				}
 				if (section->isFruitMode()) {
 					versus = 0;
-					setDispMemberSMenu(sMenu, section);
+					setDispMemberSMenu(sMenu, section, true);
 				}
 				sMenu.mOpenMode = versus;
 				Screen::gGame2DMgr->setGamePad(section->mControllerP2);
