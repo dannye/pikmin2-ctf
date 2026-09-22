@@ -1997,7 +1997,8 @@ void Navi::clearThrowTimer()
 	mThrowTimer = 0;
 }
 
-GameStat::PikiCounter Navi::getAllPikiCounts(u32& numBombs) {
+GameStat::PikiCounter Navi::getAllPikiCounts(u32& numBombs)
+{
 	GameStat::PikiCounter pikiCounts;
 	Iterator<Creature> iterator(mCPlateMgr);
 	CI_LOOP(iterator)
