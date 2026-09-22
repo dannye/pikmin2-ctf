@@ -3061,7 +3061,11 @@ void Navi::findNextThrowPiki()
 		Vector3f pikiPos = piki->getPosition();
 		f32 dist         = pikmin2_sqrtf(naviPos.sqrDistance2D(pikiPos));
 		if (piki->mNavi == this && piki->getStateID() == PIKISTATE_Walk && piki->isThrowable()) {
-			if (dist < minSameKindDist && mThrowTimer && piki->mPikiKind == mThrowKind) {
+			u8 kind = piki->mPikiKind;
+			if (piki->mBomb) {
+				kind = BombPikmin;
+			}
+			if (dist < minSameKindDist && mThrowTimer && kind == mThrowKind) {
 				sameKindPiki    = piki;
 				minSameKindDist = dist;
 			}
@@ -3100,6 +3104,9 @@ void Navi::throwPiki(Piki* piki, Vector3f& cursorPos)
 {
 	startThrowTimer();
 	mThrowKind = piki->mPikiKind;
+	if (piki->mBomb) {
+		mThrowKind = BombPikmin;
+	}
 
 	// Play throw sound.
 	mSoundObj->startSound(PSSE_PL_THROW, 0);

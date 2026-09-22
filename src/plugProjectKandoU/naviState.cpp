@@ -4643,7 +4643,11 @@ void NaviThrowWaitState::init(Navi* navi, StateArg* stateArg)
 				dist += 10.0f;
 			}
 			if (piki->getStateID() == PIKISTATE_Walk && piki->isThrowable()) {
-				if (dist < minSameKindDist && navi->mThrowTimer && piki->mPikiKind == navi->mThrowKind) {
+				u8 kind = piki->mPikiKind;
+				if (piki->mBomb) {
+					kind = BombPikmin;
+				}
+				if (dist < minSameKindDist && navi->mThrowTimer && kind == navi->mThrowKind) {
 					sameKindPiki    = piki;
 					minSameKindDist = dist;
 				}
