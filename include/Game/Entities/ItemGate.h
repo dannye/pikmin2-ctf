@@ -136,6 +136,8 @@ struct ItemGate : public WorkItem<ItemGate, GateFSM, GateState> {
 	virtual void onSetPosition();                             // _21C
 	virtual void onKeyEvent(const SysShape::KeyEvent& event); // _220 (weak)
 
+	virtual void doDirectDraw(Graphics& gfx);
+
 	bool bombCallBack(f32 damage);
 
 	bool isBramble()  { return mGateType == GATETYPE_Bramble; }

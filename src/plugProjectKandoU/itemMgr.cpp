@@ -876,8 +876,16 @@ void ItemMgr::doSimulation(f32 p1)
  * @note Address: 0x801CE8CC
  * @note Size: 0x4
  */
-void ItemMgr::doDirectDraw(Graphics&)
+void ItemMgr::doDirectDraw(Graphics& gfx)
 {
+#if DO_DEBUG_DRAW
+	Iterator<GenericObjectMgr> iterator(this);
+	CI_LOOP(iterator)
+	{
+		GenericObjectMgr* item = (*iterator);
+		item->doDirectDraw(gfx);
+	}
+#endif
 }
 
 /**

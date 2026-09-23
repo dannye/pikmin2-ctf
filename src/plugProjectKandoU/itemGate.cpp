@@ -228,6 +228,15 @@ void ItemGate::onKeyEvent(const SysShape::KeyEvent& keyEvent)
 	}
 }
 
+void ItemGate::doDirectDraw(Graphics& gfx)
+{
+#if DO_DEBUG_DRAW
+	gfx.initPrimDraw(nullptr);
+	gfx.mDrawColor = Color4(255, 255, 0, 255);
+	gfx.drawSphere(mPosition, mBoundingSphere.mRadius);
+#endif
+}
+
 bool ItemGate::bombCallBack(f32 damage)
 {
 	if (mCurrentState && !isElectric()) {
