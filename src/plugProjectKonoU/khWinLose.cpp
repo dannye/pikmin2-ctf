@@ -82,6 +82,11 @@ void ObjWinLose::doCreate(JKRArchive* arc)
 		arg[0] = 2;
 		arg[1] = 2;
 		break;
+	case WinFruit:
+		arg[0]     = 0;
+		arg[1]     = -1;
+		mScreenNum = 1;
+		break;
 	}
 
 	for (int i = 0; i < mScreenNum; i++) {

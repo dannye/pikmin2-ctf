@@ -883,13 +883,6 @@ void VsGameSection::addChallengeScore(int score)
 {
 	mPokoCount += score;
 	mFruitCount += 1;
-	if (isFruitMode() && Radar::Mgr::getNumOtakaraItems() == 1) {
-		mIsChallengePerfect = true;
-		VsGame::ResultArg arg;
-		arg.mEndFlag.clear();
-		arg.mEndFlag.typeView |= 0x1;
-		mFsm->transit(this, VsGame::VGS_Result, &arg);
-	}
 }
 
 /**

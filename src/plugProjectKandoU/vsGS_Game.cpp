@@ -23,6 +23,8 @@
 #include "Radar.h"
 #include "nans.h"
 
+#include "og/Sound.h"
+
 namespace Game {
 namespace VsGame {
 
@@ -70,6 +72,7 @@ void GameState::init(VsGameSection* section, StateArg* stateArg)
 	}
 
 	mHasKeyDemoPlayed = false;
+	mFruitWinDelayTimer = 0;
 
 	if (gameSystem->isChallengeMode()) {
 		mFloorExtendTimer = section->mChallengeStageData->mFloorTimerExtensions[section->getCurrFloor()];
@@ -297,6 +300,44 @@ void GameState::exec(VsGameSection* section)
 			return;
 		}
 
+		if (isFlag(VSGS_WinLoseReasonOpen)) {
+			if (mFruitWinDelayTimer > 0) {
+				mFruitWinDelayTimer -= 1;
+			}
+			if ((u8)Screen::gGame2DMgr->check_WinLoseReason() && mFruitWinDelayTimer == 0) {
+				resetFlag(VSGS_WinLoseReasonOpen);
+				setFlag(VSGS_WinLoseOpen);
+
+				kh::Screen::DispWinLose winLose(WinFruit, ::Screen::Game2DMgr::CHECK2D_WinLose_Opened);
+				Screen::gGame2DMgr->open_WinLose(winLose);
+				mFruitWinDelayTimer = 30;
+				return;
+			} else {
+				return;
+			}
+		}
+
+		if (isFlag(VSGS_WinLoseOpen)) {
+			switch (Screen::gGame2DMgr->check_WinLose()) {
+			case Screen::Game2DMgr::CHECK2D_WinLose_NotOpened:
+			case Screen::Game2DMgr::CHECK2D_WinLose_Opened:
+			case Screen::Game2DMgr::CHECK2D_WinLose_AnimDone:
+				break;
+			case Screen::Game2DMgr::CHECK2D_WinLose_Finished:
+				if (mFruitWinDelayTimer > 0) {
+					mFruitWinDelayTimer -= 1;
+				}
+				if (mFruitWinDelayTimer == 0) {
+					section->mIsChallengePerfect = true;
+					ResultArg arg;
+					arg.mEndFlag.clear();
+					arg.mEndFlag.typeView |= 0x1;
+					transit(section, VGS_Result, &arg);
+				}
+			}
+			return;
+		}
+
 		if (!gameSystem->paused() && section->mTimeLimit > 0.0f && isFlag(VSGS_IntroDone) && !section->mMenuFlags.typeView
 		    && gameSystem->isFlag(GAMESYS_IsGameWorldActive) && !gameSystem->paused_soft()
 		    && moviePlayer->mDemoState
@@ -348,6 +389,24 @@ void GameState::exec(VsGameSection* section)
 		update_GameChallenge(section);
 		if (mSubState == 0) {
 			checkSMenu(section);
+		}
+
+		// check we're in Fruit Mode and that the player has won
+		if (gameSystem->isFruitMode() && !isFlag(VSGS_WinLoseReasonOpen) && !isFlag(VSGS_WinLoseOpen)
+		    && (section->mPokoCount > 0 && Radar::Mgr::getNumOtakaraItems() == 0)) {
+
+			gameSystem->resetFlag(GAMESYS_IsGameWorldActive);
+			setFlag(VSGS_WinLoseReasonOpen);
+			gameSystem->setPause(true, nullptr, 3);
+
+			kh::Screen::DispWinLoseReason winLoseReason;
+			winLoseReason.mOutcomeP1 = 3;
+			winLoseReason.mOutcomeP2 = -1;
+
+			P2ASSERT(Screen::gGame2DMgr->open_WinLoseReason(winLoseReason));
+
+			og::ogSound->setVsWin1P();
+			mFruitWinDelayTimer = 30;
 		}
 
 		// check we're in VS Mode and that someone needs to lose

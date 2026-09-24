@@ -7,7 +7,7 @@
 
 struct JAISound;
 
-enum WinLoseCondition { WinPlayer1 = 1, WinPlayer2 = 2, Draw = 3, Timeup1P = 4, Timeup2P = 5 };
+enum WinLoseCondition { WinPlayer1 = 1, WinPlayer2 = 2, Draw = 3, Timeup1P = 4, Timeup2P = 5, WinFruit = 6 };
 
 namespace kh {
 namespace Screen {

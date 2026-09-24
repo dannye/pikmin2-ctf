@@ -413,7 +413,7 @@ struct GameState : public State {
 
 	// _00     = VTBL
 	// _00-_0C = State
-	u32 _0C;                    // _0C
+	u32 mFruitWinDelayTimer;    // _0C
 	Controller* mController;    // _10
 	BitFlag<u16> mFlags;        // _14
 	u8 mSubState;               // _16
