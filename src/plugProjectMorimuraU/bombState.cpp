@@ -159,6 +159,14 @@ void StateBomb::exec(EnemyBase* enemy)
 					if (!(sphere.mPosition.y - sphere.mRadius > max) && !(sphere.mPosition.y + sphere.mRadius < min)) {
 						if (creature->isTeki() || creature->mObjectTypeID == OBJTYPE_Gate) {
 
+							if (creature->mObjectTypeID == OBJTYPE_Gate) {
+								Vector3f diff = creature->getPosition() - position;
+								f32 radius = parms->mGeneral.mAttackRadius.mValue * 0.5f + sphere.mRadius * 0.5f;
+								if (diff.sqrMagnitude2D() > SQUARE(radius)) {
+									continue;
+								}
+							}
+
 							f32 weight = 1.0f;
 							f32 force  = weight * CG_PROPERPARMS(enemy).mDamageToEnemies.mValue;
 							InteractBomb interBomb(enemy, force, &Vector3f::zero);
