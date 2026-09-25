@@ -292,7 +292,9 @@ void GameState::exec(VsGameSection* section)
 			case Screen::Game2DMgr::CHECK2D_WinLose_AnimDone:
 				break;
 			case Screen::Game2DMgr::CHECK2D_WinLose_Finished:
-				GameStat::alivePikis.clear();
+				if (!section->isFruitMode()) {
+					GameStat::alivePikis.clear();
+				}
 				ResultArg arg;
 				arg.mEndFlag.clear();
 				transit(section, VGS_Result, &arg);
