@@ -473,6 +473,12 @@ void ObjFloor::doCreate(JKRArchive* arc)
 	mSublevelPane  = mScreenName->search('kaisuu');
 	mSublevelXoffs = mSublevelPane->mTranslateX;
 	mSublevelYoffs = mSublevelPane->mTranslateY;
+
+	if (!isVS() && Game::gameSystem->mIsInCave) {
+		mSublevelPane->show();
+	} else {
+		mSublevelPane->hide();
+	}
 }
 
 /**
@@ -511,7 +517,7 @@ bool newScreen::ObjFloor::commonUpdate()
 		mAnims->update();
 	}
 
-	if (!vs) {
+	if (!vs && Game::gameSystem->mIsInCave) {
 		f32 subX = mSublevelXoffs + msVal.mSublevelXOffset;
 		f32 subY = mSublevelYoffs + msVal.mSublevelYOffset;
 		if (disp->mSublevel < 10) {
@@ -603,12 +609,6 @@ void ObjFloor::doDraw(Graphics& gfx)
 	mScreenName->setAlpha(mAlpha * 255.0f);
 	mScreenName->draw(gfx, *graf);
 	graf->setPort();
-
-	if (!isVS() && Game::gameSystem->mIsInCave) {
-		mSublevelPane->show();
-	} else {
-		mSublevelPane->hide();
-	}
 
 	graf->setPort();
 	j3dSys.reinitGX();
