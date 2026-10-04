@@ -53,16 +53,11 @@ struct Vector3 {
 
 	// Utility Functions
 	inline void negate();
-	inline void addXZ(const Vector3& other);
-	inline void addXY(const Vector3& other);
-	inline void scaleXY(const Vector3& other);
-	inline void scale2D(T other);
-	inline void set2D(const Vector3& other);
 	inline void setZero();
 	inline void add(const Vector3& other);
-	inline void add(Vector3& a, Vector3& b);
+	inline void add(const Vector3& a, const Vector3& b);
 	inline void sub(const Vector3& other);
-	inline void sub(Vector3& a, Vector3& b);
+	inline void sub(const Vector3& a, const Vector3& b);
 	inline void setMiddle(Vector3& a, Vector3& b);
 	static inline Vector3<T> add2(const Vector3& a, const Vector3& b);
 	static inline Vector3<T> sub2(const Vector3& a, const Vector3& b);
@@ -97,28 +92,36 @@ struct Vector3 {
 	inline bool isBoundedZ(T bound);
 	inline void scale(T scale);
 
-	// Magnitude Functions
-	inline T sqrMagnitude() const;
-	inline T sqrMagnitude2D() const;
-	inline T qLength() const;
-	inline T qLength2D() const;
-	inline T qNormalise();
-
-	// Distance Functions
-	inline T qDistance(Vector3& them);
-	static inline T distance(Vector3& a, Vector3& b);
-	T distance(Vector3&);
-	T distance2D(Vector3&);
-	T sqrDistance(Vector3&);
-	T sqrDistance2D(Vector3&);
-	T distance(JGeometry::TVec3f&);
-
-	// Length and Normalise Functions
+	// 3D Length/Magnitude Functions
+	T sqrLength() const;
+	T sqrMagnitude() const; // only used in NaviThrowState but seems necessary
 	T length() const;
-	T magnitude() const; // this is only used once in Kando's library, but seems necessary
-	T normalise();
-	T normalize(); // this is ALSO only used once in Kando's library, but seems necessary
+	T magnitude() const; // this isn't used very often but seems necessary
+	T qLength() const;
+
+	// 2D Length/Magnitude Functions
+	T sqrMagnitude2D() const;
 	T length2D() const;
+	T qLength2D() const;
+
+	// 3D Distance Functions
+	T sqrDistance(Vector3&);
+	T distance(Vector3&);
+	T qDistance(Vector3& them);
+	T distance(JGeometry::TVec3f&);
+	static inline T distance(Vector3& a, Vector3& b);
+
+	// 2D Distance Functions
+	T sqrDistance2D(Vector3&);
+	T distance2D(Vector3&);
+
+	// 3D Normalise Functions
+	T normalise();
+	T normalize(); // only used in a couple places, but seems necessary
+	T qNormalise();
+	static inline T normalise(Vector3<T>& vec);
+
+	// 2D Normalise Functions
 	T normalise2D();
 
 	// I/O Functions
@@ -374,45 +377,6 @@ inline Vector3<T> Vector3<T>::operator-() const
 }
 
 template <typename T>
-inline void Vector3<T>::addXZ(const Vector3& other)
-{
-	this->x += other.x;
-	this->z += other.z;
-}
-
-template <typename T>
-inline void Vector3<T>::addXY(const Vector3& other)
-{
-	this->x += other.x;
-	this->y += other.y;
-}
-
-template <typename T>
-inline void Vector3<T>::scaleXY(const Vector3& other)
-{
-	T newVal = this->x * other.x;
-	this->x  = newVal;
-	newVal   = this->y * other.y;
-	this->y  = newVal;
-}
-
-template <typename T>
-inline void Vector3<T>::scale2D(T other)
-{
-	T newVal = this->x * other;
-	this->x  = newVal;
-	newVal   = this->z * other;
-	this->z  = newVal;
-}
-
-template <typename T>
-inline void Vector3<T>::set2D(const Vector3& other)
-{
-	x = other.x;
-	z = other.z;
-}
-
-template <typename T>
 inline T Vector3<T>::dot(const Vector3& other) const
 {
 	return this->x * other.x + this->y * other.y + this->z * other.z;
@@ -421,11 +385,10 @@ inline T Vector3<T>::dot(const Vector3& other) const
 template <typename T>
 inline Vector3<T> Vector3<T>::cross(const Vector3& other)
 {
-	Vector3 outVec;
-	outVec.x = y * other.z - z * other.y;
-	outVec.y = z * other.x - x * other.z;
-	outVec.z = x * other.y - y * other.x;
-	return outVec;
+	T dx = y * other.z - z * other.y;
+	T dy = z * other.x - x * other.z;
+	T dz = x * other.y - y * other.x;
+	return Vector3(dx, dy, dz);
 }
 
 template <typename T>
@@ -478,7 +441,7 @@ inline void Vector3<T>::add(const Vector3& other)
 }
 
 template <typename T>
-inline void Vector3<T>::add(Vector3& a, Vector3& b)
+inline void Vector3<T>::add(const Vector3& a, const Vector3& b)
 {
 	set(a.x + b.x, a.y + b.y, a.z + b.z);
 }
@@ -492,7 +455,7 @@ inline void Vector3<T>::sub(const Vector3& other)
 }
 
 template <typename T>
-inline void Vector3<T>::sub(Vector3& a, Vector3& b)
+inline void Vector3<T>::sub(const Vector3& a, const Vector3& b)
 {
 	set(a.x - b.x, a.y - b.y, a.z - b.z);
 }
@@ -577,7 +540,7 @@ inline void Vector3<T>::toFlatDirection()
 }
 
 template <typename T>
-inline T Vector3<T>::sqrMagnitude() const
+inline T Vector3<T>::sqrLength() const
 {
 	return this->x * this->x + this->y * this->y + this->z * this->z;
 }
@@ -591,7 +554,7 @@ inline T Vector3<T>::sqrMagnitude2D() const
 template <typename T>
 inline T Vector3<T>::qLength() const
 {
-	return pikmin2_sqrtf(this->sqrMagnitude());
+	return pikmin2_sqrtf(this->sqrLength());
 }
 
 template <typename T>
@@ -627,7 +590,7 @@ inline T Vector3<T>::qDistance(Vector3& them)
 template <>
 inline f32 Vector3f::length() const
 {
-	if (sqrMagnitude() > 0.0f) {
+	if (sqrLength() > 0.0f) {
 		Vector3f vec = Vector3f(x, y, z);
 		f32 sqrLen   = SQUARE(vec.x) + SQUARE(y) + SQUARE(z);
 		return sqrtfInPlace(sqrLen);
@@ -637,9 +600,16 @@ inline f32 Vector3f::length() const
 }
 
 template <>
+inline f32 Vector3f::sqrMagnitude() const
+{
+	f32 zSq = SQUARE(z);
+	return SQUARE(x) + SQUARE(y) + zSq;
+}
+
+template <>
 inline f32 Vector3f::magnitude() const
 {
-	if (sqrMagnitude() > 0.0f) {
+	if (sqrLength() > 0.0f) {
 		Vector3f vec = Vector3f(x, y, z);
 		f32 sqrLen   = SQUARE(vec.x) + SQUARE(y) + SQUARE(z);
 		return sqrtf(sqrLen);
@@ -678,14 +648,29 @@ inline f32 Vector3f::normalise()
 template <>
 inline f32 Vector3f::normalize()
 {
-	Vector3f vec = *this;
-	vec.y *= vec.y;
-	vec.z *= vec.z;
-	f32 dist = vec.y + vec.x * vec.x + vec.z;
+	f32 len = magnitude();
+
+	if (len > 0.0f) {
+		f32 norm = 1.0f / len;
+		x *= norm;
+		y *= norm;
+		z *= norm;
+		return len;
+	}
+	return 0.0f;
+}
+
+template <>
+inline f32 Vector3f::normalise(Vector3f& vec)
+{
+	Vector3f tmp = vec;
+	tmp.y *= tmp.y;
+	tmp.z *= tmp.z;
+	f32 dist = tmp.y + tmp.x * tmp.x + tmp.z;
 	dist     = (dist > 0.0f) ? sqrtfInPlace(dist) : 0.0f;
 	if (dist > 0.0f) {
 		f32 norm = 1.0f / dist;
-		*this    = *this * norm;
+		vec      = vec * norm;
 		return dist;
 	}
 	return 0.0f;
@@ -749,15 +734,12 @@ inline f32 Vector3f::sqrDistance2D(Vector3f& them)
 template <>
 inline f32 Vector3f::distance(JGeometry::TVec3f& them)
 {
-	f32 diffX = them.x - this->x;
-	f32 diffY = them.y - this->y;
-	f32 diffZ = them.z - this->z;
+	f32 X   = SQUARE(them.x - x);
+	f32 Y   = SQUARE(them.y - y);
+	f32 Z   = SQUARE(them.z - z);
+	f32 sum = X + Y + Z;
 
-	f32 X = diffX * diffX;
-	f32 Y = diffY * diffY;
-	f32 Z = diffZ * diffZ;
-
-	return JGeometry::TUtil<f32>::sqrt(X + Y + Z);
+	return JGeometry::TUtil<f32>::sqrt(sum);
 }
 
 inline f32 qdist3(const Vector3f& a, const Vector3f& b)
@@ -765,7 +747,7 @@ inline f32 qdist3(const Vector3f& a, const Vector3f& b)
 	return qdist3(a.x, a.y, a.z, b.x, b.y, b.z);
 }
 
-inline bool inRadius2D(f32 r, Vector3f& vec1, Vector3f& vec2)
+inline bool insideRadius2D(f32 r, Vector3f& vec1, Vector3f& vec2)
 {
 	return vec1.sqrDistance2D(vec2) < r * r;
 }

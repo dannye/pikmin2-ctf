@@ -471,8 +471,8 @@ void ObjFloor::doCreate(JKRArchive* arc)
 	mSublevelMsg->setCentering(TitleMsg::ECM_1);
 
 	mSublevelPane  = mScreenName->search('kaisuu');
-	mSublevelXoffs = mSublevelPane->mOffset.x;
-	mSublevelYoffs = mSublevelPane->mOffset.y;
+	mSublevelXoffs = mSublevelPane->mTranslateX;
+	mSublevelYoffs = mSublevelPane->mTranslateY;
 }
 
 /**

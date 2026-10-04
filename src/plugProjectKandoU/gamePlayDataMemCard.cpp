@@ -56,7 +56,7 @@ void PlayData::write(Stream& output)
 	output.textEndGroup();
 
 	output.textBeginGroup("* クリアフラグ *"); // 'clear flag'
-	output.writeBytes(&mStoryFlags, 1);
+	mStoryFlags.writeBytes(output);
 	output.textEndGroup();
 
 	output.textBeginGroup("* セーブフラグ/オニョンフラグ *"); // 'save flag/onyon flag'
@@ -173,7 +173,7 @@ void PlayData::write(Stream& output)
 
 	output.textBeginGroup("* オリマー死亡フラグ *"); // 'olimar death flag'
 	output.textWriteTab(output.mTabCount);
-	output.writeBytes(&mDeadNaviID.typeView, 1);
+	mDeadNaviID.writeBytes(output);
 	output.textWriteText("\r\n");
 	output.textWriteTab(output.mTabCount);
 	output.writeFloat(mNaviLifeMax[0]);
@@ -243,7 +243,7 @@ void PlayData::read(Stream& input)
 		getDebtProgressFlags().readBytes(input);
 	}
 
-	mStoryFlags            = input.readByte();
+	mStoryFlags.readBytes(input);
 	mLoadType              = input.readByte();
 	mHasContainerFlags     = input.readByte();
 	mHasBootContainerFlags = input.readByte();
@@ -290,7 +290,7 @@ void PlayData::read(Stream& input)
 
 	BirthMgr::read(input);
 	DeathMgr::read(input);
-	mDeadNaviID.typeView = input.readByte();
+	mDeadNaviID.readBytes(input);
 
 	if (versionID >= 'j006') {
 		mNaviLifeMax[0] = input.readFloat();
@@ -360,7 +360,8 @@ void KindCounter::write(Stream& output)
 	output.textBeginGroup("KindCounter");
 	for (int i = 0; i < mNumKinds; i++) {
 		output.textWriteTab(output.mTabCount);
-		output.writeByte(mKinds[i]);
+		int kind = mKinds[i];
+		output.writeByte(kind);
 		output.textWriteText("\t# [%d]\r\n", i);
 	}
 	output.textEndGroup();
@@ -398,150 +399,6 @@ void PelletCropMemory::write(Stream& output)
 	output.textWriteTab(output.mTabCount);
 	output.textWriteText("# mCarcassCounter\r\n");
 	mCarcass.write(output);
-	/*
-	stwu     r1, -0x20(r1)
-	mflr     r0
-	lis      r5, lbl_804827B8@ha
-	stw      r0, 0x24(r1)
-	stw      r31, 0x1c(r1)
-	mr       r31, r4
-	stw      r30, 0x18(r1)
-	mr       r30, r3
-	mr       r3, r31
-	stw      r29, 0x14(r1)
-	addi     r29, r5, lbl_804827B8@l
-	stw      r28, 0x10(r1)
-	lwz      r4, 0x414(r4)
-	bl       textWriteTab__6StreamFi
-	mr       r3, r31
-	addi     r4, r29, 0x398
-	crclr    6
-	bl       textWriteText__6StreamFPce
-	lwz      r4, 0x414(r31)
-	mr       r3, r31
-	bl       textWriteTab__6StreamFi
-	lhz      r0, 4(r30)
-	mr       r3, r31
-	extsh    r4, r0
-	bl       writeShort__6StreamFs
-	mr       r3, r31
-	addi     r4, r29, 0x354
-	bl       textBeginGroup__6StreamFPc
-	li       r28, 0
-	b        lbl_8021DCA0
-
-lbl_8021DC6C:
-	lwz      r4, 0x414(r31)
-	mr       r3, r31
-	bl       textWriteTab__6StreamFi
-	lwz      r4, 8(r30)
-	mr       r3, r31
-	lbzx     r4, r4, r28
-	bl       writeByte__6StreamFUc
-	mr       r3, r31
-	mr       r5, r28
-	addi     r4, r29, 0x360
-	crclr    6
-	bl       textWriteText__6StreamFPce
-	addi     r28, r28, 1
-
-lbl_8021DCA0:
-	lhz      r0, 4(r30)
-	cmpw     r28, r0
-	blt      lbl_8021DC6C
-	mr       r3, r31
-	bl       textEndGroup__6StreamFv
-	lwz      r4, 0x414(r31)
-	mr       r3, r31
-	bl       textWriteTab__6StreamFi
-	mr       r3, r31
-	addi     r4, r29, 0x3ac
-	crclr    6
-	bl       textWriteText__6StreamFPce
-	lwz      r4, 0x414(r31)
-	mr       r3, r31
-	bl       textWriteTab__6StreamFi
-	lhz      r0, 0xc(r30)
-	mr       r3, r31
-	extsh    r4, r0
-	bl       writeShort__6StreamFs
-	mr       r3, r31
-	addi     r4, r29, 0x354
-	bl       textBeginGroup__6StreamFPc
-	li       r28, 0
-	b        lbl_8021DD34
-
-lbl_8021DD00:
-	lwz      r4, 0x414(r31)
-	mr       r3, r31
-	bl       textWriteTab__6StreamFi
-	lwz      r4, 0x10(r30)
-	mr       r3, r31
-	lbzx     r4, r4, r28
-	bl       writeByte__6StreamFUc
-	mr       r3, r31
-	mr       r5, r28
-	addi     r4, r29, 0x360
-	crclr    6
-	bl       textWriteText__6StreamFPce
-	addi     r28, r28, 1
-
-lbl_8021DD34:
-	lhz      r0, 0xc(r30)
-	cmpw     r28, r0
-	blt      lbl_8021DD00
-	mr       r3, r31
-	bl       textEndGroup__6StreamFv
-	lwz      r4, 0x414(r31)
-	mr       r3, r31
-	bl       textWriteTab__6StreamFi
-	mr       r3, r31
-	addi     r4, r29, 0x3c0
-	crclr    6
-	bl       textWriteText__6StreamFPce
-	lwz      r4, 0x414(r31)
-	mr       r3, r31
-	bl       textWriteTab__6StreamFi
-	lhz      r0, 0x14(r30)
-	mr       r3, r31
-	extsh    r4, r0
-	bl       writeShort__6StreamFs
-	mr       r3, r31
-	addi     r4, r29, 0x354
-	bl       textBeginGroup__6StreamFPc
-	li       r28, 0
-	b        lbl_8021DDC8
-
-lbl_8021DD94:
-	lwz      r4, 0x414(r31)
-	mr       r3, r31
-	bl       textWriteTab__6StreamFi
-	lwz      r4, 0x18(r30)
-	mr       r3, r31
-	lbzx     r4, r4, r28
-	bl       writeByte__6StreamFUc
-	mr       r3, r31
-	mr       r5, r28
-	addi     r4, r29, 0x360
-	crclr    6
-	bl       textWriteText__6StreamFPce
-	addi     r28, r28, 1
-
-lbl_8021DDC8:
-	lhz      r0, 0x14(r30)
-	cmpw     r28, r0
-	blt      lbl_8021DD94
-	mr       r3, r31
-	bl       textEndGroup__6StreamFv
-	lwz      r0, 0x24(r1)
-	lwz      r31, 0x1c(r1)
-	lwz      r30, 0x18(r1)
-	lwz      r29, 0x14(r1)
-	lwz      r28, 0x10(r1)
-	mtlr     r0
-	addi     r1, r1, 0x20
-	blr
-	*/
 }
 
 /**
@@ -590,7 +447,7 @@ void CaveSaveData::write(Stream& output)
 	mCavePikis.write(output);
 
 	output.textWriteTab(output.mTabCount);
-	output.writeFloat(mTime);
+	output.writeFloat(mDayTime);
 	output.textWriteText("\t# time\r\n");
 
 	output.textWriteTab(output.mTabCount);
@@ -625,7 +482,7 @@ void CaveSaveData::write(Stream& output)
 void CaveSaveData::read(Stream& input, u32 size)
 {
 	mCavePikis.read(input);
-	mTime      = input.readFloat();
+	mDayTime   = input.readFloat();
 	mCourseIdx = (s8)input.readByte();
 	mCurrentCaveID.read(input);
 	mCurrentFloor       = (s8)input.readByte();
