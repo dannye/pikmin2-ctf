@@ -497,7 +497,11 @@ void ObjSMenuPause::doUpdateFadeoutFinish()
 
 		case og::Screen::MENUFINISH_GoToSunset:
 		case og::Screen::MENUFINISH_ReturnToLastSave:
-			scene->endScene(nullptr);
+			if (Game::gameSystem->isFruitMode()) {
+				startBackupScene();
+			} else {
+				scene->endScene(nullptr);
+			}
 			killCursorAll();
 			break;
 		}
