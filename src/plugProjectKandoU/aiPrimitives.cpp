@@ -1,7 +1,6 @@
 #include "Dolphin/rand.h"
 #include "Game/Interaction.h"
-#include "efx/PikiDamage.h"
-#include "efx/TPk.h"
+#include "efx/efxPikmin.h"
 #include "types.h"
 #include "P2Macros.h"
 #include "Vector3.h"
@@ -773,8 +772,8 @@ int ActPathMove::execPathfinding()
 f32 ActPathMove::getCarrySpeed()
 {
 	f32 carryPower;
-	f32 maxFactor = static_cast<Game::PikiParms*>(mParent->mParms)->mPikiParms.mCarryMaxFactor.mValue; // f30
-	f32 minFactor = static_cast<Game::PikiParms*>(mParent->mParms)->mPikiParms.mCarryMinFactor.mValue; // f31
+	f32 maxFactor = static_cast<Game::PikiParms*>(mParent->mParms)->mPikiParms.mCarryMaxFactor.mValue;
+	f32 minFactor = static_cast<Game::PikiParms*>(mParent->mParms)->mPikiParms.mCarryMinFactor.mValue;
 
 	P2ASSERTLINE(1215, mPellet->mObjectTypeID == OBJTYPE_Pellet);
 
@@ -1063,7 +1062,6 @@ Vector3f ActPathMove::crGetPoint(int idx)
 		return mGoalPosition;
 	}
 
-	// breadbug crash happens in this inline.
 	currWayPoint = getWayPoint(idx);
 
 	if (!currWayPoint) {
@@ -1108,8 +1106,8 @@ bool ActPathMove::contextCheck(int idx)
 	}
 
 	Vector3f pelletPos = mPellet->getPosition();
-	Sys::Tube tube;           // 0x78
-	Sys::Sphere pelletSphere; // 0x68
+	Sys::Tube tube;
+	Sys::Sphere pelletSphere;
 	pelletSphere.mPosition = pelletPos;
 	if (mPellet->isPellet()) {
 		pelletSphere.mRadius = mPellet->getBottomRadius();
@@ -1306,8 +1304,8 @@ void ActPathMove::crMakeRefs()
  */
 bool ActPathMove::crMove()
 {
-	Vector3f point0 = crGetPoint(mCurrGraphIdx); // 0x7c, f28, f27, f26
-	Vector3f point2 = mCRControls[CRMOVE_Next];  // f31, f29, f22
+	Vector3f point0 = crGetPoint(mCurrGraphIdx);
+	Vector3f point2 = mCRControls[CRMOVE_Next];
 	if ((mCurrGraphIdx == -1 && !crPointOpen(1)) || (mCurrGraphIdx != -1 && !crPointOpen(mCurrGraphIdx + 1))) {
 		if (mCurrGraphIdx == -1) {
 			mNextWayPoint = (mRootNode->mNext) ? Game::mapMgr->mRouteMgr->getWayPoint(mRootNode->mNext->mWpIndex) : nullptr;
@@ -1320,7 +1318,7 @@ bool ActPathMove::crMove()
 		mPaceAngle    = 0.0f;
 	}
 
-	Vector3f pelletPos = mPellet->getPosition(); // f23, f25, f24
+	Vector3f pelletPos = mPellet->getPosition();
 	if (qdist2(point2.x, point2.z, pelletPos.x, pelletPos.z) < 6.0f) {
 		if (mCurrGraphIdx >= mWayPointCount - 2) {
 			mState       = PATHMOVE_MoveGoal;
@@ -1332,7 +1330,7 @@ bool ActPathMove::crMove()
 		mCurrGraphIdx++;
 		crMakeRefs();
 
-		Vector3f splinePoints[1]; // 0x4c
+		Vector3f splinePoints[1];
 		mNewVelocity = CRSplineTangent(0.0f, mCRControls);
 		mNewVelocity.normalise();
 		return true;
@@ -1350,9 +1348,9 @@ bool ActPathMove::crMove()
 		return false;
 	}
 
-	Vector3f sep = point2 - point0; // f31, f30, f29
+	Vector3f sep = point2 - point0;
 	f32 dist     = sep.normalise();
-	f32 factor; // f27
+	f32 factor;
 	if (dist > 0.0f) {
 		Vector3f diff = pelletPos - point0;
 		factor        = sep.dot(diff) / dist;
@@ -1373,16 +1371,16 @@ bool ActPathMove::crMove()
 	offset.y          = 0.0f;
 	offset.z          = sep.z * (factor * dist);
 	pelletPos         = offset + point0 - pelletPos;
-	Vector3f newPoint = pelletPos; // f23, f24, f25
+	Vector3f newPoint = pelletPos;
 	newPoint.y        = 0.0f;
-	f32 newDist       = newPoint.normalise(); // f28
+	f32 newDist       = newPoint.normalise();
 
 	f32 lerp = (1.0f - factor) * crGetRadius(mCurrGraphIdx) + (factor * crGetRadius(mCurrGraphIdx + 1));
 	if (lerp == 0.0f) {
 		lerp = 1.0f;
 	}
 
-	f32 comp = absF(newDist) / lerp; // f26
+	f32 comp = absF(newDist) / lerp;
 	if (comp < 0.3f) {
 		comp = 0.0f;
 	}

@@ -7,7 +7,7 @@
 #include "Game/EnemyMgrBase.h"
 #include "Game/EnemyBase.h"
 #include "Game/gameGenerator.h"
-#include "efx/TRock.h"
+#include "efx/efxEnemy.h"
 
 /**
  * --Header for Boulders (Rock)--
@@ -120,7 +120,6 @@ struct Obj : public EnemyBase {
 struct Mgr : public EnemyMgrBase {
 	Mgr(int objLimit, u8 modelType);
 
-	// virtual ~Mgr();                                     // _58 (weak)
 	virtual void doAlloc();                            // _A8
 	virtual void createObj(int count);                 // _A0
 	virtual EnemyBase* getEnemy(int idx);              // _A4

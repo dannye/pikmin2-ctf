@@ -9,7 +9,7 @@
 #include "Game/EnemyBase.h"
 #include "Game/SnakeJointMgr.h"
 #include "SysShape/Joint.h"
-#include "efx/TCphebi.h"
+#include "efx/efxEnemyBoss.h"
 #include "Collinfo.h"
 
 /**
@@ -170,7 +170,6 @@ struct Mgr : public EnemyMgrBase {
 	Mgr(int objLimit, u8 modelType);
 
 	//////////////// VTABLE
-	// virtual ~Mgr();                                     // _58 (weak)
 	virtual void createObj(int count);                 // _A0
 	virtual EnemyBase* getEnemy(int idx);              // _A4
 	virtual void doAlloc();                            // _A8

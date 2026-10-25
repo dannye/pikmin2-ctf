@@ -359,7 +359,7 @@ void ObjContena::putinPiki(bool soundType, u8 step)
 		disp->mDataContena.mInParty2 -= step;
 		disp->mDataContena.mOnMapCount -= step;
 		disp->mDataContena.mResult += step;
-		disp->mDataContena.mInTransfer = (u16)abs(disp->mDataContena.mResult); // should be just abs
+		disp->mDataContena.mInTransfer = (u16)abs(disp->mDataContena.mResult);
 		setStickUpDown();
 		if (mTimer1 <= 0.0f) {
 			mScaleArrow1->up();

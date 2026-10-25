@@ -6,8 +6,8 @@
 #include "Game/EnemyParmsBase.h"
 #include "Game/EnemyMgrBase.h"
 #include "Game/EnemyBase.h"
-#include "efx/TEnemyBomb.h"
-#include "efx/THibaFire.h"
+#include "efx/efxEnemyGeneral.h"
+#include "efx/efxEnemy.h"
 #include "PS.h"
 
 /**
@@ -68,7 +68,6 @@ struct Obj : public EnemyBase {
 struct Mgr : public EnemyMgrBaseAlwaysMovieActor {
 	Mgr(int objLimit, u8 modelType);
 
-	// virtual ~Mgr();                                     // _58 (weak)
 	virtual void doAlloc();                            // _A8
 	virtual void createObj(int count);                 // _A0
 	virtual EnemyBase* getEnemy(int idx);              // _A4

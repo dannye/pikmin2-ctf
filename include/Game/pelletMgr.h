@@ -12,7 +12,7 @@
 #include "Game/StateMachine.h"
 #include "Game/BasePelletMgr.h"
 #include "Game/GameSystem.h"
-#include "efx/TOrima.h"
+#include "efx/efxPikmin.h"
 #include "SysShape/MotionListener.h"
 #include "SysShape/KeyEvent.h"
 #include "SysShape/Animator.h"
@@ -171,10 +171,6 @@ struct PelletInitArg : public CreatureInitArg {
 		mFromEnemy            = 0;
 	}
 
-	/**
-	 * @reifiedAddress{80107C2C}
-	 * @reifiedFile{plugProjectYamashitaU/enemyBase.cpp}
-	 */
 	virtual const char* getName() // _00
 	{
 		return "PelletInitArg";

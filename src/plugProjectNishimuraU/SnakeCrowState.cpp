@@ -6,7 +6,7 @@
 #include "Game/PikiMgr.h"
 #include "Game/Navi.h"
 #include "Game/Interaction.h"
-#include "efx/THebi.h"
+#include "efx/efxEnemyBoss.h"
 #include "Iterator.h"
 #include "Dolphin/rand.h"
 #include "nans.h"
@@ -374,7 +374,6 @@ void StateAppear2::cleanup(EnemyBase* enemy)
  */
 void StateDisappear::init(EnemyBase* enemy, StateArg* stateArg)
 {
-	// Obj* snagret = OBJ(enemy);
 	Vector3f position = enemy->getPosition();
 	efx::Arg fxArg(position);
 	efx::THebiAphd_dive diveFx;

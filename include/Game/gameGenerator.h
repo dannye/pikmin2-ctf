@@ -109,7 +109,6 @@ struct Generator : public CNode {
 struct GeneratorMgr : public CNode {
 	GeneratorMgr();
 
-	// virtual ~GeneratorMgr();                    // _08
 	virtual void doAnimation();                 // _10
 	virtual void doEntry();                     // _14
 	virtual void doSetView(int viewportNumber); // _18
@@ -371,7 +370,7 @@ struct GenObjectEnemy : public GenObject {
 	PelletMgr::OtakaraItemCode mOtakaraItemCode; // _38
 	EnemyPelletInfo mPelletInfo;                 // _3C
 	EnemyGeneratorBase* mEnemyGenerator;         // _48
-	BitFlag<u8> mFlagBit;                        // _4C, set during constuction
+	BitFlag<u8> mFlagBit;                        // _4C, set during construction
 };
 
 /**
@@ -390,7 +389,6 @@ struct GenObjectFactory {
 };
 
 /**
- * @fabricatedName
  * @size{0x10}
  */
 struct GenObjectFactoryFactory {

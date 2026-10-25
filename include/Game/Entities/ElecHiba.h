@@ -7,7 +7,7 @@
 #include "Game/EnemyMgrBase.h"
 #include "Game/EnemyBase.h"
 #include "Game/gameGenerator.h"
-#include "efx/TDenki.h"
+#include "efx/efxEnemy.h"
 
 /**
  * --Header for Electric Wire (ElecHiba)--
@@ -23,7 +23,7 @@ struct Obj;
 typedef enum EVersusHibaType { VHT_Neutral = 0, VHT_Red = 1, VHT_Blue = 2 } EVersusHibaType;
 
 struct InitialParam : public EnemyInitialParamBase {
-	f32 mSeperation; // _00
+	f32 mSeparation; // _00
 };
 
 struct TeamList : public CNode {
@@ -107,7 +107,6 @@ struct Obj : public EnemyBase {
 struct Mgr : public EnemyMgrBaseAlwaysMovieActor {
 	Mgr(int objLimit, u8 modelType);
 
-	// virtual ~Mgr();                                     // _58 (weak)
 	virtual EnemyBase* birth(EnemyBirthArg&);          // _70
 	virtual void createObj(int count);                 // _A0
 	virtual EnemyBase* getEnemy(int idx);              // _A4
@@ -127,7 +126,7 @@ struct Parms : public EnemyParmsBase {
 		inline ProperParms()
 		    : Parameters(nullptr, "EnemyParmsBase")
 		    , mWaitTime(this, 'fp02', "ウェイト時間", 2.5f, 0.0f, 100.0f) // 'wait time'
-		    , mWarningTime(this, 'fp03', "予\兆時間", 2.5f, 0.0f, 100.0f) // 'warning time'
+		    , mWarningTime(this, 'fp03', "予兆時間", 2.5f, 0.0f, 100.0f)  // 'warning time'
 		    , mActiveTime(this, 'fp01', "放電時間", 2.5f, 0.0f, 100.0f)   // 'discharge time'
 		    , mStopTime(this, 'fp04', "停止時間", 10.0f, 0.0f, 100.0f)    // 'stop time'
 		    , mLodNear(this, 'fp90', "LOD NEAR", 0.085f, 0.0f, 1.0f)

@@ -5,7 +5,7 @@
 #include "Game/PikiMgr.h"
 #include "Game/EnemyFunc.h"
 #include "Game/Navi.h"
-#include "efx/TMiuAttack.h"
+#include "efx/efxEnemy.h"
 #include "Dolphin/rand.h"
 
 namespace Game {
@@ -433,7 +433,6 @@ bool Obj::nextTargetTurnCheck()
 		setNextGoal();
 	}
 
-	// SHOULD match when turnFunc matches, but turnFunc might need tweaking to make sure this matches.
 	if (turnFunc(0.1f) < PI * (DEG2RAD * C_PROPERPARMS.mMaxTurnAngle())) {
 		return false;
 	}

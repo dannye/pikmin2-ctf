@@ -8,7 +8,7 @@
 #include "Game/GameSystem.h"
 #include "Game/gamePlayData.h"
 #include "Game/gameStat.h"
-#include "efx/TNaviEffect.h"
+#include "efx/efxPikmin.h"
 #include "Dolphin/mtx.h"
 #include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/J3D/J3DModel.h"
@@ -248,8 +248,6 @@ struct Navi : public FakePiki, virtual public PelletView {
 		PSMTXMultVec(mtx->mMatrix.mtxView, (Vec*)&mBeaconPosition, &calcpos);
 		mBeaconPosition = Vector3f(calcpos);
 	}
-
-	// inline NaviState* getCurrentState() { return mCurrentState; }
 
 	inline void setControlFlag(u16 flag) { mNaviControlFlag.typeView |= flag; }
 	inline void resetControlFlag(u16 flag) { mNaviControlFlag.typeView &= ~flag; }

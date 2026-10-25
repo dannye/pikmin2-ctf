@@ -117,7 +117,7 @@ enum PikiBrainAction {
 
 enum ActionExitCode {
 	ACTEXEC_Success  = 0, // action is finished and completed successfully
-	ACTEXEC_Continue = 1, // action is unfinshed
+	ACTEXEC_Continue = 1, // action is unfinished
 	ACTEXEC_Fail     = 2, // action is finished and failed
 };
 
@@ -129,7 +129,6 @@ struct ActionArg {
 		return "ActionArg";
 	}
 
-	// fabricated
 	inline bool is(const char* argtype) { return strcmp(argtype, getName()) == 0; }
 
 	// _00 = VTBL
@@ -287,7 +286,7 @@ struct ActBattleArg : public ActionArg {
 	bool mIsAttackStart;    // _08
 };
 
-// Pikmin hitting eachother, like in VS mode
+// Pikmin hitting each other, like in VS mode
 struct ActBattle : public Action, virtual SysShape::MotionListener {
 	enum StateID {
 		BATTLE_Approach = 0,
@@ -655,21 +654,6 @@ struct ActExit : public Action {
 	f32 mBaseScale;            // _18
 };
 
-/**
- * @fabricated.
- * Attempting to resolve StickAttackActionArg init issues in aiBreakGate.
- */
-struct Attack {
-	inline Attack(f32 damage, Game::Creature* target)
-	    : mDamage(damage)
-	    , mTarget(target)
-	{
-	}
-
-	f32 mDamage;             // _00
-	Game::Creature* mTarget; // _04
-};
-
 struct FlockAttackActionArg : public ActionArg {
 	inline FlockAttackActionArg(f32 damage, int type, Game::BaseItem* target, int flockIndex)
 	    : ActionArg()
@@ -764,11 +748,8 @@ struct ActFormationInitArg : public CreatureActionArg {
 	{
 	}
 
-	/*
-	used to match ActFormation::ActFormation(Game::Piki*)
-	if unnecessary, change the above inline back to Game::Creature* for the argument
-	*/
-	inline ActFormationInitArg(Game::Creature* navi) // used to match ActFormation::ActFormation(Game::Piki*)
+	// needed to match ActFormation::ActFormation(Game::Piki*)
+	inline ActFormationInitArg(Game::Creature* navi)
 	    : CreatureActionArg(navi)
 	    , mIsDemoFollow(false)
 	{

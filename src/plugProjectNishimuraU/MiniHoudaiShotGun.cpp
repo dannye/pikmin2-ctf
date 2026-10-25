@@ -2,7 +2,7 @@
 #include "Game/MapMgr.h"
 #include "Game/rumble.h"
 #include "Game/CameraMgr.h"
-#include "efx/THdama.h"
+#include "efx/efxEnemyBoss.h"
 #include "Dolphin/rand.h"
 #include "PS.h"
 #include "nans.h"
@@ -86,10 +86,10 @@ void MiniHoudaiShotGunNode::startShotGun(bool check)
 bool MiniHoudaiShotGunNode::update()
 {
 	bool result       = false;
-	Vector3f startPos = mPosition;            // 0x230
-	Sys::Sphere moveSphere(mPosition, 10.0f); // 0x78
+	Vector3f startPos = mPosition;
+	Sys::Sphere moveSphere(mPosition, 10.0f);
 
-	MoveInfo moveInfo(&moveSphere, &mVelocity, 0.0f); // 0x1B0
+	MoveInfo moveInfo(&moveSphere, &mVelocity, 0.0f);
 	moveInfo.mMovingCreature = mOwner;
 	mapMgr->traceMove(moveInfo, sys->mDeltaTime);
 

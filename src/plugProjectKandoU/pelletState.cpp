@@ -14,8 +14,8 @@
 #include "PSSystem/PSMainSide_Scene.h"
 #include "PSM/EventBase.h"
 #include "Dolphin/rand.h"
-#include "efx/TTsuyuGrow.h"
-#include "efx/TEnemyDownSmoke.h"
+#include "efx/efxObject.h"
+#include "efx/efxEnemyGeneral.h"
 #include "Radar.h"
 #include "nans.h"
 
@@ -93,14 +93,6 @@ void PelletGoalWaitState::exec(Pellet* pelt)
 		transit(pelt, PELSTATE_Goal, &arg);
 	}
 }
-
-/**
- * @note Address: 0x801A46A4
- * @note Size: 0x30
- */
-// void FSMState<Game::Pellet>::transit(Pellet*, int, StateArg*)
-//{
-//}
 
 /**
  * @note Address: 0x801A46D4
@@ -218,7 +210,7 @@ void PelletGoalState::init(Pellet* pellet, StateArg* arg)
 	// stop this pellet from creating the music treasure mix
 	pellet->sound_otakaraEventFinish();
 
-	// make the onion register recieving a pellet
+	// make the onion register receiving a pellet
 	if (!(u8)mOnyon->isSuckArriveWait()) {
 		InteractSuckArrive act(pellet);
 		mOnyon->stimulate(act);
@@ -236,7 +228,7 @@ bool PelletGoalState::checkMovie(Pellet* pelt)
 {
 	bool isGot = false;
 	// For treasure, upgrades, and corpses, only check for a cutscene if the pellet was collected for the first time. (only berries and
-	// number pellets dont check) This leads to a bug where the first corpse cutscene wont play for enemies youve already collected at an
+	// number pellets dont check) This leads to a bug where the first corpse cutscene wont play for enemies you've already collected at an
 	// onion above ground
 	if (gameSystem->isStoryMode()) {
 		isGot = playData->firstCarryPellet(pelt);
@@ -632,7 +624,7 @@ void PelletGoalState::exec(Pellet* pelt)
 	}
 
 	if (!mInDemo) {
-		// if the pelelt isn't a cutscene item, always kill it on collect
+		// if the pellet isn't a cutscene item, always kill it on collect
 
 		// play an extra sound when a napsack captain hits the onion
 		if (!strcmp("orima", pelt->mConfig->mParams.mName.mData)) {

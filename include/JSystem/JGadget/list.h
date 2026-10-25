@@ -6,9 +6,7 @@
 #include "JSystem/JGadget/allocator.h"
 
 namespace JGadget {
-// clang-format off
 template <typename Element, typename Allocator = TAllocator<Element> >
-// clang-format on
 struct TList {
 	struct TNode_ {
 		TNode_* getNext() const { return mNext; }
@@ -136,8 +134,6 @@ struct TList {
 	iterator begin() { return iterator(mNode.mNext); }
 	iterator end() { return iterator(&mNode); }
 
-	// const_iterator begin() const { return const_iterator(mNode.mNext); }
-	// const_iterator end() const { return const_iterator(mNode.mPrev); }
 	bool empty() const { return size() == 0; }
 	u32 size() const { return mSize; }
 	iterator clear() { return erase(begin(), end()); }

@@ -5,7 +5,7 @@
 #include "Game/Result.h"
 #include "Game/Highscore.h"
 #include "ebi/Save.h"
-#include "efx2d/T2DCavecomp.h"
+#include "efx2d/efx2dEffect.h"
 #include "og/Screen/DispMember.h"
 #include "og/Screen/callbackNodes.h"
 #include "og/Screen/StickAnimMgr.h"
@@ -17,7 +17,6 @@ namespace Screen {
 struct OneResultData {
 	OneResultData(int, int, int, int, int, const char*, JKRArchive*);
 
-	// unknown
 	P2DScreen::Mgr* mScreen; // _00
 	int mScore[4];           // _04
 	int mScore5;             // _14
@@ -25,8 +24,6 @@ struct OneResultData {
 };
 
 struct TotalResultData {
-	TotalResultData() { } // remove this when the below works
-
 	TotalResultData(const int*, const int*, Game::Highscore**);
 
 	// unused/inlined:

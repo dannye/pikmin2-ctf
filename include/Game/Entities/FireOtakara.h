@@ -2,7 +2,7 @@
 #define _GAME_ENTITIES_FIREOTAKARA_H
 
 #include "Game/Entities/OtakaraBase.h"
-#include "efx/TOta.h"
+#include "efx/efxEnemy.h"
 
 /**
  * --Header for Fiery Dweevil (FireOtakara)--
@@ -38,7 +38,6 @@ struct Obj : public OtakaraBase::Obj {
 struct Mgr : public OtakaraBase::Mgr {
 	Mgr(int objLimit, u8 modelType);
 
-	// virtual ~Mgr();                                     // _58 (weak)
 	virtual void createObj(int count);                 // _A0
 	virtual EnemyBase* getEnemy(int idx);              // _A4
 	virtual void doAlloc();                            // _A8

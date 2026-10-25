@@ -3,7 +3,7 @@
 #include "og/Screen/ArrowAlphaBlink.h"
 #include "JSystem/JKernel/JKRArchive.h"
 #include "Game/gameChallenge2D.h"
-#include "efx2d/T2DBattleDive.h"
+#include "efx2d/efx2dEffect.h"
 #include "Dolphin/rand.h"
 #include "Screen/Game2DMgr.h"
 #include "Controller.h"
@@ -1322,7 +1322,6 @@ bool TVsSelect::doUpdate()
 		mPaneRulesLR[0]->hide();
 		mPaneRulesLR[1]->hide();
 	} else {
-		// mRuleChangeTimer += mRulePageChangeSpeed;
 		f32 alpha = mArrowBlink->calc() * 255.0f;
 		for (int i = 0; i < 2; i++) {
 			mPaneRulesLR[i]->setAlpha(alpha);

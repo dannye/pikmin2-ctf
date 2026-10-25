@@ -12,7 +12,7 @@ struct PikiParms : public FakePikiParms {
 		    , mRunSpeed(this, 'p001', "走る速度", 120.0f, 0.0f, 500.0f)                        // 'running speed'
 		    , mFlowerRunSpeed(this, 'p054', "花ピキスピード", 170.0f, 0.0f, 500.0f)            // 'flower pikmin speed'
 		    , mBudRunSpeed(this, 'p065', "つぼみスピード", 140.0f, 0.0f, 500.0f)               // 'bud speed'
-		    , mPressedScale(this, 'p038', "ピキ表\示スケール", 1.0f, 0.1f, 10.0f)              // 'piki display scale'
+		    , mPressedScale(this, 'p038', "ピキ表示スケール", 1.0f, 0.1f, 10.0f)               // 'piki display scale'
 		    , mHealth(this, 'p003', "標準ライフ", 100.0f, 0.0f, 1000.0f)                       // 'normal life'
 		    , mWhiteHealth(this, 'p010', "のっぽライフ", 150.0f, 0.0f, 1000.0f)                // 'tall life'
 		    , mPurpleHealth(this, 'p011', "でぶライフ", 200.0f, 0.0f, 1000.0f)                 // 'fat life'
@@ -102,8 +102,8 @@ struct PikiParms : public FakePikiParms {
 		    , mNewColorScale(this, 'P000', "新色のスケール", 1.2f, 0.5f, 2.0f)              // 'new color scale'
 		    , mWhiteRunSpeedMultiplier(this, 'P001', "白スピード倍率", 2.0f, 1.0f, 3.0f)    // 'white speed multiplier'
 		    , mPurpleRunSpeedMultiplier(this, 'P002', "黒スピード倍率", 0.6f, 0.1f, 3.0f)   // 'black speed multiplier'
-		    , mPurpleCarryPower(this, 'P005', "黒　運搬能\力", 0.5f, 0.0f, 5.0f)            // 'black carrying capacity'
-		    , mWhiteCarryPower(this, 'P006', "白　運搬能\力", 1.5f, 0.0f, 5.0f)             // 'white carrying capacity'
+		    , mPurpleCarryPower(this, 'P005', "黒　運搬能力", 0.5f, 0.0f, 5.0f)             // 'black carrying capacity'
+		    , mWhiteCarryPower(this, 'P006', "白　運搬能力", 1.5f, 0.0f, 5.0f)              // 'white carrying capacity'
 		    , mBudCarrySpeedBonus(this, 'P020', "つぼみ|運搬ボーナス", 0.5f, 0.0f, 2.0f)    // 'bud | carrying bonus'
 		    , mFlowerCarrySpeedBonus(this, 'P021', "はな|運搬ボーナス", 1.0f, 0.0f, 2.0f)   // 'flower | carrying bonus'
 		    , mCarryMaxFactor(this, 'P018', "運搬 MAX FACTOR", 0.7f, 0.0f, 2.0f)            // 'carrying MAX FACTOR'
@@ -194,14 +194,14 @@ struct PikiParms : public FakePikiParms {
 		Parm<f32> mPlatformLaunchDistance;    // _DF0, p061
 		Parm<int> mMaxDrowningFrames;         // _E18, p062
 		Parm<int> mDrowningFramesRange;       // _E40, p063
-		Parm<f32> mWallPushAbandonTime;       // _E68, p064, leftover from pik1, presummably time to abandon a wall push?
+		Parm<f32> mWallPushAbandonTime;       // _E68, p064, leftover from pik1, presumably time to abandon a wall push?
 		Parm<f32> mBombSearchRange;           // _E90, p066, leftover from pik1, range for pikmin to search for a bomb
 		Parm<f32> mMinBombThrowDistance;      // _EB8, p067, min speed for thrown bombs
 		Parm<f32> mMaxBombThrowDistance;      // _EE0, p068, max speed for thrown bombs
-		Parm<f32> mBombDropTime;              // _F08, p069, leftover from pik1, presummably time for pikmin to drop bombs on their own?
+		Parm<f32> mBombDropTime;              // _F08, p069, leftover from pik1, presumably time for pikmin to drop bombs on their own?
 		Parm<f32> mBombThrowSpeed;            // _F30, p070, pik1 bomb throw speed
-		Parm<f32> mBombAttackRange;           // _F58, p071, related to pik1 bombs, pressumably range to attack with bombs?
-		Parm<f32> mBombTime;                  // _F80, p072, unknown, more pik1 bomb stufff
+		Parm<f32> mBombAttackRange;           // _F58, p071, related to pik1 bombs, presumably range to attack with bombs?
+		Parm<f32> mBombTime;                  // _F80, p072, unknown, more pik1 bomb stuff
 		Parm<f32> mBombDropDistance;          // _FA8, p073, related to pik1 bombs, range to drop bombs?
 		Parm<f32> mNewColorScale;             // _FD0, P000, unknown
 		Parm<f32> mWhiteRunSpeedMultiplier;   // _FF8, P001, multiplier to speed values for white pikmin

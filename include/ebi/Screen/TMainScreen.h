@@ -6,6 +6,7 @@
 #include "efx2d/FileSelect.h"
 #include "ebi/Screen/TFileData.h"
 #include "ebi/Screen/TScreenDataWindow.h"
+#include "ebi/Utility.h"
 
 namespace ebi {
 namespace Screen {
@@ -39,8 +40,6 @@ struct TMainScreen : public TScreenBase {
 		State_FadeOut = 2,
 	};
 
-	// ~TMainScreen() { }
-
 	virtual void doSetArchive(JKRArchive*);           // _24
 	virtual void doOpenScreen(ArgOpen*);              // _28
 	virtual void doCloseScreen(ArgClose*);            // _2C
@@ -61,6 +60,8 @@ struct TMainScreen : public TScreenBase {
 	bool isFinishDecideDataBall(s32);
 	void createCopyCursor(s32);
 	void fadeCopyCursor();
+	void killCopyCursor();
+	void killAllEffect();
 	void moveLeftCopyCursor();
 	void moveRightCopyCursor();
 	void createFilecopyEffect(s32, s32);
@@ -91,14 +92,6 @@ struct TMainScreen : public TScreenBase {
 	void setIconColorAlpha_(u8);
 
 	TFileData* getFileData(int id) { return &mFileData[id]; }
-
-	inline bool checkClose()
-	{
-		if (mCounter == 0) {
-			return true;
-		}
-		return false;
-	}
 
 	void setTevColor(J2DTevBlock* paneIconTev, J2DGXColorS10& newColor)
 	{
@@ -172,9 +165,6 @@ struct TMainScreen : public TScreenBase {
 	Vector2f mCursorSelPosM[3];                      // _ADC
 	JPAResourceManager* mParticleResource;           // _AF4
 	bool mIsCardSeActive;                            // _AF8
-	u8 _AF9;                                         // _AF9
-	u8 _AFA;                                         // _AFA
-	u8 _AFB;                                         // _AFB
 	BitFlag<u32> mFlags;                             // _AFC
 	TFileData mFileData[3];                          // _B00
 	int mCurrFileInfoId;                             // _B9C
@@ -183,12 +173,9 @@ struct TMainScreen : public TScreenBase {
 	JUtility::TColor mDrawColor;                     // _BD4
 	u8 mDrawAlpha;                                   // _BD8
 	int mState;                                      // _BDC
-	u32 mCounter;                                    // _BE0
-	u32 mCounterMax;                                 // _BE4
-	u32 mOpenCounter;                                // _BE8
-	u32 mOpenCounterMax;                             // _BEC
-	u32 mMesgCounter;                                // _BF0
-	u32 mMesgCounterMax;                             // _BF4
+	EUTCounter mCounter;                             // _BE0
+	EUTCounter mOpenCounter;                         // _BE8
+	EUTCounter mMesgCounter;                         // _BF0
 };
 } // namespace FileSelect
 } // namespace Screen

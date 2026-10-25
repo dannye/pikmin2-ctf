@@ -9,12 +9,8 @@
 #include "Game/BirthMgr.h"
 #include "Game/gameStages.h"
 #include "LoadResource.h"
-#include "efx/TPod.h"
-#include "efx/Container.h"
+#include "efx/efxObject.h"
 #include "efx/Arg.h"
-#include "efx/TUfo.h"
-#include "efx/TOnyon.h"
-#include "efx/OnyonSpot.h"
 #include "SysShape/Animator.h"
 #include "Sys/DrawBuffers.h"
 #include "nans.h"
@@ -429,7 +425,7 @@ bool InteractSuckDone::actOnyon(Onyon* item)
 			Vector3f pos = item->getPosition();
 			int money    = pellet->mConfig->mParams.mMoney.mData;
 
-			// carcass (1), ?? (3) or item (4)
+			// carcass (1), treasure (3) or item (4)
 			if (money > 0
 			    && (pellet->getKind() == PelletType::Carcass || pellet->getKind() == PelletType::Treasure
 			        || pellet->getKind() == PelletType::Upgrade)) {
@@ -1049,9 +1045,9 @@ void Onyon::initTube()
 
 	part = mCollTree->getCollPart('fot1');
 #if defined(VERSION_JP)
-	JUT_ASSERTLINE(1680, part, "I\'am bikkuri-ed\n");
+	JUT_ASSERTLINE(1680, part, "I'am bikkuri-ed\n");
 #else
-	JUT_ASSERTLINE(1690, part, "I\'am bikkuri-ed\n");
+	JUT_ASSERTLINE(1690, part, "I'am bikkuri-ed\n");
 #endif
 }
 

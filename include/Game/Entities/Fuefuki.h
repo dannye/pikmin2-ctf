@@ -6,8 +6,8 @@
 #include "Game/EnemyParmsBase.h"
 #include "Game/EnemyMgrBase.h"
 #include "Game/EnemyBase.h"
-#include "efx/TFuebugOnpa.h"
-#include "efx/TCursor.h"
+#include "efx/efxEnemy.h"
+#include "efx/efxPikmin.h"
 
 /**
  * --Header for Antenna Beetle (Fuefuki)--
@@ -103,7 +103,6 @@ struct Obj : public EnemyBase {
 struct Mgr : public EnemyMgrBase {
 	Mgr(int objLimit, u8 modelType);
 
-	// virtual ~Mgr();                                     // _58 (weak)
 	virtual void doAlloc();                            // _A8
 	virtual void createObj(int count);                 // _A0
 	virtual EnemyBase* getEnemy(int idx);              // _A4

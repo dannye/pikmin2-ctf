@@ -128,8 +128,6 @@ Creature* GenObjectEnemy::generate(Game::Generator* gen)
 	}
 
 	// Default enemy territory size is 35 units, unless overwritten by mEnemySize
-	// f32 enemy_territory = 35.0f;
-	// f32 dz, dx, dy;
 	f32 dx, dy, dz;
 	f32 enemy_territory = 35.0f;
 	if (mEnemySize > 0.0f) {
@@ -580,7 +578,7 @@ EnemyGeneratorBase* GenObjectEnemy::createEnemyGenerator()
 		GENERATOR_CASE(EnemyTypeID::EnemyID_ShijimiChou, "シジミ蝶")
 		GENERATOR_CASE(EnemyTypeID::EnemyID_MiniHoudai, "チビホウダイ")
 		GENERATOR_CASE(EnemyTypeID::EnemyID_FminiHoudai, "固定チビホウダイ")
-		GENERATOR_CASE(EnemyTypeID::EnemyID_Sokkuri, "ソ\ックリ")
+		GENERATOR_CASE(EnemyTypeID::EnemyID_Sokkuri, "ソックリ")
 		GENERATOR_CASE(EnemyTypeID::EnemyID_Hana, "ハナドックリ")
 		GENERATOR_CASE(EnemyTypeID::EnemyID_BlackMan, "黒い人")
 		GENERATOR_CASE(EnemyTypeID::EnemyID_Tyre, "黒い人タイヤ")
@@ -621,7 +619,6 @@ void GenObjectEnemy::updateUseList(Game::Generator* gen, int listIdx)
 /**
  * @note Address: 0x8012683C
  * @note Size: 0x31C
- * TODO
  */
 void GenObjectEnemy::render(Graphics& gfx, Game::Generator* gen)
 {

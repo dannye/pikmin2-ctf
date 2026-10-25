@@ -780,7 +780,7 @@ void THiScore::changePaneInfo()
 
 	for (int i = 0; i < 6; i++) {
 		int score = getRecord(i, id);
-		// use compeltely different counters for the play time versus the other scores
+		// use completely different counters for the play time versus the other scores
 		if (isTime) {
 			mScaleCounter2[i]->getMotherPane()->show();
 			mScaleCounter3[i]->getMotherPane()->show();
@@ -967,9 +967,9 @@ void THiScore::changeTextTevBlock(int id)
 {
 	s16 r0, g0, b0, a0;
 	s16 r1, g1, b1, a1;
-	J2DTextBox* textbox  = static_cast<J2DTextBox*>(mIndexPaneList[id]->getSubPane()->getFirstChildPane()); // r29
+	J2DTextBox* textbox  = static_cast<J2DTextBox*>(mIndexPaneList[id]->getSubPane()->getFirstChildPane());
 	f32 val              = mIndexGroup->getScrollOffset() + mIndexPaneList[id]->mYOffset;
-	J2DTextBox* startBox = static_cast<J2DTextBox*>(mIndexPaneList[id]->getSubPane()); // r28
+	J2DTextBox* startBox = static_cast<J2DTextBox*>(mIndexPaneList[id]->getSubPane());
 
 	if (mIndexGroup->mStateID == TIndexGroup::IDGroup_Idle && val < mCursorSelectionYOffset && val > mSelectionYOffset) {
 		changeTevBlock(mTevBlock[0], textbox->getMaterial()->getTevBlock());

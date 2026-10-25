@@ -16,9 +16,8 @@
 #include "Game/Entities/ItemPikihead.h"
 #include "Game/Entities/ItemHoney.h"
 #include "Game/CPlate.h"
-#include "efx/TPiku.h"
-#include "efx/TPk.h"
-#include "efx/TEnemyDive.h"
+#include "efx/efxPikmin.h"
+#include "efx/efxEnemyGeneral.h"
 #include "KandoLib/Choice.h"
 #include "P2Macros.h"
 #include "PSSystem/PSMainSide_ObjSound.h"
@@ -3650,7 +3649,6 @@ void PikiEscapeState::exec(Piki* piki)
 			axis.y = -1.0f;
 		}
 
-		// cross product needs fixing.
 		Vector3f vec = cross(diff, axis);
 		vec.normalise();
 

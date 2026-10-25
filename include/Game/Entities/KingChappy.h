@@ -8,8 +8,8 @@
 #include "Game/JointFuncs.h"
 #include "Game/EnemyBase.h"
 #include "Game/WalkSmokeEffect.h"
-#include "efx/TKch.h"
-#include "efx/TEnemyHamon.h"
+#include "efx/efxEnemyBoss.h"
+#include "efx/efxEnemyGeneral.h"
 #include "SysShape/Joint.h"
 #include "Collinfo.h"
 
@@ -67,7 +67,7 @@ struct Parms : public EnemyParmsBase {
 		    , mBigSpeed(this, 'fp17', "big速度", 80.0f, 0.0f, 1000.0f)                           // 'big speed'
 		    , mBigRotationSpeedRate(this, 'fp18', "big回転速度率", 0.1f, 0.0f, 1.0f)             // 'big rotation speed rate'
 		    , mBigRotationMaxSpeed(this, 'fp19', "big回転最大速度", 10.0f, 0.0f, 360.0f)         // 'big rotation maximum speed'
-		    , mBigAttackAngle(this, 'fp20', "big攻撃可能\角度", 15.0f, 0.0f, 180.0f)             // 'big attack angle'
+		    , mBigAttackAngle(this, 'fp20', "big攻撃可能角度", 15.0f, 0.0f, 180.0f)              // 'big attack angle'
 		    , mBigAttackHitRange(this, 'fp21', "big攻撃ヒット範囲", 70.0f, 0.0f, 1000.0f)        // 'big attack hit range'
 		    , mPeriodOfIncubation(this, 'ip01', "潜伏までの期間", 500, 0, 2000)                  // 'period of incubation'
 		    , mTimeToAppearance(this, 'ip02', "出現までの期間", 200, 0, 1000)                    // 'time to appearance'
@@ -316,7 +316,6 @@ struct Mgr : public EnemyMgrBase {
 	Mgr(int objLimit, u8 modelType);
 
 	//////////////// VTABLE
-	// virtual ~Mgr();                                     // _58 (weak)
 	virtual EnemyBase* birth(EnemyBirthArg&); // _70
 	virtual void doAlloc();                   // _A8
 	virtual SysShape::Model* createModel();   // _B0
@@ -338,7 +337,7 @@ struct Mgr : public EnemyMgrBase {
 
 	// _00 		= VTBL
 	// _00-_44	= EnemyMgrBase
-	Obj* mObj; // _44
+	Obj* mObj; // _44, array of Objs
 };
 
 enum AnimID {

@@ -327,7 +327,7 @@ bool InteractBomb::actPiki(Game::Piki* piki)
 		return false;
 	}
 
-	if (mCreature->isTeki()) { // I assume this is for piklopedia stuff
+	if (mCreature->isTeki()) {
 		EnemyBase* teki = static_cast<EnemyBase*>(mCreature);
 		piki->setTekiKillID(teki->getEnemyTypeID());
 	} else {

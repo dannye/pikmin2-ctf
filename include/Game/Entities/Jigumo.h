@@ -7,8 +7,7 @@
 #include "Game/EnemyMgrBase.h"
 #include "Game/EnemyBase.h"
 #include "Game/Piki.h"
-#include "efx/TJgm.h"
-#include "efx/TImo.h"
+#include "efx/efxEnemy.h"
 #include "Condition.h"
 #include "Collinfo.h"
 #include "Quat.h"
@@ -290,7 +289,6 @@ extern Obj* curJ;
 struct Mgr : public EnemyMgrBase {
 	Mgr(int objLimit, u8 modelType);
 
-	// virtual ~Mgr();                                     // _58 (weak)
 	virtual EnemyBase* birth(EnemyBirthArg&);       // _70
 	virtual void doAlloc();                         // _A8
 	virtual void loadModelData();                   // _C8

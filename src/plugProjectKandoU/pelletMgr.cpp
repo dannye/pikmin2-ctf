@@ -28,8 +28,7 @@
 #include "Game/AIConstants.h"
 #include "Game/BaseHIO.h"
 #include "Dolphin/rand.h"
-#include "efx/TFruitsDown.h"
-#include "efx/TOtakara.h"
+#include "efx/efxObject.h"
 #include "PSSystem/PSMainSide_ObjSound.h"
 #include "PSSystem/PSMainSide_Scene.h"
 #include "ObjectTypes.h"
@@ -801,7 +800,7 @@ void Pellet::onInit(CreatureInitArg* initArg)
 		mSlotCount = 128;
 	}
 
-	// For Doomsday Apparatus (because it couldnt just have 1000 in the config... apparently)
+	// For Doomsday Apparatus (because it couldn't just have 1000 in the config... apparently)
 	if (mConfig->mParams.mMin.mData == 128) {
 		mMinCarriers = 1000;
 		mMaxCarriers = 1000;
@@ -1265,7 +1264,7 @@ void Pellet::update()
 		}
 	}
 
-	Vector3f frameworkVec; // A4
+	Vector3f frameworkVec;
 	if (mPelletCarry->frameWork(frameworkVec) != 0) {
 		if (mSticked == nullptr) {
 			mPelletCarry->reset();
@@ -2102,7 +2101,7 @@ void Pellet::onSlotStickEnd(Creature* creature, s16 slot)
  */
 void Pellet::calcStickSlotGlobal(s16 slot, Vector3f& stickPosition)
 {
-	Vector3f pos; // sp14
+	Vector3f pos;
 	if (slot == 9999) {
 		pos = Vector3f(0.0f);
 	} else {

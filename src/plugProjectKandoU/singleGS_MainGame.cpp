@@ -55,7 +55,7 @@ void GameState::init(SingleGameSection* game, StateArg* arg)
 	int courseID   = game->mCurrentCourseInfo->mCourseIndex;
 	playData->setCurrentCourse(courseID);
 
-	// Refill each captain life if they arent dead
+	// Refill each captain life if they aren't dead
 	if (!(playData->mDeadNaviID.typeView & 1)) {
 		playData->mNaviLifeMax[NAVIID_Olimar] = naviMgr->mNaviParms->mNaviParms.mMaxHealth;
 		naviMgr->getAt(NAVIID_Olimar)->setLifeMax();
@@ -519,7 +519,7 @@ void GameState::exec(SingleGameSection* game)
 	switch (menustate) {
 	case Screen::Game2DMgr::CHECK2D_SMenu_Opened:
 		break;
-	case Screen::Game2DMgr::CHECK2D_SMenu_Cancel: // cancel menu
+	case Screen::Game2DMgr::CHECK2D_SMenu_Cancel:
 		gameSystem->setMoviePause(false, "sm-canc");
 		gameSystem->setPause(false, "sm-canc", 3);
 		break;

@@ -7,8 +7,7 @@
 #include "Game/EnemyMgrBase.h"
 #include "Game/JointFuncs.h"
 #include "Game/EnemyBase.h"
-#include "efx/TOoota.h"
-#include "efx/TDama.h"
+#include "efx/efxEnemyBoss.h"
 #include "JSystem/J3D/J3DGXColor.h"
 #include "Sys/MatBaseAnimation.h"
 #include "Sys/MatBaseAnimator.h"
@@ -281,7 +280,6 @@ struct Mgr : public EnemyMgrBase {
 	Mgr(int objLimit, u8 modelType);
 
 	//////////////// VTABLE
-	// virtual ~Mgr();                                     // _58 (weak)
 	virtual void createObj(int count);                 // _A0
 	virtual EnemyBase* getEnemy(int idx);              // _A4
 	virtual void doAlloc();                            // _A8
@@ -299,7 +297,7 @@ struct Mgr : public EnemyMgrBase {
 
 	// _00 		= VTBL
 	// _00-_44	= EnemyMgrBase
-	Obj* mObj; // _48
+	Obj* mObj; // _48, array of Objs
 };
 
 struct Parms : public EnemyParmsBase {
@@ -312,11 +310,11 @@ struct Parms : public EnemyParmsBase {
 		    , mMinReducedAccelFactor(this, 'fp04', "最低減加速係数", -2.0f, -10.0f, 10.0f) // 'min reduced acceleration factor'
 		    , mMaxDecelAccelFactor(this, 'fp05', "最高減加速係数", 10.0f, -10.0f, 10.0f)   // 'max deceleration acceleration factor'
 		    , mLegSwing(this, 'fp06', "足の振り上げ", 120.0f, 0.0f, 200.0f)                // 'leg swing'
-		    , mElectricityWaitTime(this, 'fp10', "予\備時間(電気)", 2.5f, 0.0f, 10.0f)     // 'wait time (electricity)'
-		    , mFireWaitTime1(this, 'fp11', "予\備時間(火:1)", 2.8f, 0.0f, 10.0f)           // 'wait time (fire:1)'
-		    , mFireWaitTime2(this, 'fp31', "予\備時間(火:2)", 2.5f, 0.0f, 10.0f)           // 'wait time (fire:2)'
-		    , mGasWaitTime(this, 'fp12', "予\備時間(ガス)", 2.5f, 0.0f, 10.0f)             // 'wait time (gas)'
-		    , mWaterWaitTime(this, 'fp13', "予\備時間(水)", 2.5f, 0.0f, 10.0f)             // 'wait time (water)'
+		    , mElectricityWaitTime(this, 'fp10', "予備時間(電気)", 2.5f, 0.0f, 10.0f)      // 'wait time (electricity)'
+		    , mFireWaitTime1(this, 'fp11', "予備時間(火:1)", 2.8f, 0.0f, 10.0f)            // 'wait time (fire:1)'
+		    , mFireWaitTime2(this, 'fp31', "予備時間(火:2)", 2.5f, 0.0f, 10.0f)            // 'wait time (fire:2)'
+		    , mGasWaitTime(this, 'fp12', "予備時間(ガス)", 2.5f, 0.0f, 10.0f)              // 'wait time (gas)'
+		    , mWaterWaitTime(this, 'fp13', "予備時間(水)", 2.5f, 0.0f, 10.0f)              // 'wait time (water)'
 		    , mElecAttackTimeMax(this, 'fp20', "攻撃時間(電気)", 5.0f, 0.0f, 10.0f)        // 'attack time (electricity)'
 		    , mFireAttackTimeMax(this, 'fp21', "攻撃時間(火)", 5.0f, 0.0f, 10.0f)          // 'attack time (fire)'
 		    , mGasAttackTimeMax(this, 'fp22', "攻撃時間(ガス)", 5.0f, 0.0f, 10.0f)         // 'attack time (gas)'

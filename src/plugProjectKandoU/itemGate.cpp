@@ -1,8 +1,7 @@
 #include "Game/Entities/ItemGate.h"
 #include "Game/Entities/ItemDengekiGate.h"
 #include "Game/Entities/ItemStoneGate.h"
-#include "efx/TGate.h"
-#include "efx/TEgate.h"
+#include "efx/efxObject.h"
 #include "PSSystem/PSMainSide_ObjSound.h"
 #include "Dolphin/rand.h"
 #include "Sys/MatBaseAnimator.h"
@@ -701,8 +700,6 @@ void GateWaitState::onKeyEvent(Game::ItemGate*, const SysShape::KeyEvent&)
 void GateDamagedState::init(Game::ItemGate* item, Game::StateArg* arg)
 {
 	item->startDamageMotion();
-	// item->mAnimator.startAnim(item->mSegmentsDown, item);
-	// item->mAnimSpeed = 30.0f;
 	mNotInAnim = false;
 }
 

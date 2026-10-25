@@ -56,7 +56,7 @@ enum PikiStateID {
 	// no 29?
 	PIKISTATE_Koke   = 30,
 	PIKISTATE_Escape = 31,
-	PIKISTATE_Carrot = 32, // pikipedia carrot
+	PIKISTATE_Carrot = 32, // piklopedia carrot
 	PIKISTATE_Count,
 };
 
@@ -498,7 +498,6 @@ struct PikiFountainonState : public PikiState {
 
 	// _00     = VTBL
 	// _00-_10 = PikiState
-	// u8 _10[0x24]; // _10, unknown
 	Vector3f mAvgPosition; // _10
 	Vector3f mPosDiff;     // _1C
 	f32 mTargetDist;       // _28, length?

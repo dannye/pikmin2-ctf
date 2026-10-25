@@ -1,27 +1,7 @@
 #include "efx/Arg.h"
 #include "efx/TSyncGroup.h"
-#include "types.h"
-#include "efx/TBaba.h"
-#include "efx/TChibi.h"
-#include "efx/TChou.h"
-#include "efx/TDenki.h"
-#include "efx/TDnkms.h"
-#include "efx/TGasuHiba.h"
-#include "efx/THebi.h"
-#include "efx/THibaFire.h"
-#include "efx/TImo.h"
-#include "efx/TJgm.h"
-#include "efx/TKechappy.h"
-#include "efx/TKogane.h"
-#include "efx/TKurage.h"
-#include "efx/TNewkurage.h"
-#include "efx/TOta.h"
-#include "efx/TPan.h"
-#include "efx/TQuri.h"
-#include "efx/TTank.h"
-#include "efx/TUmi.h"
-#include "efx/TUjinko.h"
-#include "efx/TYaki.h"
+#include "efx/efxEnemyBoss.h"
+#include "efx/efxEnemy.h"
 #include "JSystem/JParticle/JPAMath.h"
 
 namespace efx {
@@ -628,7 +608,6 @@ void TParticleCallBack_TankFire::init(JPABaseEmitter*, JPABaseParticle*)
  */
 void TParticleCallBack_TankFire::execute(JPABaseEmitter* emit, JPABaseParticle* particle)
 {
-	// shame on whoever for not knowing the funcs get called in right to left order -Drought
 	Vector3f tgt;
 	tgt = particle->getCalcCurrentPosition(emit);
 
@@ -738,8 +717,6 @@ void TDnkmsThunderB::doExecuteEmitterOperation(JPABaseEmitter* emit)
 {
 	P2ASSERTLINE(666, mPosition);
 	P2ASSERTLINE(667, mPartnerPosition);
-
-	// This function is a 2-for-1 deal, solve above solve below
 
 	Vector3f pos1 = *mPosition;
 	Vector3f pos2 = *mPartnerPosition;

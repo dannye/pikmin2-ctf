@@ -7,7 +7,7 @@
 #include "Game/itemMgr.h"
 #include "Game/PlatInstance.h"
 #include "Game/GameLight.h"
-#include "efx/WarpZone.h"
+#include "efx/efxObject.h"
 
 namespace Game {
 namespace ItemBarrel {
@@ -133,7 +133,6 @@ struct Mgr : public TNodeItemMgr {
 	virtual void generatorRead(Stream&, GenItemParm*, u32);               // _64
 	virtual u32 generatorLocalVersion() { return '0002'; }                // _68 (weak)
 	virtual GenItemParm* generatorNewItemParm();                          // _70
-	// virtual ~Mgr() { }                                                    // _B8 (weak)
 
 	// _00     = VTBL
 	// _00-_88 = TNodeItemMgr

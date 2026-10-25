@@ -104,7 +104,7 @@ struct J3DModelData {
 	J3DMaterialTable& getMaterialTable() { return mMaterialTable; }
 	JUTNameTab* getMaterialName() const { return mMaterialTable.getMaterialName(); }
 	u16 getShapeNum() const { return mShapeTable.getShapeNum(); }
-	u16 getMaterialNum() const { return mMaterialTable.getMaterialNum(); }
+	u32 getMaterialNum() const { return mMaterialTable.mMaterialNum; }
 	u16 getJointNum() const { return mJointTree.getJointNum(); }
 	u32 getDrawMtxNum() const { return mJointTree.getDrawMtxNum(); }
 	J3DMaterial* getMaterialNodePointer(u16 idx) const { return mMaterialTable.getMaterialNodePointer(idx); }
@@ -224,7 +224,6 @@ struct J3DModel {
 	MtxP getAnmMtx(int p1) { return mMtxBuffer->getAnmMtx(p1); }
 	J3DMtxBuffer* getMtxBuffer() const { return mMtxBuffer; }
 
-	// void setBaseScale(const Vec& scale) { mModelScale = scale; }
 	Vec* getBaseScale() { return &mModelScale; }
 
 	// _00 VTBL

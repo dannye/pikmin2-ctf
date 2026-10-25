@@ -32,7 +32,6 @@ struct FSMStateMachine : public Game::StateMachine<TMgr> {
 	// _00-_1C = Game::StateMachine
 };
 
-// TODO: Additional state data members, if any.
 struct FSMState : public Game::FSMState<TMgr> {
 	inline FSMState(int id, const char* name)
 	    : Game::FSMState<TMgr>(id)
@@ -128,8 +127,6 @@ struct FSMState_ScreenWait : public FSMState {
 struct FSMState_WaitCloseForNoCard : public FSMState {
 	inline FSMState_WaitCloseForNoCard(int id, const char* name)
 	    : FSMState(id, name)
-	    , mWaitTimer(0)
-	    , mWaitTimerMax(0)
 	{
 	}
 
@@ -138,8 +135,7 @@ struct FSMState_WaitCloseForNoCard : public FSMState {
 
 	// _00     = VTBL
 	// _00-_10 = FSMState
-	u32 mWaitTimer;    // _10
-	u32 mWaitTimerMax; // _14
+	EUTCounter mWaitTimer; // _10
 };
 
 struct FSMState_WorldMapInfoWindow : public FSMState {

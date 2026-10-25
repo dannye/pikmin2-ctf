@@ -120,7 +120,6 @@ inline void DemoInitiator::setDefault(const char* comp, u32 id, bool extraCondit
 		mSongChosen = true;
 		mASTid      = id;
 		*mByte      = -1;
-		// OSReport("demo_arg is value: %lu\n", demo_arg);
 	}
 }
 
@@ -451,7 +450,7 @@ Demo::~Demo()
  */
 void Demo::becomeDemoCamera()
 {
-	// not quite right but needs the checkGameScene inline for rodata purposes
+	// Size isnt right but we need the checkGameScene inline for rodata purposes
 	PSM::Scene_Game* scene = static_cast<PSM::Scene_Game*>(PSMGetChildScene());
 	PSSystem::checkGameScene(scene);
 	scene->becomeSceneCamera();

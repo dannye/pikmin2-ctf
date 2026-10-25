@@ -1,15 +1,7 @@
 #include "Game/Piki.h"
-#include "efx/TPk.h"
-#include "efx/TDopingSmoke.h"
-#include "efx/TOrima.h"
-#include "efx/TCursor.h"
-#include "efx/TFueact.h"
-#include "efx/TNaviEffect.h"
-#include "efx/TEnemyDead.h"
-#include "efx/TGate.h"
-#include "efx/TStoneAttack.h"
-#include "efx/TBridge.h"
-#include "game/Piki.h"
+#include "efx/efxPikmin.h"
+#include "efx/efxEnemyGeneral.h"
+#include "efx/efxObject.h"
 #include "trig.h"
 #include "Game/MapMgr.h"
 #include "JSystem/JParticle/JPAMath.h"
@@ -284,9 +276,6 @@ void TFueactCircle::execute(JPABaseEmitter* emit)
 {
 	P2ASSERTLINE(530, mMtx);
 	P2ASSERTLINE(531, mPos);
-
-	// Vector3f probably doesnt belong in these functions
-	// the JGeometry Util stuff seems to be what was used
 
 	JGeometry::TVec3f sep2;
 	sep2.x = mPos->x - (*mMtx)(0, 3);
@@ -1203,12 +1192,6 @@ void TPkEffectTane::killGlow1_()
 void TFueactCircle::executeAfter(JPABaseEmitter*)
 {
 }
-
-/**
- * @note Address: 0x803B9000
- * @note Size: 0x2C
- */
-// void TCursor::forceKill() { mOneEmitter.forceKill(); }
 
 /**
  * @note Address: N/A

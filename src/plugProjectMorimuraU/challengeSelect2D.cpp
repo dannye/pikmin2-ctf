@@ -3,7 +3,7 @@
 #include "Game/gameChallenge2D.h"
 #include "trig.h"
 #include "Game/GameConfig.h"
-#include "efx2d/T2DChangesmoke.h"
+#include "efx2d/efx2dEffect.h"
 #include "JSystem/JKernel/JKRDvdRipper.h"
 #include "Game/Data.h"
 #include "PSSystem/PSSystemIF.h"
@@ -452,7 +452,6 @@ void TChallengePanel::update(int index, bool flag)
 	}
 
 	int id = mIndex;
-	// this is wrong, I hate it here
 	int a1 = (index % 5);
 	int a2 = (index / 5);
 	int a3 = (id % 5);

@@ -145,7 +145,7 @@ struct FSMState_NowSave : public FSMState {
 
 	// _00     = VTBL
 	// _00-_10 = FSMState
-	int mState;
+	int mState;         // _10
 	int mCardStatus;    // _14
 	bool mIsErrorState; // _18
 };
@@ -242,8 +242,7 @@ struct TMgr : public JKRDisposer {
 	// _00-_18 = JKRDisposer
 	Screen::TSaveMenu mSaveMenu;                      // _18
 	CardError::TMgr mMemCardErrorMgr;                 // _100
-	u32 mCounter;                                     // _3C8
-	u32 mCounterBackup;                               // _3CC
+	EUTCounter mCounter;                              // _3C8
 	Controller* mController;                          // _3D0
 	Game::MemoryCard::PlayerFileInfo mPlayerFileInfo; // _3D4
 	BOOL mIsStoryGameSave;                            // _470

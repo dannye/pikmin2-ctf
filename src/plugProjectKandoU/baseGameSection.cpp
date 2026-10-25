@@ -27,7 +27,7 @@
 #include "TParticle2dMgr.h"
 #include "PSGame/Global.h"
 #include "PSM/BossBgmFader.h"
-#include "efx/OnyonSpot.h"
+#include "efx/efxObject.h"
 #include "Dolphin/rand.h"
 #include "LifeGaugeMgr.h"
 #include "og/ogLib2D.h"
@@ -455,7 +455,7 @@ void BaseGameSection::onMovieCommand(int cmd)
  * @note Size: 0x450
  */
 
-// unfortunatly this probably isn't real inline, however I'm not writing the full code out bc that's stupid
+// unfortunately this probably isn't real inline, however I'm not writing the full code out bc that's stupid
 inline void j3dStuff(Sys::DrawBuffers*& buffer, Sys::DrawBuffer::CreateArg& drawArg, bool doFog)
 {
 
@@ -723,13 +723,13 @@ void BaseGameSection::initGenerators()
 				file = LoadTextFile(filenameCharArr);
 
 				if (file) {
-					RamStream noonloopTxt(file, -1);
-					noonloopTxt.setMode(STREAM_MODE_TEXT, 1);
+					RamStream nonloopTxt(file, -1);
+					nonloopTxt.setMode(STREAM_MODE_TEXT, 1);
 
 					GeneratorMgr* currentNonloopMgr = new GeneratorMgr;
-					currentNonloopMgr->mUnusedFlag  = true; // is nonrepeating?
+					currentNonloopMgr->mUnusedFlag  = true;
 
-					currentNonloopMgr->read(noonloopTxt, false);
+					currentNonloopMgr->read(nonloopTxt, false);
 					currentNonloopMgr->setDayLimit(currentGen->mDayLimit);
 					currentNonloopMgr->updateUseList();
 
@@ -746,7 +746,6 @@ void BaseGameSection::initGenerators()
 		{ // loop
 
 			int day = gameSystem->mTimeMgr->mDayCount;
-			// int loopGenCount = courseInfo->mLoopGenInfo.mCount;
 
 			today %= 30;
 
@@ -780,7 +779,7 @@ void BaseGameSection::initGenerators()
 						loopTxt.setMode(STREAM_MODE_TEXT, 1);
 
 						GeneratorMgr* currentLoopMgr = new GeneratorMgr;
-						currentLoopMgr->mUnusedFlag  = true; // is nonrepeating?
+						currentLoopMgr->mUnusedFlag  = true;
 
 						currentLoopMgr->read(loopTxt, false);
 						u32 dayLimit = currentGen->mDayLimit - 30;
@@ -799,7 +798,7 @@ void BaseGameSection::initGenerators()
 			}
 
 		} // end loop
-		{ // weird day ujim thing
+		{ // weird day ujidani thing
 			int today = gameSystem->mTimeMgr->mDayCount;
 			sprintf(filenameCharArr, "%s/day/%d.txt", courseInfo->mAbeFolder, today % 30);
 			int fileNum = DVDConvertPathToEntrynum(filenameCharArr);
@@ -821,7 +820,7 @@ void BaseGameSection::initGenerators()
 		generalEnemyMgr->setupSoundViewerAndBas();
 		pelletMgr->setupResources();
 
-		// cleanup file ptrs that have been left lying arround
+		// cleanup file ptrs that have been left lying around
 		for (int i = fileIdx - 1; i >= 0; i--) {
 			delete[] generatorFiles[i];
 		}
@@ -1286,7 +1285,7 @@ void BaseGameSection::setDefaultPSSceneInfo(PSGame::SceneInfo& sceneInfo)
  * @note Address: 0x8014E130
  * @note Size: 0x68C
  */
-void BaseGameSection::prepareHoleIn(Vector3f& suroundPos, bool killPikihead)
+void BaseGameSection::prepareHoleIn(Vector3f& surroundPos, bool killPikihead)
 {
 	Screen::gGame2DMgr->mScreenMgr->reset();
 	Navi* aliveOrima = naviMgr->getAliveOrima(ALIVEORIMA_Active);
@@ -1322,10 +1321,10 @@ void BaseGameSection::prepareHoleIn(Vector3f& suroundPos, bool killPikihead)
 				piki->mNavi   = aliveOrima;
 				f32 randAngle = randFloat() * TAU;
 
-				Vector3f suroundCircle(sinf(randAngle), 0, cosf(randAngle));
+				Vector3f surroundCircle(sinf(randAngle), 0, cosf(randAngle));
 
 				Vector3f vec = Vector3f(sinf(randAngle) * 50.0f, 0.0f, cosf(randAngle) * 50.0f);
-				vec          = vec + suroundPos;
+				vec          = vec + surroundPos;
 				vec.y        = mapMgr->getMinY(vec);
 				piki->setPosition(vec, false);
 				PikiAI::ActFormationInitArg arg(aliveOrima);
@@ -1347,7 +1346,7 @@ void BaseGameSection::prepareHoleIn(Vector3f& suroundPos, bool killPikihead)
  * @note Address: 0x8014E7BC
  * @note Size: 0x714
  */
-void BaseGameSection::prepareFountainOn(Vector3f& suroundPos)
+void BaseGameSection::prepareFountainOn(Vector3f& surroundPos)
 {
 	if (ItemBigFountain::mgr) {
 		Iterator<BaseItem> iFountain = ItemBigFountain::mgr;
@@ -1375,7 +1374,7 @@ void BaseGameSection::prepareFountainOn(Vector3f& suroundPos)
 		}
 	}
 	PikiCond_ExceptChappyPikmin pikiCond;
-	pikiMgr->moveAllPikmins(suroundPos, 50.0f, &pikiCond);
+	pikiMgr->moveAllPikmins(surroundPos, 50.0f, &pikiCond);
 	Iterator<Piki> iPiki(pikiMgr, NULL, nullptr);
 
 	CI_LOOP(iPiki)

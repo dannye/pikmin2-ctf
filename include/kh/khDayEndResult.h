@@ -23,7 +23,7 @@ namespace Screen {
 // DATA STRUCTS
 
 enum MailCategory {
-	// Acutal checking for these conditions are done in singlleGS_MainResult
+	// Actual checking for these conditions are done in singleGS_MainResult
 	PokoUnder3000  = 0x31,
 	PokoUnder5000  = 0x32,
 	PokoUnder8000  = 0x33,
@@ -624,7 +624,6 @@ struct SceneDayEndResultIncP : public ::Screen::SceneBase {
 
 	// _00      = VTBL
 	// _00-_220 = Screen::SceneBase
-	// TODO: work out if this has extra members
 };
 
 struct SceneDayEndResultItem : public ::Screen::SceneBase {
@@ -639,7 +638,6 @@ struct SceneDayEndResultItem : public ::Screen::SceneBase {
 
 	// _00      = VTBL
 	// _00-_220 = Screen::SceneBase
-	// TODO: work out if this has extra members
 };
 
 // mail is 4-byte aligned, despite this struct wanting to go to 8-byte aligned
@@ -691,9 +689,9 @@ struct SceneDayEndResultMail : public ::Screen::SceneBase {
 
 	// _00      = VTBL
 	// _00-_220 = Screen::SceneBase
-	MailTableData** mTableData;  // _220, unknown
+	MailTableData** mTableData;  // _220
 	JKRMemArchive* mIconArchive; // _224
-	MailHistoryFlags mMailFlags; // _228, unknown
+	MailHistoryFlags mMailFlags; // _228
 };
 
 struct SceneDayEndResultTitl : public ::Screen::SceneBase {
@@ -708,7 +706,6 @@ struct SceneDayEndResultTitl : public ::Screen::SceneBase {
 
 	// _00      = VTBL
 	// _00-_220 = Screen::SceneBase
-	// TODO: work out if this has extra members
 };
 
 } // namespace Screen

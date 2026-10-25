@@ -140,8 +140,6 @@ int J3DModel::createMatPacket(J3DModelData* data, u32 flags)
 int J3DModel::newDifferedDisplayList(u32 displayListFlag)
 {
 	mDiffFlag = displayListFlag;
-	// It sure is wild what pre-fetching the limit will do.
-	// for (u16 i = 0; i < mModelData->mShapeTable.mCount; i++) {
 	u16 count = mModelData->mShapeTable.mCount;
 	for (u16 i = 0; i < count; i++) {
 		int result = mShapePackets[i].newDifferedDisplayList(displayListFlag);
@@ -239,7 +237,7 @@ void J3DModel::calcDiffTexMtx()
 {
 	u16 i;
 	j3dSys.mModel = this;
-	u32 count     = getModelData()->getMaterialNum();
+	u32 count     = getModelData()->getMaterialTable().getMaterialNum();
 	for (i = 0; i < count; i++) {
 		j3dSys.mMatPacket     = getMatPacket(i);
 		J3DMaterial* material = mModelData->getMaterialNodePointer(i);

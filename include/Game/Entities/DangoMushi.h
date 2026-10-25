@@ -10,7 +10,7 @@
 #include "Game/EnemyBase.h"
 #include "Sys/MatBaseAnimation.h"
 #include "Sys/MatBaseAnimator.h"
-#include "efx/TDango.h"
+#include "efx/efxEnemyBoss.h"
 
 /**
  * --Header for Segmented Crawbster (DangoMushi)--
@@ -185,7 +185,6 @@ struct Obj : public EnemyBase {
 struct Mgr : public EnemyMgrBase {
 	Mgr(int objLimit, u8 modelType);
 
-	// virtual ~Mgr();                                     // _58 (weak)
 	virtual void createObj(int count);                 // _A0
 	virtual EnemyBase* getEnemy(int idx);              // _A4
 	virtual void doAlloc();                            // _A8

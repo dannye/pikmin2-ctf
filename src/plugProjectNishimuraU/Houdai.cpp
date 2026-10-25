@@ -4,9 +4,8 @@
 #include "Game/Navi.h"
 #include "Game/EnemyFunc.h"
 #include "Game/ConditionNotStick.h"
-#include "efx/TOoota.h"
-#include "efx/TEnemyDownWat.h"
-#include "efx/TEnemyDownSmoke.h"
+#include "efx/efxEnemyBoss.h"
+#include "efx/efxEnemyGeneral.h"
 #include "PSSystem/PSMainSide_ObjSound.h"
 #include "PS.h"
 #include "Dolphin/rand.h"
@@ -62,7 +61,6 @@ void Obj::setInitialSetting(EnemyInitialParamBase*)
  */
 void Obj::onInit(CreatureInitArg* initArg)
 {
-	// TODO: Finish
 	EnemyBase::onInit(initArg);
 	EnemyBase::hardConstraintOn();
 	disableEvent(0, EB_Cullable);

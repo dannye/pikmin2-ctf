@@ -7,8 +7,7 @@
 #include "Game/EnemyMgrBase.h"
 #include "Game/JointFuncs.h"
 #include "Game/EnemyBase.h"
-#include "efx/TDama.h"
-#include "efx/THdama.h"
+#include "efx/efxEnemyBoss.h"
 #include "Collinfo.h"
 #include "Sys/MatBaseAnimation.h"
 #include "Sys/MatBaseAnimator.h"
@@ -177,7 +176,6 @@ struct Mgr : public EnemyMgrBase {
 	Mgr(int objLimit, u8 modelType);
 
 	//////////////// VTABLE
-	// virtual ~Mgr();                                  // _58 (weak)
 	virtual void createObj(int count);                 // _A0
 	virtual EnemyBase* getEnemy(int idx);              // _A4
 	virtual void doAlloc();                            // _A8
@@ -194,7 +192,7 @@ struct Mgr : public EnemyMgrBase {
 
 	// _00 		= VTBL
 	// _00-_44	= EnemyMgrBase
-	Obj* mObj; // _44, probably
+	Obj* mObj; // _44, array of Objs
 };
 
 struct Parms : public EnemyParmsBase {
@@ -360,9 +358,6 @@ struct HoudaiShotGunMgr {
 	HoudaiShotGunNode* mActiveNodes;   // _34
 	HoudaiShotGunNode* mInactiveNodes; // _38
 };
-
-// static bool levelRotationCallBack(J3DJoint*, int);
-// static bool verticalRotationCallBack(J3DJoint*, int);
 
 /////////////////////////////////////////////////////////////////
 // STATE MACHINE DEFINITIONS

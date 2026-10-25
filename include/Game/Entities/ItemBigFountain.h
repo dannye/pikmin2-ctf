@@ -5,7 +5,7 @@
 #include "Game/BaseItem.h"
 #include "Game/itemMgr.h"
 #include "Game/PlatInstance.h"
-#include "efx/TGeyser.h"
+#include "efx/efxObject.h"
 #include "Condition.h"
 
 struct PikiCond_ExceptChappyPikmin : public Condition<Game::Piki> {
@@ -116,7 +116,7 @@ struct WaitState : public State {
 
 struct FountainParms : public CreatureParms {
 	struct Parms : public Parameters {
-		inline Parms() // probably
+		inline Parms()
 		    : Parameters(nullptr, "Fountain::Parms")
 		    , mHealth(this, 'p000', "ライフ", 1000.0f, 1.0f, 60000.0f) // 'life'
 		{

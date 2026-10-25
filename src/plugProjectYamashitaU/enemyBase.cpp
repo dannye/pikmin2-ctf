@@ -4,12 +4,7 @@
 #include "Game/EnemyBase.h"
 
 // Particle FX
-#include "efx/TEnemyDownSmoke.h"
-#include "efx/TEnemyDownWat.h"
-#include "efx/TEnemyApsmoke.h"
-#include "efx/TEnemyBomb.h"
-#include "efx/TEnemyDead.h"
-#include "efx/TEnemyPoison.h"
+#include "efx/efxEnemyGeneral.h"
 
 // Gameplay
 #include "Game/Entities/PelletNumber.h"
@@ -3380,13 +3375,6 @@ void EnemyBase::endMovie()
 		doEndMovie();
 	}
 }
-
-/**
- * @note Address: 0x801078C8
- * @note Size: 0x4
- */
-// WEAK - in header
-// void EnemyBase::doEndMovie() { }
 
 /**
  * @note Address: 0x801078CC

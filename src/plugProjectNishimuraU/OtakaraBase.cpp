@@ -3,7 +3,7 @@
 #include "Game/EnemyFunc.h"
 #include "Game/generalEnemyMgr.h"
 #include "Game/ConditionNotStick.h"
-#include "efx/TOta.h"
+#include "efx/efxEnemy.h"
 
 namespace Game {
 namespace OtakaraBase {
@@ -619,7 +619,7 @@ void Obj::createTreasureFallEffect()
 		scale = 0.5f * (1.0f + scale);
 	}
 
-	efx::ArgScale arg(translation, scale); // this is what causes the sdata2 mismatch- inherits Arg's getName
+	efx::ArgScale arg(translation, scale);
 	efx::TOtaPartsoff treasureFallFX;
 
 	treasureFallFX.create(&arg);

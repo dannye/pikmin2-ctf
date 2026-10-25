@@ -185,7 +185,6 @@ struct Onyon : public BaseItem {
 
 namespace ItemOnyon {
 
-// TODO: cull reinterpret_cast
 struct Mgr : public BaseItemMgr, public Container<Onyon> {
 	Mgr();
 

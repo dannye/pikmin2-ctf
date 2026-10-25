@@ -1,7 +1,7 @@
 #include "Game/Entities/ItemBridge.h"
 #include "Game/routeMgr.h"
 #include "Game/MapMgr.h"
-#include "efx/TBridge.h"
+#include "efx/efxPikmin.h"
 #include "JSystem/JKernel/JKRDvdRipper.h"
 #include "PSSystem/PSMainSide_ObjSound.h"
 #include "PSSystem/PSSystemIF.h"
@@ -459,7 +459,6 @@ f32 Item::getStageWidth()
 	return 150.0f;
 }
 
-// need to increase the inline depth enough that this doesn't auto-inline anymore
 /**
  * @note Address: 0x801EF038
  * @note Size: 0xA4
